@@ -1,8 +1,20 @@
 <template>
   <div id="app">
-    <router-view/>
+    <nav-header />
+
+    <router-view />
   </div>
 </template>
+ 
+<script>
+import navHeader from "./views/nav_header";
+
+export default {
+  components: {
+    navHeader,
+  },
+};
+</script> 
 
 <style lang="scss">
 #app {
@@ -11,18 +23,11 @@
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
+  display: flex;
 }
 
-#nav {
+div {
   padding: 30px;
-
-  a {
-    font-weight: bold;
-    color: #2c3e50;
-
-    &.router-link-exact-active {
-      color: #42b983;
-    }
-  }
+ 
 }
 </style>

@@ -1,0 +1,30 @@
+{
+  "id": "2481903",
+  "name": "ipfs",
+  "font_family": "iconfont",
+  "css_prefix_text": "icon",
+  "description": "",
+  "glyphs": [
+    {
+      "icon_id": "13400996",
+      "name": "文件",
+      "font_class": "files",
+      "unicode": "e61d",
+      "unicode_decimal": 58909
+    },
+    {
+      "icon_id": "6246293",
+      "name": "节点",
+      "font_class": "nodes",
+      "unicode": "e649",
+      "unicode_decimal": 58953
+    },
+    {
+      "icon_id": "17523072",
+      "name": "系统状态-终端状态",
+      "font_class": "status",
+      "unicode": "e618",
+      "unicode_decimal": 58904
+    }
+  ]
+}
