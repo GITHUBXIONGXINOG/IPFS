@@ -1,11 +1,12 @@
 let IpfsApi = require("ipfs-api")
 
 module.exports = {
-    connect: async ()=>{
+    speedInfo: async ()=>{
         try{
             var ipfs = await IpfsApi('localhost', '5001', {protocol : 'http'})
             // console.log(ipfs);
            let result =  await ipfs.stats.bw()
+       
             // console.log(result);
             return result
         }catch(err){
