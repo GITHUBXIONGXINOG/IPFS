@@ -37,10 +37,21 @@
         </ul>
       </div>
       <div class="infoErr" v-else>
-        <svg class="icon" aria-hidden="true">
-          <use xlink:href="#iconjinggao"></use>
-        </svg>
-        无法连接到IPFS API
+        <div class="errTitle">
+          <svg class="icon" aria-hidden="true">
+            <use xlink:href="#iconjinggao"></use>
+          </svg>
+          无法连接到IPFS API
+        </div>
+        <ul>
+          <li>参考在IPFS Docs上的安装指南，或者尝试一下这些常规解决办法:</li>
+          <li>
+            1.您的IPFS后台守护进程有正常运行吗？尝试从命令行终端内开启或者重新启动它
+          </li>
+          <li>
+            2.requests【跨域请求】?如果没有，从命令行终端内执行这些命令然后再启动你的IPFS守护进程
+          </li>
+        </ul>
       </div>
     </section>
     <section class="bandwidth">
@@ -152,8 +163,26 @@ export default {
     }
   }
   .infoErr {
-    font-size: 30px;
-    color: #ea5037;
+    .errTitle {
+      font-size: 30px;
+      color: #ea5037;
+    }
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    ul {
+      width: 80%;
+      margin: 20px 60px;
+      li {
+        display: flex;
+
+        margin: 20px 0;
+        &:first-child {
+          font-weight: bold;
+        }
+      }
+    }
   }
 }
 .bandwidth {
