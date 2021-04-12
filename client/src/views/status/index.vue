@@ -17,7 +17,7 @@ export default {
 <style lang="scss" scoped>
 .status {
   border: 1px solid red;
-  width: 85%;
+  width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;

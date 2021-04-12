@@ -8,7 +8,7 @@
 <style lang="scss" scoped>
     .nodes{
         border: 1px solid red;
-          width: 85%;
+          width: 100%;
 
     }
 </style>

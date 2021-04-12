@@ -6,6 +6,13 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "947061",
+      "name": "加",
+      "font_class": "jia",
+      "unicode": "e659",
+      "unicode_decimal": 58969
+    },
+    {
       "icon_id": "13400996",
       "name": "文件",
       "font_class": "files",
