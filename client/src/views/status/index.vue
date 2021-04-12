@@ -69,19 +69,17 @@ export default {
     setInterval(async () => {
       try {
         this.nodeID = await ajax("/api/status");
-        console.log(this.nodeID);
         this.connectFlag = true;
       } catch (err) {
         console.error(err);
+        this.connectFlag = false;
       }
     }, 10000);
 
     setInterval(async () => {
       // const response = await ajax("/api/status");
       try {
-        const { totalIn, totalOut, rateIn, rateOut } = await ajax(
-          "/api/status"
-        );
+        const { totalIn, totalOut, rateIn, rateOut } = await ajax("/api/speed");
         (this.totalIn = totalIn),
           (this.totalOut = totalOut),
           (this.rateIn = rateIn),
@@ -133,8 +131,6 @@ export default {
         display: flex;
         margin: 15px 0;
         width: 100%;
-        overflow: hidden;
-
         .name {
           width: 100px !important;
           display: flex;

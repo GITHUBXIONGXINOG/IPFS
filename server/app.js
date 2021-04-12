@@ -7,7 +7,7 @@ var logger = require('morgan');
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var statusRouter = require('./routes/status');
-// var speedRouter = require('./utils/ipfs/speedInfo')
+var speedRouter = require('./routes/speed')
 var app = express();
 
 // view engine setup
@@ -23,7 +23,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/status', statusRouter);
-// app.use('/speed',speedRouter)
+app.use('/speed',speedRouter)
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
