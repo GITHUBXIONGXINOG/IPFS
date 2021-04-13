@@ -24,12 +24,15 @@ module.exports = {
                     }
                     // 把数据转换成Buffer
                     const content = Buffer.from(fd)
-                    // console.log(content);
+                    // 添加到ipfs
                     let resFile = await ipfs.add({
                         path: path,
                         content: content
                     })
                     hash = await resFile[0].hash
+                    if(hash){
+                        fs.unlink(path,(err)=>{if(err)console.error(err);})
+                    }
                     resolve(hash)
                 })
             } catch (err) {
