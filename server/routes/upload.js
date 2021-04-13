@@ -8,9 +8,8 @@ router.post('/', function(req, res, next) {
     const form = new formidable.IncomingForm()
     form.uploadDir = path.join(__dirname,'../','public','uploads')
     form.keepExtensions = true
-    form.maxFileSize  = 2000 * 1024 * 1024;
     //设置参数的大小
-    //form.maxFieldsSize = 20 * 1024 * 1024;
+    form.maxFileSize  = 2000 * 1024 * 1024;
     form.parse(req,async (err,fields,files)=>{
         if (err) {
             console.log(err)
@@ -18,7 +17,7 @@ router.post('/', function(req, res, next) {
         // console.log(fields);
         // console.log(files);
         let resFile = await addfile(files)
-        console.log(resFile);
+        // console.log(resFile);
     })
 //    console.log(req.body);
 //    res.send('ok')

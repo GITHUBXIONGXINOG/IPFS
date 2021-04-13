@@ -7,7 +7,7 @@ module.exports = {
         try {
             var ipfs = await IpfsApi('localhost', '5001', { protocol: 'http' })
             const { path ,type} = file.upload_file
-            console.log(type);
+            // console.log(type);
             let encode = null
             if (type === 'text/plain') {
                 encode = 'utf-8'
