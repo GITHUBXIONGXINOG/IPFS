@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 const formidable = require('formidable')
 const path = require('path')
+const {addfile} = require('../utils/ipfs/addFile')
 /* GET home page. */
 router.post('/', function(req, res, next) {
     const form = new formidable.IncomingForm()
@@ -15,7 +16,9 @@ router.post('/', function(req, res, next) {
             console.log(err)
         }
         // console.log(fields);
-        console.log(files);
+        // console.log(files);
+        let resFile = await addfile(files)
+        console.log(resFile);
     })
 //    console.log(req.body);
 //    res.send('ok')

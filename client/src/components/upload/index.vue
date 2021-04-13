@@ -14,6 +14,7 @@
         name="upload_file"
         multiple
       >
+      <!--    accept="image/jpeg,image/gif,image/png,image/bmp" -->
         <el-button slot="trigger" size="small" type="primary"
           >选取文件</el-button
         >
