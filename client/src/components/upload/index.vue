@@ -10,6 +10,7 @@
       :file-list="fileList"
       :auto-upload="false"
       :on-change="fileSet"
+      :on-success="handle_success"
       name="upload_file"
     >
       <i class="el-icon-upload"></i>
@@ -61,11 +62,14 @@ export default {
     };
   },
   methods: {
-    onSubmit() {
-      console.log("submit!");
-    },
+
     submitUpload() {
       this.$refs.upload.submit();
+     
+    },
+    //成功上传返回值
+    handle_success(res){
+        console.log(res);
     },
     handleRemove(file, fileList) {
       console.log(file, fileList);

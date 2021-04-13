@@ -17,12 +17,13 @@
       <input type="file" id="upload_button" /> -->
       <!-- <Upload /> -->
       <!-- {{ resFile }} -->
-      <p class="panel" v-show="panelFlag == true">
+      <p class="panel_down" v-show="panelFlag == true">
+        <!-- <p class="panel"> -->
         <img :src="imgurl" alt="" style="display: block" />
-
-        <a :href="downloadUrl" :download="downloadfilename" class="button_down" @click="Download">
+        <a :href="downloadUrl" :download="downloadfilename" @click="Download">
           <el-button>点击下载到本地 </el-button>
         </a>
+
         <!-- <el-button type="info" @click="bxz">关闭 </el-button> -->
       </p>
     </div>
@@ -45,8 +46,7 @@ export default {
         // console.log(image);
         this.imgurl = "data:image/png;base64," + image;
         this.downLoadImage(this.imgurl);
-        this.panelFlag = true
-
+        this.panelFlag = true;
       }
     },
     downLoadImage(imgUrl) {
@@ -55,18 +55,18 @@ export default {
       this.downloadUrl = imgUrl;
       this.downloadfilename = name;
     },
-    Download(){
+    Download() {
       // debugger
-      this.panelFlag = false
-    }
+      this.panelFlag = false;
+    },
   },
   data() {
     return {
       searchText: "", //搜索hash
-      imgurl: null,//图片地址
-      panelFlag: false,//显示面板
-      downloadUrl: null,//下载地址
-      downloadfilename: null,//图片名
+      imgurl: null, //图片地址
+      panelFlag: false, //显示面板
+      downloadUrl: null, //下载地址
+      downloadfilename: null, //图片名
     };
   },
   components: {
@@ -138,24 +138,39 @@ export default {
     width: 20px;
     fill: #77c8d1;
   }
-  .panel{
+
+  .panel_down {
     width: 100%;
+    height: 50rem;
     position: absolute;
-    border: 1px solid red;
-    background-color: rgba(255, 255, 255, 0);
+    background-color: #fbfbfb;
     left: 0;
     right: 0;
-    top: 20rem;
+    top: 5rem;
     bottom: 0;
-    margin: auto;
+    // margin: auto;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    // overflow: hidden;
     // display: flex;
     // justify-content: center;
     // align-items: center;
-    img{
-      width: 500px;
-       left: 0;
-    right: 0;
-    margin: 20px auto;
+
+    img {
+      // width: 500px;
+      width: 50%;
+      max-width: 500px;
+      // height: 50%;
+      left: 0;
+      right: 0;
+      margin: 8rem auto 2rem;
+    }
+    a {
+      width: 140px;
+      left: 0;
+      right: 0;
+      margin: 0 auto;
     }
   }
 }

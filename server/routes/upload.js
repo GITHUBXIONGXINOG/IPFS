@@ -17,7 +17,7 @@ router.post('/', function(req, res, next) {
         // console.log(fields);
         // console.log(files);
         let resFile = await addfile(files)
-        // console.log(resFile);
+        res.send(resFile)
     })
 //    console.log(req.body);
 //    res.send('ok')
