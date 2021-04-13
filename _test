@@ -1,0 +1,19 @@
+*   [31mfddab63[m -[33m (HEAD -> main, origin/main, origin/HEAD)[m 合并状态页分支 [32m(10 minutes ago) [1;34m<GITHUBXIONGXINOG>[m
+[31m|[m[32m\[m  
+[31m|[m * [31mf83bb0c[m -[33m (origin/ipfs_test, ipfs_test)[m 客户端状态修改 [32m(13 minutes ago) [1;34m<GITHUBXIONGXINOG>[m
+[31m|[m * [31m2feae50[m -[33m[m 客户端错误显示 [32m(12 hours ago) [1;34m<GITHUBXIONGXINOG>[m
+[31m|[m * [31mfce43ed[m -[33m[m 客户端速度显示设置初始化 [32m(13 hours ago) [1;34m<GITHUBXIONGXINOG>[m
+[31m|[m * [31mb7a864e[m -[33m[m 客户端节点状态设置 [32m(13 hours ago) [1;34m<GITHUBXIONGXINOG>[m
+[31m|[m * [31m0dc4b2f[m -[33m[m 客户端获取状态 [32m(14 hours ago) [1;34m<GITHUBXIONGXINOG>[m
+[31m|[m * [31m7faa667[m -[33m[m 客户端获取状态 [32m(14 hours ago) [1;34m<GITHUBXIONGXINOG>[m
+[31m|[m * [31mf20dcc8[m -[33m[m 服务器ipfs连接 [32m(15 hours ago) [1;34m<GITHUBXIONGXINOG>[m
+* [32m|[m [31m6dc9037[m -[33m[m 服务器错误暂存 [32m(16 hours ago) [1;34m<GITHUBXIONGXINOG>[m
+[32m|[m[32m/[m  
+* [31m8f092dd[m -[33m[m 服务器初始化 [32m(17 hours ago) [1;34m<GITHUBXIONGXINOG>[m
+* [31m7462e52[m -[33m[m 文件页面初始化 [32m(17 hours ago) [1;34m<GITHUBXIONGXINOG>[m
+* [31m76610e2[m -[33m[m 搜索框初始化 [32m(18 hours ago) [1;34m<GITHUBXIONGXINOG>[m
+* [31m685c8dc[m -[33m[m 初始化页面 [32m(19 hours ago) [1;34m<GITHUBXIONGXINOG>[m
+* [31m374eb57[m -[33m[m 初始化客户端 [32m(20 hours ago) [1;34m<GITHUBXIONGXINOG>[m
+* [31me85e7c2[m -[33m[m 初始化页面 [32m(21 hours ago) [1;34m<GITHUBXIONGXINOG>[m
+* [31ma770f7b[m -[33m[m 初始化 [32m(21 hours ago) [1;34m<GITHUBXIONGXINOG>[m
+* [31m9015990[m -[33m[m Initial commit [32m(21 hours ago) [1;34m<GITHUBXIONGXINOG>[m
