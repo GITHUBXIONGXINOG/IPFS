@@ -32,7 +32,11 @@
       
       </p>
     </div>
-
+          <!-- <el-button @click="clickGET">点击下载到本地 </el-button> -->
+        <a href="javascript:;" :download="downloadfilename" @click="clickGET" ref ="aSet">
+          <el-button>点击下载到本地 </el-button>
+        </a>
+    <!-- <a :href="/api" ref = "aSet" download="1.png" @click="clickGET">dianji </a> -->
   </div>
 </template>
 <script>
@@ -59,7 +63,9 @@ export default {
         let image = await ajax("/api/search", { hash: this.searchText });
         // console.log(this.resFile);
         console.log(image.length);
-        this.imgurl = "data:image/png;base64," + image;
+        // this.imgurl = "data:image/png;base64," + image;
+        this.imgurl = image;
+
         if (this.imgurl) {
           // this.downLoadImage(this.imgurl);
           this.panelFlag = true;
@@ -68,18 +74,33 @@ export default {
         }
       }
     },
-   async downLoadImage(imgUrl) {
+    async downLoadImage(imgUrl) {
       let timestamp = new Date().getTime();
-      let name = imgUrl.substring(22, 30) + timestamp + ".png";
+      // let name = imgUrl.substring(22, 30) + timestamp + ".png";
+      let name = timestamp + ".png";
+
       this.downloadUrl = imgUrl;
       console.log(this.downloadUrl);
       this.downloadfilename = name;
     },
     Download() {
       // debugger
-      
-      this.downLoadImage(this.imgurl)
+
+      this.downLoadImage(this.imgurl);
       this.panelFlag = false;
+    },
+    async clickGET() {
+      // window.open(this.testUrl)
+      let imgUrl = await this.imgGetUrl;
+
+      // console.log(res);
+      // this.$refs.aSet.href = res;
+      // console.log(this.$refs.aSet);
+      // // this.$refs.aSet.click()
+      const a = document.createElement("a");
+      a.href = imgUrl;
+      a.setAttribute("download", "chart-download");
+      a.click();
     },
   },
   data() {
@@ -90,7 +111,8 @@ export default {
       downloadUrl: null, //下载地址
       downloadfilename: null, //图片名
       hashInfo: "", //显示hash信息
-      testUrl:"https://todo-1258496109.cos.ap-chengdu.myqcloud.com/uploads/upload_02ab40edf0d28434279e0adddafdf9f9.png"
+      testUrl:
+        "https://todo-1258496109.cos.ap-chengdu.myqcloud.com/uploads/upload_02ab40edf0d28434279e0adddafdf9f9.png",
     };
   },
   components: {
@@ -102,6 +124,12 @@ export default {
         return true;
       }
       return false;
+    },
+    imgGetUrl() {
+      //  debugger
+      let image = ajax("/api/search", { hash: this.searchText });
+      // console.log(image);
+      return image;
     },
   },
 };
