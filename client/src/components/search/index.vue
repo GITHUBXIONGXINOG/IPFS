@@ -2,7 +2,11 @@
   <div class="search">
     <div class="part">
       <input type="text" placeholder="QmHasg/bafyHash" v-model="searchText" />
-      <div class="button" @click="submitSearch">
+      <div
+        class="button"
+        @click="submitSearch"
+        :class="{ searchStyle: searchRule }"
+      >
         <svg class="icon" aria-hidden="true">
           <use xlink:href="#iconfiles"></use></svg
         >浏览
@@ -17,14 +21,23 @@
       <input type="file" id="upload_button" /> -->
       <!-- <Upload /> -->
       <!-- {{ resFile }} -->
-      <p class="panel_down" v-show="panelFlag == true">
+      <p class="panel_down" v-show="panelFlag === true">
         <!-- <p class="panel"> -->
         <img :src="imgurl" alt="" style="display: block" />
+        <section class="info">
+        <el-tag
+          class="hash_tag"
+          closable
+          :disable-transitions="false"
+          @close="handleClose">
+          {{hashInfo}}
+        </el-tag>
+
         <a :href="downloadUrl" :download="downloadfilename" @click="Download">
           <el-button>点击下载到本地 </el-button>
         </a>
-
-        <!-- <el-button type="info" @click="bxz">关闭 </el-button> -->
+        </section>
+      
       </p>
     </div>
   </div>
@@ -34,19 +47,24 @@ import ajax from "../../utils/ajax";
 // import Upload from '../upload'
 export default {
   methods: {
+    handleClose() {
+      this.panelFlag = false
+      this.hashInfo = "";
+    },
     async submitSearch() {
       //输入数量为46且限制范围
-      if (
-        this.searchText.trim().length === 46 &&
-        this.searchText.match("[A-Za-z0-9]{46}")
-      ) {
+      if (this.searchRule) {
         //QmPtRWBink1ic4sp2RrQVYPXzPqWLjiwcnTWZV4bH36pB5
         let image = await ajax("/api/search", { hash: this.searchText });
         // console.log(this.resFile);
         // console.log(image);
         this.imgurl = "data:image/png;base64," + image;
-        this.downLoadImage(this.imgurl);
-        this.panelFlag = true;
+        if (this.imgurl) {
+          this.downLoadImage(this.imgurl);
+          this.panelFlag = true;
+          this.hashInfo = this.searchText;
+          this.searchText = "";
+        }
       }
     },
     downLoadImage(imgUrl) {
@@ -67,10 +85,19 @@ export default {
       panelFlag: false, //显示面板
       downloadUrl: null, //下载地址
       downloadfilename: null, //图片名
+      hashInfo: "", //显示hash信息
     };
   },
   components: {
     // Upload
+  },
+  computed: {
+    searchRule() {
+      if (this.searchText.trim().match("^[A-Za-z0-9]{46}$")) {
+        return true;
+      }
+      return false;
+    },
   },
 };
 </script>
@@ -103,9 +130,11 @@ export default {
 }
 
 .button {
-  width: 10%;
+  width: 15%;
   height: 100%;
-  border: 2px solid #dee0e7;
+  border: 3px solid #dee0e7;
+  border-radius: 3px;
+  border-left: none;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -164,7 +193,7 @@ export default {
       // height: 50%;
       left: 0;
       right: 0;
-      margin: 8rem auto 2rem;
+      margin: 5rem auto 1rem;
     }
     a {
       width: 140px;
@@ -172,6 +201,29 @@ export default {
       right: 0;
       margin: 0 auto;
     }
+    .info {
+      height: 100px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
   }
+}
+.searchStyle {
+  background-color: #4a8c91;
+  border-color: #4a8c91;
+  border-width: 2px;
+  &:hover {
+    cursor: pointer;
+  }
+}
+.info{
+
+}
+.hash_tag{
+  width: 50%;
+  left: 0;
+  right: 0;
+  margin: 0 auto;
 }
 </style>
