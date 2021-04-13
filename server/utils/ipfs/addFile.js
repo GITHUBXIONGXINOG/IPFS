@@ -7,11 +7,12 @@ module.exports = {
         try {
             var ipfs = await IpfsApi('localhost', '5001', { protocol: 'http' })
             const { path ,type} = file.upload_file
+            console.log(type);
             let encode = null
             if (type === 'text/plain') {
                 encode = 'utf-8'
             }
-            else if(type === 'image/png'){
+            else if(type === 'image/png' || type === 'image/jpeg' || type ==='image/bmp' || type ==='image/gif'){
                 encode = 'base64'
             }
             // console.log(encode);
@@ -32,7 +33,7 @@ module.exports = {
                 let hash = resFile[0].hash
                 let getFile = await ipfs.cat(hash)
                 // console.log(getFile.toString());
-                // console.log(hash);
+                console.log(hash);
                 let writeParh = pathFn.join(__dirname,'../','../','public','downloads',hash)
                 fs.writeFile(writeParh,getFile,function (err) {
                     if(err) console.log(err)

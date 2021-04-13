@@ -2,7 +2,7 @@
   <div class="search">
     <div class="part">
       <input type="text" placeholder="QmHasg/bafyHash" v-model="searchText" />
-      <div class="button">
+      <div class="button" @click="submitSearch">
         <svg class="icon" aria-hidden="true">
           <use xlink:href="#iconfiles"></use></svg
         >浏览
@@ -15,21 +15,63 @@
         >上传文件</label
       >
       <input type="file" id="upload_button" /> -->
-    <!-- <Upload /> -->
+      <!-- <Upload /> -->
+      <!-- {{ resFile }} -->
+      <p class="panel" v-show="panelFlag == true">
+        <img :src="imgurl" alt="" style="display: block" />
+
+        <a :href="downloadUrl" :download="downloadfilename" class="button_down" @click="Download">
+          <el-button>点击下载到本地 </el-button>
+        </a>
+        <!-- <el-button type="info" @click="bxz">关闭 </el-button> -->
+      </p>
     </div>
   </div>
 </template>
 <script>
+import ajax from "../../utils/ajax";
 // import Upload from '../upload'
 export default {
+  methods: {
+    async submitSearch() {
+      //输入数量为46且限制范围
+      if (
+        this.searchText.trim().length === 46 &&
+        this.searchText.match("[A-Za-z0-9]{46}")
+      ) {
+        //QmPtRWBink1ic4sp2RrQVYPXzPqWLjiwcnTWZV4bH36pB5
+        let image = await ajax("/api/search", { hash: this.searchText });
+        // console.log(this.resFile);
+        // console.log(image);
+        this.imgurl = "data:image/png;base64," + image;
+        this.downLoadImage(this.imgurl);
+        this.panelFlag = true
+
+      }
+    },
+    downLoadImage(imgUrl) {
+      let timestamp = new Date().getTime();
+      let name = imgUrl.substring(22, 30) + timestamp + ".png";
+      this.downloadUrl = imgUrl;
+      this.downloadfilename = name;
+    },
+    Download(){
+      // debugger
+      this.panelFlag = false
+    }
+  },
   data() {
     return {
-      searchText: "",
+      searchText: "", //搜索hash
+      imgurl: null,//图片地址
+      panelFlag: false,//显示面板
+      downloadUrl: null,//下载地址
+      downloadfilename: null,//图片名
     };
   },
-  components:{
+  components: {
     // Upload
-  }
+  },
 };
 </script>
 <style lang="scss">
@@ -38,6 +80,7 @@ export default {
   background-color: #f0f6fa;
   display: flex;
   align-items: center;
+  position: relative;
 }
 .part {
   display: flex;
@@ -91,9 +134,29 @@ export default {
       background-color: #0b3a53;
     }
   }
-  svg{
+  svg {
     width: 20px;
     fill: #77c8d1;
+  }
+  .panel{
+    width: 100%;
+    position: absolute;
+    border: 1px solid red;
+    background-color: rgba(255, 255, 255, 0);
+    left: 0;
+    right: 0;
+    top: 20rem;
+    bottom: 0;
+    margin: auto;
+    // display: flex;
+    // justify-content: center;
+    // align-items: center;
+    img{
+      width: 500px;
+       left: 0;
+    right: 0;
+    margin: 20px auto;
+    }
   }
 }
 </style>
