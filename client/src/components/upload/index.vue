@@ -9,7 +9,6 @@
       :on-remove="handleRemove"
       :file-list="fileList"
       :auto-upload="false"
-      :on-change="fileSet"
       :on-success="handle_success"
       name="upload_file"
     >
@@ -77,9 +76,9 @@ export default {
     handlePreview(file) {
       console.log(file);
     },
-    fileSet(file, fileList) {
-      console.log(file, fileList);
-    },
+    // fileSet(file, fileList) {
+    // //   console.log(file, fileList);
+    // },
   },
 };
 </script>

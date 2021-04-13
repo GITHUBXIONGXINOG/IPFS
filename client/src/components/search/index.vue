@@ -13,16 +13,8 @@
       </div>
     </div>
     <div class="upload">
-      <!-- <label for="upload_button" class="upload_input"
-        ><svg class="icon" aria-hidden="true">
-          <use xlink:href="#iconjia"></use></svg
-        >上传文件</label
-      >
-      <input type="file" id="upload_button" /> -->
-      <!-- <Upload /> -->
-      <!-- {{ resFile }} -->
+
       <p class="panel_down" v-show="panelFlag === true">
-        <!-- <p class="panel"> -->
         <img :src="imgurl" alt="" style="display: block" />
         <section class="info">
         <el-tag
@@ -40,41 +32,53 @@
       
       </p>
     </div>
+
   </div>
 </template>
 <script>
 import ajax from "../../utils/ajax";
-// import Upload from '../upload'
 export default {
   methods: {
     handleClose() {
-      this.panelFlag = false
+      this.panelFlag = false;
       this.hashInfo = "";
     },
     async submitSearch() {
       //输入数量为46且限制范围
       if (this.searchRule) {
+        const loading = this.$loading({
+          lock: true,
+          text: "正在节点中搜索...",
+          spinner: "el-icon-loading",
+          background: "rgba(0, 0, 0, 0.7)",
+        });
+        setTimeout(() => {
+          loading.close();
+        }, 2000);
         //QmPtRWBink1ic4sp2RrQVYPXzPqWLjiwcnTWZV4bH36pB5
         let image = await ajax("/api/search", { hash: this.searchText });
         // console.log(this.resFile);
-        // console.log(image);
+        console.log(image.length);
         this.imgurl = "data:image/png;base64," + image;
         if (this.imgurl) {
-          this.downLoadImage(this.imgurl);
+          // this.downLoadImage(this.imgurl);
           this.panelFlag = true;
           this.hashInfo = this.searchText;
           this.searchText = "";
         }
       }
     },
-    downLoadImage(imgUrl) {
+   async downLoadImage(imgUrl) {
       let timestamp = new Date().getTime();
       let name = imgUrl.substring(22, 30) + timestamp + ".png";
       this.downloadUrl = imgUrl;
+      console.log(this.downloadUrl);
       this.downloadfilename = name;
     },
     Download() {
       // debugger
+      
+      this.downLoadImage(this.imgurl)
       this.panelFlag = false;
     },
   },
@@ -86,6 +90,7 @@ export default {
       downloadUrl: null, //下载地址
       downloadfilename: null, //图片名
       hashInfo: "", //显示hash信息
+      testUrl:"https://todo-1258496109.cos.ap-chengdu.myqcloud.com/uploads/upload_02ab40edf0d28434279e0adddafdf9f9.png"
     };
   },
   components: {
@@ -217,10 +222,9 @@ export default {
     cursor: pointer;
   }
 }
-.info{
-
+.info {
 }
-.hash_tag{
+.hash_tag {
   width: 50%;
   left: 0;
   right: 0;
