@@ -9,22 +9,27 @@
       </div>
     </div>
     <div class="upload">
-      <label for="upload_button" class="upload_input"
+      <!-- <label for="upload_button" class="upload_input"
         ><svg class="icon" aria-hidden="true">
           <use xlink:href="#iconjia"></use></svg
         >上传文件</label
       >
-      <input type="file" id="upload_button" />
+      <input type="file" id="upload_button" /> -->
+    <!-- <Upload /> -->
     </div>
   </div>
 </template>
 <script>
+// import Upload from '../upload'
 export default {
   data() {
     return {
       searchText: "",
     };
   },
+  components:{
+    // Upload
+  }
 };
 </script>
 <style lang="scss">
@@ -55,7 +60,7 @@ export default {
 }
 
 .button {
-  width: 20%;
+  width: 10%;
   height: 100%;
   border: 2px solid #dee0e7;
   display: flex;

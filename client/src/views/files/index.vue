@@ -2,16 +2,18 @@
   <div class="files">
     <search />
     <div class="list">
-      <div class="title">
+      <!-- <div class="title">
         <list />
     
-      </div>
+      </div> -->
+      <Upload />
     </div>
   </div>
 </template>
 <script>
 import Search from "../../components/search";
-import List from '../../components/list'
+// import List from '../../components/list'
+import Upload from '../../components/upload'
 export default {
     data(){
         return{
@@ -20,7 +22,8 @@ export default {
     },
   components: {
     Search,
-    List
+    // List,
+    Upload
   },
 };
 </script>

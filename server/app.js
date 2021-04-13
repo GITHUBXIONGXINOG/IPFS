@@ -8,6 +8,8 @@ var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var statusRouter = require('./routes/status');
 var speedRouter = require('./routes/speed')
+var uploadRouter = require('./routes/upload')
+
 var app = express();
 
 // view engine setup
@@ -24,7 +26,7 @@ app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/status', statusRouter);
 app.use('/speed',speedRouter)
-
+app.use('/upload',uploadRouter)
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   next(createError(404));

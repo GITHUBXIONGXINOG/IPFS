@@ -1,5 +1,7 @@
 <template>
   <div class="status">
+    <search />
+
     <section class="connect">
       <div class="info" v-if="connectFlag">
         <div class="title">已连接到 IPFS</div>
@@ -7,19 +9,19 @@
           <li>
             <div class="name">节点 ID</div>
             <div class="show">
-              <div>{{ nodeID.id || '查找中'}}</div>
+              <div>{{ nodeID.id || "查找中" }}</div>
             </div>
           </li>
           <li>
             <div class="name">代理</div>
             <div class="show">
-              <div>{{ nodeID.agentVersion || '查找中'}}</div>
+              <div>{{ nodeID.agentVersion || "查找中" }}</div>
             </div>
           </li>
           <li>
             <div class="name">控制版本</div>
             <div class="show">
-              <div>{{ nodeID.protocolVersion || '查找中'}}</div>
+              <div>{{ nodeID.protocolVersion || "查找中" }}</div>
             </div>
           </li>
           <li>
@@ -32,7 +34,7 @@
           </li>
           <li>
             <div class="name">公钥</div>
-            <div class="show">{{ nodeID.publicKey || '查找中'}}</div>
+            <div class="show">{{ nodeID.publicKey || "查找中" }}</div>
           </li>
         </ul>
       </div>
@@ -95,6 +97,8 @@
 </template>
 <script>
 import ajax from "../../utils/ajax";
+import Search from "../../components/search";
+
 export default {
   data() {
     return {
@@ -120,7 +124,7 @@ export default {
     formText(rate) {
       return function () {
         if (rate < 1024) {
-           return `${Math.floor(rate)} b/s`;
+          return `${Math.floor(rate)} b/s`;
         } else if (rate >= 1024 && rate < 1024 * 1024) {
           return `${Math.floor(rate / 100)} kb/s`;
         } else if (rate >= 1024 * 1024 && rate < 1024 * 1024 * 1024) {
@@ -145,7 +149,7 @@ export default {
         console.error(err);
         this.connectFlag = false;
       }
-    }, 2000);
+    }, 200000);
 
     setInterval(async () => {
       // const response = await ajax("/api/status");
@@ -160,24 +164,27 @@ export default {
         console.error(err);
         this.connectFlag = false;
       }
-    }, 1000);
+    }, 100000);
   },
-  computed:{
-    percentageSet(){
+  computed: {
+    percentageSet() {
       return function (rate) {
         // return 0
         // console.log(rate);
-         if (rate < 1024) {
-           return rate/100;
+        if (rate < 1024) {
+          return rate / 100;
         } else if (rate >= 1024 && rate < 1024 * 1024) {
-          return  rate / (1024);
+          return rate / 1024;
         } else if (rate >= 1024 * 1024 && rate < 1024 * 1024 * 1024) {
-          return rate / (1024 * 1024 *1024);
+          return rate / (1024 * 1024 * 1024);
         }
-        return 0
-      }
-    }
-  }
+        return 0;
+      };
+    },
+  },
+  components: {
+    Search,
+  },
 };
 </script>
 <style lang="scss" scoped>
@@ -279,5 +286,9 @@ export default {
       bottom: 10%;
     }
   }
+}
+.search{
+  width: 100%;
+  height: 20%;
 }
 </style>
