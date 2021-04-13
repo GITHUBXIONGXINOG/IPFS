@@ -7,24 +7,24 @@
           <li>
             <div class="name">节点 ID</div>
             <div class="show">
-              <div>{{ nodeID.id }}</div>
+              <div>{{ nodeID.id || '查找中'}}</div>
             </div>
           </li>
           <li>
             <div class="name">代理</div>
             <div class="show">
-              <div>{{ nodeID.agentVersion }}</div>
+              <div>{{ nodeID.agentVersion || '查找中'}}</div>
             </div>
           </li>
           <li>
             <div class="name">控制版本</div>
             <div class="show">
-              <div>{{ nodeID.protocolVersion }}</div>
+              <div>{{ nodeID.protocolVersion || '查找中'}}</div>
             </div>
           </li>
           <li>
             <div class="name">地址</div>
-            <div class="show">
+            <div class="show" v-show="nodeID.addresses">
               <div v-for="(item, index) in nodeID.addresses" :key="index">
                 {{ item }}
               </div>
@@ -32,7 +32,7 @@
           </li>
           <li>
             <div class="name">公钥</div>
-            <div class="show">{{ nodeID.publicKey }}</div>
+            <div class="show">{{ nodeID.publicKey || '查找中'}}</div>
           </li>
         </ul>
       </div>
@@ -55,10 +55,41 @@
       </div>
     </section>
     <section class="bandwidth">
-      totalIn:{{ totalIn }} <br />
+      <div class="dashboard_panel">
+        <div class="rateOut">
+          <el-progress
+            type="dashboard"
+            :percentage="percentageSet(rateOut)"
+            :color="colors"
+            stroke-linecap="round"
+            :stroke-width="18"
+            :format="formText(rateOut)"
+            :width="250"
+            :height="250"
+          ></el-progress>
+          <span>发送</span>
+        </div>
+        <div class="rateIn">
+          <el-progress
+            type="dashboard"
+            :percentage="percentageSet(rateIn)"
+            :color="colors"
+            :show-text="true"
+            stroke-linecap="round"
+            :stroke-width="18"
+            :format="formText(rateIn)"
+            :width="250"
+            :height="250"
+          >
+          </el-progress>
+          <span>接收</span>
+        </div>
+      </div>
+
+      <!--  totalIn:{{ totalIn }} <br />
       totalOut: {{ totalOut }}<br />
       rateIn: {{ rateIn }}<br />
-      rateOut: {{ rateOut }}<br />
+      rateOut: {{ rateOut }}<br /> -->
     </section>
   </div>
 </template>
@@ -73,9 +104,38 @@ export default {
       rateIn: 0, //接收速率
       rateOut: 0, //发送速率
       nodeID: "", //节点id
+      percentage: 0, //速度进度
+      inPercentage: 0, //传入进度
+      outPercentage: 0, //传出进度
+      colors: [
+        { color: "#f56c6c", percentage: 20 },
+        { color: "#e6a23c", percentage: 40 },
+        { color: "#5cb87a", percentage: 60 },
+        { color: "#1989fa", percentage: 80 },
+        { color: "#6f7ad3", percentage: 100 },
+      ],
     };
   },
-  // methods: {},
+  methods: {
+    formText(rate) {
+      return function () {
+        if (rate < 1024) {
+           return `${Math.floor(rate)} b/s`;
+        } else if (rate >= 1024 && rate < 1024 * 1024) {
+          return `${Math.floor(rate / 100)} kb/s`;
+        } else if (rate >= 1024 * 1024 && rate < 1024 * 1024 * 1024) {
+          return `${Math.floor(rate / (100 * 1024))} mb/s`;
+        }
+        return `0 b/s`;
+      };
+    },
+    // percentageSet(rate){
+    //   console.log(rate);
+    //     return 0
+    //     // return Math.floor(rate)
+
+    // }
+  },
   mounted() {
     setInterval(async () => {
       try {
@@ -85,7 +145,7 @@ export default {
         console.error(err);
         this.connectFlag = false;
       }
-    }, 10000);
+    }, 2000);
 
     setInterval(async () => {
       // const response = await ajax("/api/status");
@@ -102,11 +162,22 @@ export default {
       }
     }, 1000);
   },
-  // computed:{
-  //   rate:{
-
-  //   }
-  // }
+  computed:{
+    percentageSet(){
+      return function (rate) {
+        // return 0
+        // console.log(rate);
+         if (rate < 1024) {
+           return rate/100;
+        } else if (rate >= 1024 && rate < 1024 * 1024) {
+          return  rate / (1024);
+        } else if (rate >= 1024 * 1024 && rate < 1024 * 1024 * 1024) {
+          return rate / (1024 * 1024 *1024);
+        }
+        return 0
+      }
+    }
+  }
 };
 </script>
 <style lang="scss" scoped>
@@ -186,6 +257,27 @@ export default {
   }
 }
 .bandwidth {
-  height: 25rem;
+  height: 20rem;
+  display: flex;
+  align-items: center;
+  margin: 15px 0;
+}
+.dashboard_panel {
+  width: 100%;
+  display: flex;
+  div {
+    // border: 1px solid red;
+    position: relative;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+
+    span {
+      display: flex;
+      // border: 1px solid red;
+      position: absolute;
+      bottom: 10%;
+    }
+  }
 }
 </style>
