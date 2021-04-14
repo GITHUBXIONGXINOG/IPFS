@@ -8,7 +8,7 @@ module.exports = {
         try{
             var ipfs = await IpfsApi('localhost', '5001', {protocol : 'http'})
             let id = await ipfs.id()
-            console.log(id);
+            // console.log(id);
        
             // console.log(result);
             return id

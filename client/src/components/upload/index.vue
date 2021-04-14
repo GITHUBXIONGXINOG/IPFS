@@ -10,6 +10,7 @@
       :file-list="fileList"
       :auto-upload="false"
       :on-success="handle_success"
+      :before-upload="beforeUpload"
       name="upload_file"
     >
       <i class="el-icon-upload"></i>
@@ -40,7 +41,7 @@
     </div>
 
     <el-button
-    class="submit_button"
+      class="submit_button"
       size="small"
       type="success"
       @click="submitUpload"
@@ -61,14 +62,25 @@ export default {
     };
   },
   methods: {
+    beforeUpload(file) {
+        // debugger
+    //   const isIMAGE = file.type === 'image/jpeg'||'image/gif'||'image/png';
+      const isLt2G = file.size / 1024 / 1024 / 1024 / 2 < 1;
 
+    //   if (!isIMAGE) {
+    //     this.$message.error('上传文件只能是图片格式!');
+    //   }
+      if (!isLt2G) {
+        this.$message.error('上传文件大小不能超过 2G!');
+      }
+      return isLt2G;
+    },
     submitUpload() {
       this.$refs.upload.submit();
-     
     },
     //成功上传返回值
-    handle_success(res){
-        console.log(res);
+    handle_success(res) {
+      console.log(res);
     },
     handleRemove(file, fileList) {
       console.log(file, fileList);
@@ -89,14 +101,14 @@ export default {
   height: 30rem;
   width: 90%;
   //   padding: 0 200px;
-//   bottom: 0;
+  //   bottom: 0;
   position: absolute;
   left: 0;
   right: 0;
   top: 0;
   bottom: 0;
   margin: auto;
-//   z-index: -1;
+  //   z-index: -1;
 }
 .upload-file {
   height: 18rem;
@@ -105,16 +117,16 @@ export default {
   justify-content: center;
   align-items: center;
 }
-.key_wrap{
-    margin: 0 0 50px;
+.key_wrap {
+  margin: 0 0 50px;
 }
 .key_input {
   // border: 1px solid red;
   width: 500px;
 }
-.submit_button{
-    width: 200px;
-    height: 50px;
-    font-size: 18px;
+.submit_button {
+  width: 200px;
+  height: 50px;
+  font-size: 18px;
 }
 </style>

@@ -7,6 +7,7 @@ const {addfile} = require('../utils/ipfs/addFile')
 router.post('/', function(req, res, next) {
     const form = new formidable.IncomingForm()
     form.uploadDir = path.join(__dirname,'../','public','uploads')
+    //保留后缀
     form.keepExtensions = true
     //设置参数的大小
     form.maxFileSize  = 2000 * 1024 * 1024;
