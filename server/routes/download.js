@@ -5,7 +5,7 @@ const fs = require('fs')
 const { download } = require('../utils/ipfs/download')
 /* GET users listing. */
 router.get('/', async function (req, res, next) {
-    let file = await download(req.query.hash)
+    let file = await download(req.query.url)
     // console.log(file);
     res.send(file)
     // debugger

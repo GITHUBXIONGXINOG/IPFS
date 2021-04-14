@@ -127,31 +127,35 @@ export default {
     },
     async clickGET() {
       // window.open(this.testUrl)
-      let downloadUrl = await ajax("/api/download", { hash: this.hashInfo });
-      var url = "";
-      // let data = await ajax("/api/download", { url: this.fileInfo.downloadUrl });
+      // let downloadUrl = await ajax("/api/download", { hash: this.hashInfo });
+      // var url = "";
+      console.log(this.fileInfo.downloadUrl);
+      let downloadUrl = await ajax("/api/download", { url: this.fileInfo.downloadUrl });
       // console.log(data);
       // let downloadUrl = await this.imgGetUrl;
       console.log(downloadUrl);
       // var blob;
-      let type = this.tableData[3].value;
-      switch (type) {
-        case "image/png":
-        case "image/jpeg":
-        case "image/gif":
-        case "image/bmp":
-          url = downloadUrl;
-          break;
-        // case "text/plain":
+      // let type = this.tableData[3].value;
+      // switch (type) {
+      //   case "image/png":
+      //   case "image/jpeg":
+      //   case "image/gif":
+      //   case "image/bmp":
+      //     url = downloadUrl;
+      //     break;
+      //   // case "text/plain":
 
-        default:
+      //   default:
        
-          url =    window.URL.createObjectURL(new Blob([downloadUrl], {
-            type:
-              "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8",
-          }))
-          break;
-      }
+      //     url =   downloadUrl
+      //     /* 
+      //      window.URL.createObjectURL(new Blob([downloadUrl], {
+      //       type:
+      //         "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8",
+      //     }))
+      //      */
+      //     break;
+      // }
       // if (type === text / plain) {
       //   blob = new Blob([downloadUrl], {
       //     type:
@@ -175,13 +179,14 @@ export default {
       // console.log(this.$refs.aSet);
       // // this.$refs.aSet.click()
       const a = document.createElement("a");
-          console.log('url:',url);
-      a.href = url;
+          // console.log('url:',url);
+      a.href = downloadUrl;
       // a.href = window.URL.createObjectURL(blob);
       a.download = this.tableData[1].value;
       document.body.appendChild(a);
+      console.log(a);
       a.click();
-      a.remove();
+      // a.remove();
 
       // a.setAttribute("download", "chart-download");
       // a.click();
