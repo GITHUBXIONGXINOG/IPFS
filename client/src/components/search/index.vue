@@ -115,16 +115,18 @@ export default {
     },
     async clickGET() {
       // window.open(this.testUrl)
-      this.fileInfo = await ajax("/api/download", { hash: this.searchText });
-
-      let downloadUrl = await this.imgGetUrl;
-
+      let downloadUrl = await ajax("/api/download", { hash: this.hashInfo});
+      
+      // let downloadUrl = await ajax("/api/download", { url: this.fileInfo.downloadUrl });
+      // let downloadUrl = await this.imgGetUrl;
+      console.log(downloadUrl);
       // console.log(res);
       // this.$refs.aSet.href = res;
       // console.log(this.$refs.aSet);
       // // this.$refs.aSet.click()
       const a = document.createElement("a");
       a.href = downloadUrl;
+      // a.href = this.testUrl
       a.setAttribute("download", "chart-download");
       a.click();
     },
@@ -168,6 +170,7 @@ export default {
           value: "",
         },
       ],
+      testUrl: 'https://todo-1258496109.cos.ap-chengdu.myqcloud.com/uploads/upload_02ab40edf0d28434279e0adddafdf9f9.png'
     };
   },
   components: {

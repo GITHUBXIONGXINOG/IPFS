@@ -10,7 +10,7 @@ var statusRouter = require('./routes/status');
 var speedRouter = require('./routes/speed')
 var uploadRouter = require('./routes/upload')
 var searchRouter = require('./routes/search')
-var downRouter = require('./routes/search')
+var downRouter = require('./routes/download')
 
 var app = express();
 
