@@ -9,7 +9,7 @@ module.exports = {
             let path = _path.join(__dirname,'../','public',url)
             console.log(path);
             // fs.unlink(path,(err)=>{if(err)console.error(err);})
-            return `http://localhost:3000/${url}`
+            return `/api/${url}`
             // return 'http://localhost:3000/downloads/QmY6L_test.zip'
             // var ipfs = await IpfsApi('localhost', '5001', { protocol: 'http' })
             // let resultBuffer = await ipfs.cat(hash)

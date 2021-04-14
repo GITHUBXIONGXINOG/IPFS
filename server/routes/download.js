@@ -7,6 +7,13 @@ const { download } = require('../utils/ipfs/download')
 router.get('/', async function (req, res, next) {
     let file = await download(req.query.url)
     // console.log(file);
+    // let path = _path.join(__dirname, '../', 'public', req.query.url)
+    // let size = fs.statSync(path).size
+    // res.writeHead(200, {
+    //     'Content-Type': 'application/force-download',
+    //     'Content-Disposition': 'attachment; filename=',
+    //     'Content-Length': size
+    // })
     res.send(file)
     // debugger
     // let path = _path.join(__dirname, '../', 'public', req.query.url)

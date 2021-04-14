@@ -59,7 +59,7 @@
     <!-- http://localhost:3000/downloads/QmXEh_wallhaven-r2okx1.png -->
     <!-- <a href="javascript:;" ref = "aSet" download="1.png" @click="clickGET">dianji </a> -->
 
-    <a href="javascript:;" ref="aSet" download="1.png" @click.prevent="clickGET"
+    <a href="http://localhost:3000/downloads/QmQGQ_24.jpg" ref="aSet" download=""  target="_blank"
       >dianji
     </a>
   </div>
@@ -134,6 +134,18 @@ export default {
       // console.log(data);
       // let downloadUrl = await this.imgGetUrl;
       console.log(downloadUrl);
+         var x = new XMLHttpRequest();
+            x.open("GET", downloadUrl, true);
+            x.responseType = 'blob';
+            x.onload=function() {
+              // console.log(e);
+                var url = window.URL.createObjectURL(x.response)
+                var a = document.createElement('a');
+                a.href = url
+                a.download = 'fileName';
+                a.click()
+            }
+            x.send();
       // var blob;
       // let type = this.tableData[3].value;
       // switch (type) {
@@ -178,14 +190,14 @@ export default {
       // this.$refs.aSet.href = res;
       // console.log(this.$refs.aSet);
       // // this.$refs.aSet.click()
-      const a = document.createElement("a");
-          // console.log('url:',url);
-      a.href = downloadUrl;
-      // a.href = window.URL.createObjectURL(blob);
-      a.download = this.tableData[1].value;
-      document.body.appendChild(a);
-      console.log(a);
-      a.click();
+      // const a = document.createElement("a");
+      //     // console.log('url:',url);
+      // a.href = downloadUrl;
+      // // a.href = window.URL.createObjectURL(blob);
+      // a.download = this.tableData[1].value;
+      // document.body.appendChild(a);
+      // console.log(a);
+      // a.click();
       // a.remove();
 
       // a.setAttribute("download", "chart-download");
