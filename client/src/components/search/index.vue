@@ -49,7 +49,10 @@
     >
       <el-button>点击下载到本地 </el-button>
     </a> -->
-    <!-- <a :href="/api" ref = "aSet" download="1.png" @click="clickGET">dianji </a> -->
+    <!-- http://localhost:3000/downloads/QmXEh_wallhaven-r2okx1.png -->
+    <!-- <a href="javascript:;" ref = "aSet" download="1.png" @click="clickGET">dianji </a> -->
+
+    <a href="javascript:;" ref = "aSet" download="1.png" @click.prevent="clickGET">dianji </a>
   </div>
 </template>
 <script>
@@ -73,7 +76,7 @@ export default {
           loading.close();
         }, 2000);
         this.fileInfo = await ajax("/api/search", { hash: this.searchText });
-        console.log(this.fileInfo);
+        // console.log(this.fileInfo);
         this.tableData.forEach((item, index) => {
           // console.log(item);
           // console.log(item.value);
@@ -115,20 +118,41 @@ export default {
     },
     async clickGET() {
       // window.open(this.testUrl)
-      let downloadUrl = await ajax("/api/download", { hash: this.hashInfo});
+      // let downloadUrl = await ajax("/api/download", { hash: this.hashInfo});
       
-      // let downloadUrl = await ajax("/api/download", { url: this.fileInfo.downloadUrl });
+      let data = await ajax("/api/download", { url: this.fileInfo.downloadUrl });
       // let downloadUrl = await this.imgGetUrl;
-      console.log(downloadUrl);
+      // console.log(downloadUrl);
+      // let type = 'application/octet-stream'
+      // debugger
+      console.log(data);
+       let blob = new Blob(['http://localhost:3000/downloads/QmXEh_wallhaven-r2okx1.png'], {type: 'application/vnd.ms-excel'})
+        let link = document.createElement('a')
+        link.href = window.URL.createObjectURL(blob)
+        link.download = 'http://localhost:3000/downloads/QmXEh_wallhaven-r2okx1.png'
+        link.click()
+      // window.location.href 
       // console.log(res);
       // this.$refs.aSet.href = res;
       // console.log(this.$refs.aSet);
       // // this.$refs.aSet.click()
-      const a = document.createElement("a");
-      a.href = downloadUrl;
-      // a.href = this.testUrl
-      a.setAttribute("download", "chart-download");
-      a.click();
+      // const a = document.createElement("a");
+      // a.href = objectURL;
+      // // a.href = this.testUrl
+      // a.download = 'chart-download'
+      // document.body.appendChild(a)
+      // a.click()
+      // a.remove()
+
+      // a.setAttribute("download", "chart-download");
+      // a.click();
+      // window.open(downloadUrl)
+      // const form = document.createElement("form")
+      // form.method = 'get'
+      // form.action = downloadUrl
+      // document.body.append(form)
+      // form.submit()
+      // document.removeChild(form)
     },
   },
   data() {
@@ -170,7 +194,7 @@ export default {
           value: "",
         },
       ],
-      testUrl: 'https://todo-1258496109.cos.ap-chengdu.myqcloud.com/uploads/upload_02ab40edf0d28434279e0adddafdf9f9.png'
+      // testUrl: 'https://todo-1258496109.cos.ap-chengdu.myqcloud.com/uploads/upload_02ab40edf0d28434279e0adddafdf9f9.png'
     };
   },
   components: {
