@@ -24,20 +24,27 @@
           <el-table-column prop="name" label="" width="180"> </el-table-column>
           <el-table-column prop="value" label=""> </el-table-column>
         </el-table>
-        <div class="download_button" >
+        <div class="download_button">
           <!-- <el-button class="down" @click="clickGET">点击下载到本地 </el-button> -->
           <el-button-group>
-          <el-button type="primary" icon="el-icon-download" @click="clickGET"></el-button>
-          <el-button type="primary" icon="el-icon-close" @click="panelFlag=false"></el-button>
-          <el-button type="primary" icon="el-icon-delete"></el-button>
-        </el-button-group>
+            <el-button
+              type="primary"
+              icon="el-icon-download"
+              @click="clickGET"
+            ></el-button>
+            <el-button
+              type="primary"
+              icon="el-icon-close"
+              @click="panelFlag = false"
+            ></el-button>
+            <el-button type="primary" icon="el-icon-delete"></el-button>
+          </el-button-group>
         </div>
         <!-- <el-row>
           <el-button type="primary">下载文件</el-button>
           <el-button type="info">关闭面板</el-button>
           <el-button type="danger">删除文件</el-button>
         </el-row> -->
-        
       </section>
     </div>
     <!-- <el-button @click="clickGET">点击下载到本地 </el-button> -->
@@ -52,7 +59,9 @@
     <!-- http://localhost:3000/downloads/QmXEh_wallhaven-r2okx1.png -->
     <!-- <a href="javascript:;" ref = "aSet" download="1.png" @click="clickGET">dianji </a> -->
 
-    <a href="javascript:;" ref = "aSet" download="1.png" @click.prevent="clickGET">dianji </a>
+    <a href="javascript:;" ref="aSet" download="1.png" @click.prevent="clickGET"
+      >dianji
+    </a>
   </div>
 </template>
 <script>
@@ -118,12 +127,40 @@ export default {
     },
     async clickGET() {
       // window.open(this.testUrl)
-      let downloadUrl = await ajax("/api/download", { hash: this.hashInfo});
-      
+      let downloadUrl = await ajax("/api/download", { hash: this.hashInfo });
+      var url = "";
       // let data = await ajax("/api/download", { url: this.fileInfo.downloadUrl });
       // console.log(data);
       // let downloadUrl = await this.imgGetUrl;
       console.log(downloadUrl);
+      // var blob;
+      let type = this.tableData[3].value;
+      switch (type) {
+        case "image/png":
+        case "image/jpeg":
+        case "image/gif":
+        case "image/bmp":
+          url = downloadUrl;
+          break;
+        // case "text/plain":
+
+        default:
+       
+          url =    window.URL.createObjectURL(new Blob([downloadUrl], {
+            type:
+              "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8",
+          }))
+          break;
+      }
+      // if (type === text / plain) {
+      //   blob = new Blob([downloadUrl], {
+      //     type:
+      //       "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8",
+      //   });
+      // }
+      // console.log(blob);
+      //  a.href = window.URL.createObjectURL(blob);
+
       // let type = 'application/octet-stream'
       // debugger
       // console.log(data);
@@ -132,18 +169,19 @@ export default {
       //   link.href = window.URL.createObjectURL(blob)
       //   link.download = 'http://localhost:3000/downloads/QmXEh_wallhaven-r2okx1.png'
       //   link.click()
-      // window.location.href 
+      // window.location.href
       // console.log(res);
       // this.$refs.aSet.href = res;
       // console.log(this.$refs.aSet);
       // // this.$refs.aSet.click()
       const a = document.createElement("a");
-      // a.href = objectURL;
-      a.href = downloadUrl
-      a.download = this.tableData[1].value
-      document.body.appendChild(a)
-      a.click()
-      a.remove()
+          console.log('url:',url);
+      a.href = url;
+      // a.href = window.URL.createObjectURL(blob);
+      a.download = this.tableData[1].value;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
 
       // a.setAttribute("download", "chart-download");
       // a.click();
@@ -328,7 +366,7 @@ export default {
     .download_button {
       // border: 1px solid red;
       position: absolute;
-      .down{
+      .down {
         // border: 1px solid red;
         font-size: 16px;
       }

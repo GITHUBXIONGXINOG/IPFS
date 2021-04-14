@@ -7,13 +7,13 @@ module.exports = {
         try {
             console.log(hash);
             var ipfs = await IpfsApi('localhost', '5001', { protocol: 'http' })
-            let result = await ipfs.cat(hash)
-            console.log(result);
-            let fileInfoString = result.toString('utf-8', 0, 300)
+            let resultBuffer = await ipfs.cat(hash)
+            console.log(resultBuffer);
+            let fileInfoString = resultBuffer.toString('utf-8', 0, 300)
             let fileInfo = JSON.parse(fileInfoString.replace(/\u0000/g, ''))
-            console.log(fileInfo);
+            // console.log(fileInfo);
             let type = 'utf8'
-            let head = null
+            let head = ''
             console.log(fileInfo.type);
             switch (fileInfo.type) {
                 case 'image/png':
@@ -25,20 +25,20 @@ module.exports = {
                     break;
 
                 default:
-                    utf8
+                    type = 'utf8'
                     break;
             }
             console.log(type);
-            // console.log(result.toString('base64'));
-            return head+result.slice(300).toString(type)
+            // console.log(resultBuffer.toString('base64'));
+            return head+resultBuffer.slice(300).toString(type)
 
             // var ipfs = await IpfsApi('localhost', '5001', { protocol: 'http' })
-            // let result = await ipfs.cat(hash)
-            // console.log(result);
+            // let resultBuffer = await ipfs.cat(hash)
+            // console.log(resultBuffer);
             // console.log(fileInfo);
             // let path = _path.join(__dirname,'../','../','public','downloads',`${hash.slice(0,5)}_${fileInfo.name}`)
-            // return result.slice(300)
-            // return result
+            // return resultBuffer.slice(300)
+            // return resultBuffer
             // return file
             // let path = _path.join(__dirname,'../','../','public',hash)
             // console.log(path);
