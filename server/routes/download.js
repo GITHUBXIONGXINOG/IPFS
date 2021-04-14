@@ -5,17 +5,21 @@ const fs = require('fs')
 const { download } = require('../utils/ipfs/download')
 /* GET users listing. */
 router.get('/', async function (req, res, next) {
-    debugger
-    let path = _path.join(__dirname, '../', 'public', req.query.url)
-    console.log(path);
-    // console.log(path.split('_'));
-    let size = fs.statSync(path).size
-    res.writeHead(200, {
-        'Content-Type': 'application/force-download',
-        'Content-Disposition': 'attachment; filename=' + path.split('_')[1],
-        'Content-Length': size
-    })
-    fs.createReadStream(path).pipe(res)
+    let file = await download(req.query.hash)
+    // console.log(file);
+    res.send(file)
+    // debugger
+    // let path = _path.join(__dirname, '../', 'public', req.query.url)
+    // console.log(path);
+    // // console.log(path.split('_'));
+    // let size = fs.statSync(path).size
+    // res.writeHead(200, {
+    //     'Content-Type': 'application/force-download',
+    //     'Content-Disposition': 'attachment; filename=' + path.split('_')[1],
+    //     'Content-Length': size
+    // })
+    // fs.createReadStream(path).pipe(res)
+
     // fs.readFile(path,(err,data)=>{
     //     if (err) {
     //         res.send('下载失败')

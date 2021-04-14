@@ -28,7 +28,7 @@
           <!-- <el-button class="down" @click="clickGET">点击下载到本地 </el-button> -->
           <el-button-group>
           <el-button type="primary" icon="el-icon-download" @click="clickGET"></el-button>
-          <el-button type="primary" icon="el-icon-close"></el-button>
+          <el-button type="primary" icon="el-icon-close" @click="panelFlag=false"></el-button>
           <el-button type="primary" icon="el-icon-delete"></el-button>
         </el-button-group>
         </div>
@@ -118,31 +118,32 @@ export default {
     },
     async clickGET() {
       // window.open(this.testUrl)
-      // let downloadUrl = await ajax("/api/download", { hash: this.hashInfo});
+      let downloadUrl = await ajax("/api/download", { hash: this.hashInfo});
       
-      let data = await ajax("/api/download", { url: this.fileInfo.downloadUrl });
+      // let data = await ajax("/api/download", { url: this.fileInfo.downloadUrl });
+      // console.log(data);
       // let downloadUrl = await this.imgGetUrl;
-      // console.log(downloadUrl);
+      console.log(downloadUrl);
       // let type = 'application/octet-stream'
       // debugger
-      console.log(data);
-       let blob = new Blob(['http://localhost:3000/downloads/QmXEh_wallhaven-r2okx1.png'], {type: 'application/vnd.ms-excel'})
-        let link = document.createElement('a')
-        link.href = window.URL.createObjectURL(blob)
-        link.download = 'http://localhost:3000/downloads/QmXEh_wallhaven-r2okx1.png'
-        link.click()
+      // console.log(data);
+      //  let blob = new Blob(['http://localhost:3000/downloads/QmXEh_wallhaven-r2okx1.png'], {type: 'application/vnd.ms-excel'})
+      //   let link = document.createElement('a')
+      //   link.href = window.URL.createObjectURL(blob)
+      //   link.download = 'http://localhost:3000/downloads/QmXEh_wallhaven-r2okx1.png'
+      //   link.click()
       // window.location.href 
       // console.log(res);
       // this.$refs.aSet.href = res;
       // console.log(this.$refs.aSet);
       // // this.$refs.aSet.click()
-      // const a = document.createElement("a");
+      const a = document.createElement("a");
       // a.href = objectURL;
-      // // a.href = this.testUrl
-      // a.download = 'chart-download'
-      // document.body.appendChild(a)
-      // a.click()
-      // a.remove()
+      a.href = downloadUrl
+      a.download = this.tableData[1].value
+      document.body.appendChild(a)
+      a.click()
+      a.remove()
 
       // a.setAttribute("download", "chart-download");
       // a.click();
