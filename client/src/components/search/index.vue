@@ -13,29 +13,42 @@
       </div>
     </div>
     <div class="upload">
-
-      <p class="panel_down" v-show="panelFlag === true">
-        <img :src="imgurl" alt="" style="display: block" />
-        <section class="info">
-        <el-tag
-          class="hash_tag"
-          closable
-          :disable-transitions="false"
-          @close="handleClose">
-          {{hashInfo}}
-        </el-tag>
-
+      <section class="panel_down" v-show="panelFlag === true">
+        <!-- <img :src="imgurl" alt="" style="display: block" /> -->
+        <!-- <section class="info">
         <a :href="downloadUrl" :download="downloadfilename" @click="Download">
           <el-button>点击下载到本地 </el-button>
         </a>
-        </section>
-      
-      </p>
+        </section> -->
+        <el-table :data="tableData" style="width: 100%" class="fileInfo">
+          <el-table-column prop="name" label="" width="180"> </el-table-column>
+          <el-table-column prop="value" label=""> </el-table-column>
+        </el-table>
+        <div class="download_button" >
+          <!-- <el-button class="down" @click="clickGET">点击下载到本地 </el-button> -->
+          <el-button-group>
+          <el-button type="primary" icon="el-icon-download" @click="clickGET"></el-button>
+          <el-button type="primary" icon="el-icon-close"></el-button>
+          <el-button type="primary" icon="el-icon-delete"></el-button>
+        </el-button-group>
+        </div>
+        <!-- <el-row>
+          <el-button type="primary">下载文件</el-button>
+          <el-button type="info">关闭面板</el-button>
+          <el-button type="danger">删除文件</el-button>
+        </el-row> -->
+        
+      </section>
     </div>
-          <!-- <el-button @click="clickGET">点击下载到本地 </el-button> -->
-        <a href="javascript:;" :download="downloadfilename" @click="clickGET" ref ="aSet">
-          <el-button>点击下载到本地 </el-button>
-        </a>
+    <!-- <el-button @click="clickGET">点击下载到本地 </el-button> -->
+    <!-- <a
+      href="javascript:;"
+      :download="downloadfilename"
+      @click="clickGET"
+      ref="aSet"
+    >
+      <el-button>点击下载到本地 </el-button>
+    </a> -->
     <!-- <a :href="/api" ref = "aSet" download="1.png" @click="clickGET">dianji </a> -->
   </div>
 </template>
@@ -59,14 +72,25 @@ export default {
         setTimeout(() => {
           loading.close();
         }, 2000);
+        this.fileInfo = await ajax("/api/search", { hash: this.searchText });
+        console.log(this.fileInfo);
+        this.tableData.forEach((item, index) => {
+          // console.log(item);
+          // console.log(item.value);
+          if (index === 0) {
+            item.value = this.searchText || this.hashInfo;
+          } else {
+            item.value = this.fileInfo[item.key];
+          }
+        });
         //QmPtRWBink1ic4sp2RrQVYPXzPqWLjiwcnTWZV4bH36pB5
-        let image = await ajax("/api/search", { hash: this.searchText });
+        // let image = await ajax("/api/search", { hash: this.searchText });
         // console.log(this.resFile);
-        console.log(image.length);
+        // console.log(image.length);
         // this.imgurl = "data:image/png;base64," + image;
-        this.imgurl = image;
+        // this.imgurl = image;
 
-        if (this.imgurl) {
+        if (this.fileInfo) {
           // this.downLoadImage(this.imgurl);
           this.panelFlag = true;
           this.hashInfo = this.searchText;
@@ -91,14 +115,16 @@ export default {
     },
     async clickGET() {
       // window.open(this.testUrl)
-      let imgUrl = await this.imgGetUrl;
+      this.fileInfo = await ajax("/api/download", { hash: this.searchText });
+
+      let downloadUrl = await this.imgGetUrl;
 
       // console.log(res);
       // this.$refs.aSet.href = res;
       // console.log(this.$refs.aSet);
       // // this.$refs.aSet.click()
       const a = document.createElement("a");
-      a.href = imgUrl;
+      a.href = downloadUrl;
       a.setAttribute("download", "chart-download");
       a.click();
     },
@@ -111,8 +137,37 @@ export default {
       downloadUrl: null, //下载地址
       downloadfilename: null, //图片名
       hashInfo: "", //显示hash信息
-      testUrl:
-        "https://todo-1258496109.cos.ap-chengdu.myqcloud.com/uploads/upload_02ab40edf0d28434279e0adddafdf9f9.png",
+      fileInfo: {}, //文件信息
+      tableData: [
+        {
+          name: "HASH",
+          key: "hash",
+          value: "",
+        },
+        {
+          name: "文件名字",
+          key: "name",
+
+          value: "",
+        },
+        {
+          name: "文件大小",
+          key: "size",
+
+          value: "",
+        },
+        {
+          name: "文件类型",
+          key: "type",
+
+          value: "",
+        },
+        {
+          name: "上次修改时间",
+          key: "lastModifiedDate",
+          value: "",
+        },
+      ],
     };
   },
   components: {
@@ -202,8 +257,10 @@ export default {
   }
 
   .panel_down {
+    border: 1px solid red;
+
     width: 100%;
-    height: 50rem;
+    height: 40rem;
     position: absolute;
     background-color: #fbfbfb;
     left: 0;
@@ -216,8 +273,8 @@ export default {
     flex-direction: column;
     // overflow: hidden;
     // display: flex;
-    // justify-content: center;
-    // align-items: center;
+    justify-content: center;
+    align-items: center;
 
     img {
       // width: 500px;
@@ -240,6 +297,14 @@ export default {
       flex-direction: column;
       justify-content: space-between;
     }
+    .download_button {
+      // border: 1px solid red;
+      position: absolute;
+      .down{
+        // border: 1px solid red;
+        font-size: 16px;
+      }
+    }
   }
 }
 .searchStyle {
@@ -250,12 +315,24 @@ export default {
     cursor: pointer;
   }
 }
-.info {
-}
+
 .hash_tag {
   width: 50%;
   left: 0;
   right: 0;
   margin: 0 auto;
+}
+.fileInfo {
+  background-color: #fbfbfb;
+  .el-table__header-wrapper {
+    display: none;
+  }
+  .el-table__body-wrapper {
+    padding: 0 20px;
+    margin: 10px 0;
+    .el-table_2_column_3 {
+      font-weight: bold;
+    }
+  }
 }
 </style>

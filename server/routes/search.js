@@ -12,7 +12,8 @@ router.get('/',async (req,res,next)=>{
     // console.log(this.downloadUrl);
     // this.downloadfilename = name;
     // console.log(`data:image/png;base64,${resSearch}`);
-    res.send(`data:image/png;base64,${resSearch}`)
+    // res.send(`data:image/png;base64,${resSearch}`)
+    res.send(resSearch)
 })
 
 module.exports = router
