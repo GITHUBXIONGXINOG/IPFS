@@ -37,37 +37,25 @@
               icon="el-icon-close"
               @click="panelFlag = false"
             ></el-button>
-            <el-button type="primary" icon="el-icon-delete"></el-button>
+            <el-button
+              type="primary"
+              icon="el-icon-delete"
+              @click="deleteIPFS"
+            ></el-button>
           </el-button-group>
         </div>
-        <!-- <el-row>
-          <el-button type="primary">下载文件</el-button>
-          <el-button type="info">关闭面板</el-button>
-          <el-button type="danger">删除文件</el-button>
-        </el-row> -->
       </section>
     </div>
-    <!-- <el-button @click="clickGET">点击下载到本地 </el-button> -->
-    <!-- <a
-      href="javascript:;"
-      :download="downloadfilename"
-      @click="clickGET"
-      ref="aSet"
-    >
-      <el-button>点击下载到本地 </el-button>
-    </a> -->
-    <!-- http://localhost:3000/downloads/QmXEh_wallhaven-r2okx1.png -->
-    <!-- <a href="javascript:;" ref = "aSet" download="1.png" @click="clickGET">dianji </a> -->
-
-    <a href="http://localhost:3000/downloads/QmQGQ_24.jpg" ref="aSet" download=""  target="_blank"
-      >dianji
-    </a>
   </div>
 </template>
 <script>
 import ajax from "../../utils/ajax";
 export default {
   methods: {
+    async deleteIPFS() {
+      let req = await ajax("/api/delete", { hash: this.hashInfo });
+      console.log(req);
+    },
     handleClose() {
       this.panelFlag = false;
       this.hashInfo = "";
@@ -85,28 +73,34 @@ export default {
           loading.close();
         }, 2000);
         this.fileInfo = await ajax("/api/search", { hash: this.searchText });
-        // console.log(this.fileInfo);
-        this.tableData.forEach((item, index) => {
-          // console.log(item);
-          // console.log(item.value);
-          if (index === 0) {
-            item.value = this.searchText || this.hashInfo;
-          } else {
-            item.value = this.fileInfo[item.key];
-          }
-        });
-        //QmPtRWBink1ic4sp2RrQVYPXzPqWLjiwcnTWZV4bH36pB5
-        // let image = await ajax("/api/search", { hash: this.searchText });
-        // console.log(this.resFile);
-        // console.log(image.length);
-        // this.imgurl = "data:image/png;base64," + image;
-        // this.imgurl = image;
+        console.log(this.fileInfo);
+        // debugger;
+        if (this.fileInfo.code === 0 && this.fileInfo.type === "error") {
+          this.nullPanelFlag = true;
+          this.$message.error("没有找到该HASH信息!");
+        } else {
+          this.tableData.forEach((item, index) => {
+            // console.log(item);
+            // console.log(item.value);
+            if (index === 0) {
+              item.value = this.searchText || this.hashInfo;
+            } else {
+              item.value = this.fileInfo[item.key];
+            }
+          });
+          //QmPtRWBink1ic4sp2RrQVYPXzPqWLjiwcnTWZV4bH36pB5
+          // let image = await ajax("/api/search", { hash: this.searchText });
+          // console.log(this.resFile);
+          // console.log(image.length);
+          // this.imgurl = "data:image/png;base64," + image;
+          // this.imgurl = image;
 
-        if (this.fileInfo) {
-          // this.downLoadImage(this.imgurl);
-          this.panelFlag = true;
-          this.hashInfo = this.searchText;
-          this.searchText = "";
+          if (this.fileInfo) {
+            // this.downLoadImage(this.imgurl);
+            this.panelFlag = true;
+            this.hashInfo = this.searchText;
+            this.searchText = "";
+          }
         }
       }
     },
@@ -129,23 +123,26 @@ export default {
       // window.open(this.testUrl)
       // let downloadUrl = await ajax("/api/download", { hash: this.hashInfo });
       // var url = "";
-      console.log(this.fileInfo.downloadUrl);
-      let downloadUrl = await ajax("/api/download", { url: this.fileInfo.downloadUrl });
+      // console.log(this.fileInfo.downloadUrl);
+      let downloadUrl = await ajax("/api/download", {
+        url: this.fileInfo.downloadUrl,
+      });
       // console.log(data);
+      // debugger
+      // console.log(downloadUrl);
       // let downloadUrl = await this.imgGetUrl;
-      console.log(downloadUrl);
-         var x = new XMLHttpRequest();
-            x.open("GET", downloadUrl, true);
-            x.responseType = 'blob';
-            x.onload=function() {
-              // console.log(e);
-                var url = window.URL.createObjectURL(x.response)
-                var a = document.createElement('a');
-                a.href = url
-                a.download = 'fileName';
-                a.click()
-            }
-            x.send();
+      let name = this.tableData[1].value;
+      var x = new XMLHttpRequest();
+      x.open("GET", downloadUrl, true);
+      x.responseType = "blob";
+      x.onload = function () {
+        var url = window.URL.createObjectURL(x.response);
+        var a = document.createElement("a");
+        a.href = url;
+        a.download = name;
+        a.click();
+      };
+      x.send();
       // var blob;
       // let type = this.tableData[3].value;
       // switch (type) {
@@ -158,9 +155,9 @@ export default {
       //   // case "text/plain":
 
       //   default:
-       
+
       //     url =   downloadUrl
-      //     /* 
+      //     /*
       //      window.URL.createObjectURL(new Blob([downloadUrl], {
       //       type:
       //         "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8",
@@ -250,6 +247,7 @@ export default {
           value: "",
         },
       ],
+      nullPanelFlag: false, //空搜索
       // testUrl: 'https://todo-1258496109.cos.ap-chengdu.myqcloud.com/uploads/upload_02ab40edf0d28434279e0adddafdf9f9.png'
     };
   },

@@ -5,15 +5,18 @@ const _path = require('path')
 module.exports = {
     search: async (hash) => {
         try {
+            debugger
             var ipfs = await IpfsApi('localhost', '5001', { protocol: 'http' })
             let result = await ipfs.cat(hash)
+            let pathInfo =  await ipfs.pin.ls(hash)
+            // console.log(pathInfo);
             // console.log(result);
             let fileInfoString = result.toString('utf-8',0,300)
             let fileInfo = JSON.parse(fileInfoString.replace(/\u0000/g,''))
 
             // console.log(fileInfo);
-            let path = _path.join(__dirname,'../','../','public','downloads',`${hash.slice(0,5)}_${fileInfo.name}`)
-            fileInfo.downloadUrl = `downloads/${hash.slice(0,5)}_${fileInfo.name}`
+            let path = _path.join(__dirname,'../','../','public','downloads',hash.slice(0,16))
+            fileInfo.downloadUrl = `downloads/${hash.slice(0,16)}`
 
             // console.log(path);
             //写入文件到本地
