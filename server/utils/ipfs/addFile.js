@@ -8,7 +8,6 @@ module.exports = {
             try {
                 var ipfs = IpfsApi('localhost', '5001', { protocol: 'http' })
                 //获取文件信息
-                console.log('----------');
                 // console.log(param);
                 // console.log(key);
                 // console.log(key.smKey);

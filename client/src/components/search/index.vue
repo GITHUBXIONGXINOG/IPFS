@@ -14,17 +14,27 @@
     </div>
     <div class="upload">
       <section class="panel_down" v-show="panelFlag === true">
-        <el-table :data="tableData" style="width: 100%" class="fileInfo">
-          <el-table-column prop="name" label="" width="180"> </el-table-column>
-          <el-table-column prop="value" label=""> </el-table-column>
-        </el-table>
-        <div class="download_button">
+        <div class="table_wrap">
+          <el-table :data="tableData" style="width: 100%" class="fileInfo">
+            <el-table-column prop="name" label="" width="180">
+            </el-table-column>
+            <el-table-column prop="value" label=""> </el-table-column>
+          </el-table>
+          <el-input
+            placeholder="请输入密码"
+            v-model="smKey"
+            show-password
+            class="input_key"
+            onkeyup="this.value = this.value.replace(/[^\w.]/g,'');"
+          ></el-input>
+             <div class="download_button">
           <!-- <el-button class="down" @click="clickGET">点击下载到本地 </el-button> -->
           <el-button-group>
             <el-button
               type="primary"
               icon="el-icon-download"
               @click="clickGET"
+               :disabled="keyFlag"
             ></el-button>
             <el-button
               type="primary"
@@ -35,17 +45,21 @@
               type="primary"
               icon="el-icon-delete"
               @click="deleteIPFS"
+               :disabled="keyFlag"
             ></el-button>
           </el-button-group>
         </div>
+        </div>
+
+     
       </section>
     </div>
-
   </div>
 </template>
 <script>
 import ajax from "../../utils/ajax";
 export default {
+  //QmaL3qoxGE8FpULDF6EYgt8ty2Fmj7g5yD5FfDiXxckcVh
   methods: {
     async deleteIPFS() {
       let req = await ajax("/api/delete", { hash: this.hashInfo });
@@ -69,7 +83,7 @@ export default {
           loading.close();
         }, 2000);
         this.fileInfo = await ajax("/api/search", { hash: this.searchText });
-        console.log(this.fileInfo);
+        // console.log(this.fileInfo);
         // debugger;
         if (this.fileInfo.code === 0 && this.fileInfo.type === "error") {
           this.nullPanelFlag = true;
@@ -84,6 +98,10 @@ export default {
               item.value = this.fileInfo[item.key];
             }
           });
+          //QmaL3qoxGE8FpULDF6EYgt8ty2Fmj7g5yD5FfDiXxckcVh
+          // let table = document.getElementsByClassName('el-table__row')[5].childNodes
+          // console.log(table[1]);
+          // console.log(table[0]);
           //QmPtRWBink1ic4sp2RrQVYPXzPqWLjiwcnTWZV4bH36pB5
           // let image = await ajax("/api/search", { hash: this.searchText });
           // console.log(this.resFile);
@@ -122,6 +140,7 @@ export default {
       // console.log(this.fileInfo.downloadUrl);
       let downloadUrl = await ajax("/api/download", {
         url: this.fileInfo.downloadUrl,
+        key: this.smKey
       });
       // console.log(data);
       // debugger
@@ -159,19 +178,16 @@ export default {
         {
           name: "文件名字",
           key: "name",
-
           value: "",
         },
         {
           name: "文件大小",
           key: "size",
-
           value: "",
         },
         {
           name: "文件类型",
           key: "type",
-
           value: "",
         },
         {
@@ -179,9 +195,15 @@ export default {
           key: "lastModifiedDate",
           value: "",
         },
+        {
+          name: "加密密钥",
+          key: "smKey",
+          value: "",
+        },
       ],
       nullPanelFlag: false, //空搜索
-      // testUrl: 'https://todo-1258496109.cos.ap-chengdu.myqcloud.com/uploads/upload_02ab40edf0d28434279e0adddafdf9f9.png'
+      smKey: "",
+      keyFlag: true,//
     };
   },
   components: {
@@ -272,7 +294,6 @@ export default {
 
   .panel_down {
     border: 1px solid red;
-
     width: 100%;
     height: 40rem;
     position: absolute;
@@ -287,7 +308,7 @@ export default {
     flex-direction: column;
     // overflow: hidden;
     // display: flex;
-    justify-content: center;
+    // justify-content: center;
     align-items: center;
 
     img {
@@ -311,13 +332,24 @@ export default {
       flex-direction: column;
       justify-content: space-between;
     }
+    //下载按钮区
     .download_button {
       // border: 1px solid red;
       position: absolute;
+      left: 0;
+      right: 0;
+      margin: auto;
+      // bottom: 10%;
       .down {
         // border: 1px solid red;
         font-size: 16px;
       }
+    }
+    .table_wrap {
+      // border: 1px solid red;
+      width: 100%;
+      position: relative;
+      margin: 5rem 0;
     }
   }
 }
@@ -351,5 +383,14 @@ export default {
 }
 .up_button {
   background: #234d64;
+}
+//输入密码
+.input_key {
+  // border: 1px solid red;
+  left: 12%;
+  position: absolute;
+  width: 65% !important;
+  height: 10%;
+  bottom: 15%;
 }
 </style>
