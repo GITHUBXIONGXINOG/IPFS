@@ -11,24 +11,9 @@
           <use xlink:href="#iconfiles"></use></svg
         >浏览
       </div>
-            <!-- <div
-        class="button up_button"
-        @click="submitSearch"
-        :class="{ searchStyle: searchRule }"
-      >
-        <svg class="icon" aria-hidden="true">
-          <use xlink:href="#iconfiles"></use></svg
-        >上传
-      </div> -->
     </div>
     <div class="upload">
       <section class="panel_down" v-show="panelFlag === true">
-        <!-- <img :src="imgurl" alt="" style="display: block" /> -->
-        <!-- <section class="info">
-        <a :href="downloadUrl" :download="downloadfilename" @click="Download">
-          <el-button>点击下载到本地 </el-button>
-        </a>
-        </section> -->
         <el-table :data="tableData" style="width: 100%" class="fileInfo">
           <el-table-column prop="name" label="" width="180"> </el-table-column>
           <el-table-column prop="value" label=""> </el-table-column>
@@ -55,6 +40,7 @@
         </div>
       </section>
     </div>
+
   </div>
 </template>
 <script>
@@ -64,7 +50,7 @@ export default {
     async deleteIPFS() {
       let req = await ajax("/api/delete", { hash: this.hashInfo });
       console.log(req);
-      this.panelFlag = false
+      this.panelFlag = false;
     },
     handleClose() {
       this.panelFlag = false;
@@ -363,7 +349,7 @@ export default {
     }
   }
 }
-.up_button{
-    background: #234d64;
+.up_button {
+  background: #234d64;
 }
 </style>
