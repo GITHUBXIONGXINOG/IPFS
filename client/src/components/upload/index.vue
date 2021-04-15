@@ -41,6 +41,7 @@
   </div>
 </template>
 <script>
+import { encryptData_ECB, decryptData_ECB } from "../../utils/SM4Util";
 export default {
   data() {
     return {
@@ -139,11 +140,11 @@ export default {
     // //   console.log(file, fileList);
     // },
   },
-  // computed: {
-  //   uploadPanelInfo() {
-  //     return `<h2>sdvsd</h2>`;
-  //   },
-  // },
+  mounted() {
+    console.log("解密：" + decryptData_ECB("g24Xi8S5s4Hp/tQibBH5fayn8uMnMXV2d8mHqncgv0c=")
+    );
+    console.log("加密：" + encryptData_ECB("我数岁阿三本草不是"));
+  },
 };
 </script>
 
@@ -246,7 +247,7 @@ export default {
       font-size: 20px;
       background-color: #f5f7fa;
       box-shadow: 1px 1px 5px black;
-       .el-icon-close {
+      .el-icon-close {
         top: 10px;
         bottom: 0;
         margin: auto 0;
@@ -259,7 +260,6 @@ export default {
       }
     }
     .is-success {
-     
     }
   }
 }
@@ -283,7 +283,7 @@ export default {
 }
 .hidden_style {
   // pointer-events: none;
-    visibility: hidden;
+  visibility: hidden;
 
   // .el-icon-upload,
   // .el-upload__text {
