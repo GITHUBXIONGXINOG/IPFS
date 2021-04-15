@@ -1,6 +1,7 @@
 let IpfsApi = require("ipfs-api")
 const fs = require('fs')
 const _path = require('path')
+const { SM4 } = require('gm-crypto')
 
 module.exports = {
     search: async (hash) => {
@@ -17,7 +18,7 @@ module.exports = {
             // console.log(fileInfo);
             let path = _path.join(__dirname,'../','../','public','downloads',hash.slice(0,16))
             fileInfo.downloadUrl = `downloads/${hash.slice(0,16)}`
-
+            // console.log(result.slice(300));
             // console.log(path);
             //写入文件到本地
             fs.writeFile(path,result.slice(300),(err)=>{
