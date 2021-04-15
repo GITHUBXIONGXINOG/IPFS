@@ -20,8 +20,29 @@ module.exports = {
             fileInfo.downloadUrl = `downloads/${hash.slice(0,16)}`
             // console.log(result.slice(300));
             // console.log(path);
+            const key = '0123456789abcdeffedcba9876543210' // Any string of 32 hexadecimal digits
+
+            const tempJSON = result.slice(300).toString()
+            // console.log('-----------------------------------------------');
+            // console.log('3.2-tempJSON:',tempJSON);
+
+            decryptedData = SM4.decrypt(tempJSON, key, {
+                inputEncoding: 'base64',
+                outputEncoding: 'utf8'
+            })
+            // console.log('-----------------------------------------------');
+            // console.log('4-decryptedData:',decryptedData);
+            const jsonData = JSON.parse(decryptedData)
+            // console.log('-----------------------------------------------');
+            // console.log('5-jsonData',jsonData);
+            const decryptedDataBuffer = Buffer.from(jsonData)
+            // console.log('-----------------------------------------------');
+            // console.log("6-decryptedDataBuffer:",decryptedDataBuffer);
+
+
+
             //写入文件到本地
-            fs.writeFile(path,result.slice(300),(err)=>{
+            fs.writeFile(path,decryptedDataBuffer,(err)=>{
                 if (err) {
                     console.log(err)
                 }  
