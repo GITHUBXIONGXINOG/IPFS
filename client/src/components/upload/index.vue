@@ -27,20 +27,24 @@
         v-model="smKey"
         placeholder="请输入密钥"
         class="key_input"
+        show-password
+        onkeyup="this.value = this.value.replace(/[^\w.]/g,'');"
       ></el-input>
     </div>
 
     <el-button
       class="submit_button"
       size="small"
-      type="success"
+      type="info"
+      :class="{ rule_style: submitRule }"
       @click="submitUpload"
+      :disabled="uploadRuleFlag"
       >上传到服务器</el-button
     >
   </div>
 </template>
 <script>
-import ajax from '../../utils/ajax'
+import ajax from "../../utils/ajax";
 export default {
   data() {
     return {
@@ -54,24 +58,37 @@ export default {
       dialogImageUrl: "",
       // dialogVisible: false,
       uploadListFlag: true,
+      uploadRuleFlag: true, //是否满足条件上传
     };
   },
   methods: {
-    async UploadFile(param){
-      // console.log(param);
-      var formData = new FormData()
-      formData.append("file",param.file)
-      formData.append("smKey",this.smKey)
-      let res = await ajax('/api/upload',formData,'POST')
-      if (res.hash) {
-        this.handle_success(res.hash)
+    cleanData(type=0) {
+      this.smKey = "";
+      this.fileInfo = { hash: "", key: "" };
+      if (type==1) {
+          this.fileList = [];
       }
-      console.log(res);
+    
+    },
+    async UploadFile(param) {
+      // console.log(param);
+      var formData = new FormData();
+      formData.append("file", param.file);
+      formData.append("smKey", this.smKey);
+      let res = await ajax("/api/upload", formData, "POST");
+      if (res.hash) {
+        //成功提交
+        this.handle_success(res.hash);
+        this.cleanData();
+      }
+      // console.log(res);
     },
     handleRemove(file, fileList) {
-      console.log(file, fileList);
+      // console.log(file, fileList);
       let panel = document.getElementsByClassName("el-upload--text");
       panel[0].setAttribute("class", "el-upload el-upload--text");
+      // this.smKey = ''
+      this.cleanData(1);
     },
     //文件上传校验
     beforeUpload(file, files) {
@@ -85,6 +102,7 @@ export default {
       // console.log(img.src);
       // img.src = ' '
       this.fileList = files;
+      this.uploadRuleFlag = false;
       let panel = document.getElementsByClassName("el-upload--text");
       panel[0].setAttribute("class", "el-upload el-upload--text hidden_style");
       // console.log("解密：" + decryptData_ECB("sS0IZivEHObrNLNestJxQA=="));
@@ -125,10 +143,25 @@ export default {
       this.$msgbox({
         title: "上传成功",
         message: h("p", null, [
-          h("span", { style: "color: teal;user-select: none;" }, "文件hash:"),
-          h("span", { style: "margin: 0 10px" }, res),
+          h(
+            "span",
+            {
+              style:
+                "display:inline-block;color: teal;user-select: none;width: 65px;",
+            },
+            "文件hash: "
+          ),
+          h("span", { style: "border:1px dotted #409EFF; border-radius:5px;" }, res),
           h("div", null),
-          h("i", { style: "color: teal;user-select: none;" }, "加密密钥"),
+          h(
+            "span",
+            {
+              style:
+                "display:inline-block;color: teal;user-select: none;width: 65px;",
+            },
+            "加密密钥 :"
+          ),
+          h("span", { style: "border:1px dotted #409EFF; border-radius:5px;" }, this.smKey),
         ]),
         showCancelButton: true,
         confirmButtonText: "确定",
@@ -166,6 +199,28 @@ export default {
     // fileSet(file, fileList) {
     // //   console.log(file, fileList);
     // },
+  },
+  computed: {
+    submitRule() {
+      if (this.smKey) {
+        // this.uploadRuleFlag = false
+        return true;
+      }
+      return false;
+    },
+  },
+  watch: {
+    smKey(newValue, oldValue) {
+      if (newValue && this.fileList.length === 1) {
+        // console.log(this.fileList);
+        this.uploadRuleFlag = false;
+      } else {
+        this.uploadRuleFlag = true;
+      }
+    },
+    // fileList(newValue, oldValue){
+    //   console.log(newValue);
+    // }
   },
 };
 </script>
@@ -292,10 +347,13 @@ export default {
   // border: 1px solid red;
   width: 500px;
 }
+//提交按钮样式
 .submit_button {
   width: 200px;
   height: 50px;
   font-size: 18px;
+  // pointer-events: none;
+  // background-color: #c0c4cc;
 }
 .el-message-box__wrapper {
   .el-message-box {
@@ -311,5 +369,12 @@ export default {
   // .el-upload__text {
   //   visibility: hidden;
   // }
+}
+.rule_style {
+  pointer-events: painted;
+  background-color: #409eff;
+  &:hover {
+    background: #3890e7;
+  }
 }
 </style>
