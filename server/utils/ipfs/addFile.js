@@ -3,17 +3,22 @@ const pathFn = require('path')
 const fs = require('fs')
 const { SM4 } = require('gm-crypto')
 module.exports = {
-    addfile: async (file) => {
+    addfile: async (param,key) => {
         return new Promise(async (resolve) => {
             try {
                 var ipfs = IpfsApi('localhost', '5001', { protocol: 'http' })
                 //获取文件信息
-                const { path, type, name, size, lastModifiedDate } = file.upload_file
+                console.log('----------');
+                // console.log(param);
+                // console.log(key);
+                // console.log(key.smKey);
+                // console.log(param,key);
+                const { path, type, name, size, lastModifiedDate } = param
                 const upload_file = { path, type, name, size, lastModifiedDate }
-                console.log(upload_file);
+                // console.log(upload_file);
                 //hash
                 let hash = null
-            
+                // console.log(path, type, name, size, lastModifiedDate);
                
 
                 fs.readFile(path, async (err, fd) => {

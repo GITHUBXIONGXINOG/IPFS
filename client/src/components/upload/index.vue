@@ -9,10 +9,10 @@
       ref="upload"
       :file-list="fileList"
       :auto-upload="false"
-      :on-success="handle_success"
       :on-change="beforeUpload"
       :on-remove="handleRemove"
       name="upload_file"
+      :http-request="UploadFile"
     >
       <!-- v-show="!fileList.length" -->
       <i class="el-icon-upload"></i>
@@ -40,7 +40,7 @@
   </div>
 </template>
 <script>
-import { encryptData_ECB, decryptData_ECB } from "../../utils/SM4Util";
+import ajax from '../../utils/ajax'
 export default {
   data() {
     return {
@@ -57,7 +57,17 @@ export default {
     };
   },
   methods: {
- 
+    async UploadFile(param){
+      // console.log(param);
+      var formData = new FormData()
+      formData.append("file",param.file)
+      formData.append("smKey",this.smKey)
+      let res = await ajax('/api/upload',formData,'POST')
+      if (res.hash) {
+        this.handle_success(res.hash)
+      }
+      console.log(res);
+    },
     handleRemove(file, fileList) {
       console.log(file, fileList);
       let panel = document.getElementsByClassName("el-upload--text");
@@ -107,45 +117,18 @@ export default {
     //上传递交按钮
     submitUpload() {
       this.$refs.upload.submit();
-      // let fr = new FileReader();
-      // console.log(fr);
-      // <input type="file" name="upload_file" class="el-upload__input">
-      // debugger;
-      // console.log(file);
-      // let uploadfile = document.getElementsByClassName('el-upload__input').files[0];
-      // console.log(uploadfile);
-      // let file = this.$refs.upload
-      // debugger
-      // let fr = new FileReader()
-      // fr.readAsDataURL(file)
-      // fs.onload(function () {
-      //   console.log(fr.result)
-      // })
-      // console.log(file);
-      // console.log("解密：" + decryptData_ECB("4ncw+RSEdPY/gnet0Usv0LEtCGYrxBzm6zSzXrLScUA="));
-      // console.log("加密：" + encryptData_ECB("2477.39713035076"));
-
-      // this.$alert(this.uploadPanelInfo, "文件上传成功", {
-      //   confirmButtonText: "确定",
-      //   callback: () => {
-      //     // this.$message({
-      //     //   type: "info",
-      //     //   message: `action: ${action}`,
-      //     // });
-      //   },
-      // });
     },
     //成功上传返回值
     handle_success(res) {
-      console.log(res);
+      // console.log(res);
       const h = this.$createElement;
       this.$msgbox({
         title: "上传成功",
         message: h("p", null, [
-          h("span", { style: "color: teal" }, "文件hash:"),
+          h("span", { style: "color: teal;user-select: none;" }, "文件hash:"),
           h("span", { style: "margin: 0 10px" }, res),
           h("div", null),
-          h("i", { style: "color: teal" }, "加密密钥"),
+          h("i", { style: "color: teal;user-select: none;" }, "加密密钥"),
         ]),
         showCancelButton: true,
         confirmButtonText: "确定",
@@ -183,13 +166,6 @@ export default {
     // fileSet(file, fileList) {
     // //   console.log(file, fileList);
     // },
-  },
-  mounted() {
-    // let data = `https://todo-1258496109.cos.ap-chengdu.myqcloud.com/uploads/upload_02ab40edf0d28434279e0adddafdf9f9.png`;
-    // console.log("加密：" + encryptData_ECB(data));
-    // console.log(
-    //   "解密：" + decryptData_ECB("1xtLFzaFA9zRrY6idUDjsGrZyCHmEXKP105wep494jZ88R7TJX2qtPkFAE0L7nVtaNuffLUSCOJNjRRGzxpP2hfHIcrPjCslT5RJcjZ6BoHB6G46ROubmaNOwHVsYUfmniujJ5GnfgmAIyhBTK/kTg==")
-    // );
   },
 };
 </script>

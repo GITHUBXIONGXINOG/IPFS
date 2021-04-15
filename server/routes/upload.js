@@ -17,8 +17,14 @@ router.post('/', function(req, res, next) {
         }
         // console.log(fields);
         // console.log(files);
-        let resFile = await addfile(files)
-        res.send(resFile)
+        try{
+            let resFile = await addfile(files.file,fields.smKey)
+            res.json(200,{hash:resFile})
+        }catch(err){
+            console.error(err);
+            res.send(err)
+        }
+    
     })
 //    console.log(req.body);
 //    res.send('ok')
