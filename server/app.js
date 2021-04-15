@@ -12,6 +12,8 @@ var uploadRouter = require('./routes/upload')
 var searchRouter = require('./routes/search')
 var downRouter = require('./routes/download')
 var deleteRouter = require('./routes/delete')
+var pinRouter = require('./routes/pininfo')
+
 var app = express();
 
 // view engine setup
@@ -32,6 +34,7 @@ app.use('/upload',uploadRouter)
 app.use('/search',searchRouter)
 app.use('/download',downRouter)
 app.use('/delete',deleteRouter)
+app.use('/pininfo',pinRouter)
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   next(createError(404));

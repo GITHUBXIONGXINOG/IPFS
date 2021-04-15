@@ -11,6 +11,15 @@
           <use xlink:href="#iconfiles"></use></svg
         >浏览
       </div>
+            <!-- <div
+        class="button up_button"
+        @click="submitSearch"
+        :class="{ searchStyle: searchRule }"
+      >
+        <svg class="icon" aria-hidden="true">
+          <use xlink:href="#iconfiles"></use></svg
+        >上传
+      </div> -->
     </div>
     <div class="upload">
       <section class="panel_down" v-show="panelFlag === true">
@@ -55,6 +64,7 @@ export default {
     async deleteIPFS() {
       let req = await ajax("/api/delete", { hash: this.hashInfo });
       console.log(req);
+      this.panelFlag = false
     },
     handleClose() {
       this.panelFlag = false;
@@ -143,69 +153,6 @@ export default {
         a.click();
       };
       x.send();
-      // var blob;
-      // let type = this.tableData[3].value;
-      // switch (type) {
-      //   case "image/png":
-      //   case "image/jpeg":
-      //   case "image/gif":
-      //   case "image/bmp":
-      //     url = downloadUrl;
-      //     break;
-      //   // case "text/plain":
-
-      //   default:
-
-      //     url =   downloadUrl
-      //     /*
-      //      window.URL.createObjectURL(new Blob([downloadUrl], {
-      //       type:
-      //         "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8",
-      //     }))
-      //      */
-      //     break;
-      // }
-      // if (type === text / plain) {
-      //   blob = new Blob([downloadUrl], {
-      //     type:
-      //       "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8",
-      //   });
-      // }
-      // console.log(blob);
-      //  a.href = window.URL.createObjectURL(blob);
-
-      // let type = 'application/octet-stream'
-      // debugger
-      // console.log(data);
-      //  let blob = new Blob(['http://localhost:3000/downloads/QmXEh_wallhaven-r2okx1.png'], {type: 'application/vnd.ms-excel'})
-      //   let link = document.createElement('a')
-      //   link.href = window.URL.createObjectURL(blob)
-      //   link.download = 'http://localhost:3000/downloads/QmXEh_wallhaven-r2okx1.png'
-      //   link.click()
-      // window.location.href
-      // console.log(res);
-      // this.$refs.aSet.href = res;
-      // console.log(this.$refs.aSet);
-      // // this.$refs.aSet.click()
-      // const a = document.createElement("a");
-      //     // console.log('url:',url);
-      // a.href = downloadUrl;
-      // // a.href = window.URL.createObjectURL(blob);
-      // a.download = this.tableData[1].value;
-      // document.body.appendChild(a);
-      // console.log(a);
-      // a.click();
-      // a.remove();
-
-      // a.setAttribute("download", "chart-download");
-      // a.click();
-      // window.open(downloadUrl)
-      // const form = document.createElement("form")
-      // form.method = 'get'
-      // form.action = downloadUrl
-      // document.body.append(form)
-      // form.submit()
-      // document.removeChild(form)
     },
   },
   data() {
@@ -415,5 +362,8 @@ export default {
       font-weight: bold;
     }
   }
+}
+.up_button{
+    background: #234d64;
 }
 </style>

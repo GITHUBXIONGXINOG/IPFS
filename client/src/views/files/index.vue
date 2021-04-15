@@ -6,6 +6,8 @@
         <list />
     
       </div> -->
+      <PinInfo />
+
       <Upload />
     </div>
   </div>
@@ -14,6 +16,7 @@
 import Search from "../../components/search";
 // import List from '../../components/list'
 import Upload from "../../components/upload";
+import PinInfo from '../../components/pinInfo'
 export default {
   data() {
     return {
@@ -23,6 +26,7 @@ export default {
     Search,
     // List,
     Upload,
+    PinInfo,
   },
 };
 </script>
