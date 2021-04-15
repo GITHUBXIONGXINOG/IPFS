@@ -1,20 +1,27 @@
 <template>
   <div class="upload-panel">
+    <!-- {{ fileList }} -->
+    <!-- list-type="picture-card" -->
+
     <el-upload
       class="upload-file"
       drag
       action="/api/upload"
       ref="upload"
-      :on-preview="handlePreview"
       :file-list="fileList"
       :auto-upload="false"
       :on-success="handle_success"
-      :before-upload="beforeUpload"
+      :on-change="beforeUpload"
+      :on-remove="handleRemove"
       name="upload_file"
     >
+      <!-- v-show="!fileList.length" -->
       <i class="el-icon-upload"></i>
       <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
     </el-upload>
+    <!-- <el-dialog :visible.sync="dialogVisible">
+      <img width="100%" :src="dialogImageUrl" alt="" />
+    </el-dialog> -->
 
     <div class="key_wrap">
       <el-input
@@ -31,28 +38,12 @@
       @click="submitUpload"
       >上传到服务器</el-button
     >
-    <!-- <div class="submit_success_panel"></div> -->
-
-    <!-- <el-alert
-      class="success_info"
-      title="上传成功,请保留HASH和KEY"
-      type="success"
-      :description='fileInfo'
-      show-icon
-      v-show="uploadFlag"
-    >
-    </el-alert> -->
-    <!-- <el-button type="text" @click="open">点击打开 Message Box</el-button> -->
   </div>
 </template>
 <script>
 export default {
   data() {
     return {
-      //   formInline: {
-      //     file: "",
-      //     key: "",
-      //   },
       smKey: "",
       fileList: [],
       fileInfo: {
@@ -60,20 +51,30 @@ export default {
         key: "",
       },
       uploadFlag: false,
+      dialogImageUrl: "",
+      // dialogVisible: false,
+      uploadListFlag: true,
     };
   },
   methods: {
-    beforeUpload(file) {
-      // debugger
-      //   const isIMAGE = file.type === 'image/jpeg'||'image/gif'||'image/png';
+    handleRemove(file, fileList) {
+      console.log(file, fileList);
+      let panel = document.getElementsByClassName("el-upload--text");
+      panel[0].setAttribute("class", "el-upload el-upload--text");
+    },
+    beforeUpload(file, files) {
       const isLt2G = file.size / 1024 / 1024 / 1024 / 2 < 1;
-
-      //   if (!isIMAGE) {
-      //     this.$message.error('上传文件只能是图片格式!');
-      //   }
       if (!isLt2G) {
         this.$message.error("上传文件大小不能超过 2G!");
       }
+      // debugger
+      // console.log(file);
+      // let img = document.getElementsByClassName('el-upload-list__item-thumbnail')
+      // console.log(img.src);
+      // img.src = ' '
+      this.fileList = files;
+      let panel = document.getElementsByClassName("el-upload--text");
+      panel[0].setAttribute("class", "el-upload el-upload--text hidden_style");
       return isLt2G;
     },
     submitUpload() {
@@ -97,8 +98,8 @@ export default {
         title: "上传成功",
         message: h("p", null, [
           h("span", { style: "color: teal" }, "文件hash:"),
-          h("span", {style: "margin: 0 10px"}, res),
-          h("div",null),
+          h("span", { style: "margin: 0 10px" }, res),
+          h("div", null),
           h("i", { style: "color: teal" }, "加密密钥"),
         ]),
         showCancelButton: true,
@@ -128,9 +129,12 @@ export default {
     // handleRemove(file, fileList) {
     //   console.log(file, fileList);
     // },
-    handlePreview(file) {
-      console.log(file);
-    },
+    // handlePreview(file) {
+    //   console.log(file);
+    //   debugger;
+    //   this.dialogImageUrl = file.url;
+    //   this.dialogVisible = true;
+    // },
     // fileSet(file, fileList) {
     // //   console.log(file, fileList);
     // },
@@ -159,11 +163,105 @@ export default {
   //   z-index: -1;
 }
 .upload-file {
-  height: 18rem;
-  margin: 50px 0 0;
+  height: 20rem;
+  // border: 1px solid red;
+
+  margin: 50px 0 20px;
   display: flex;
   justify-content: center;
   align-items: center;
+  position: relative;
+  .el-upload--text {
+    // border: 1px solid red;
+    // width: 30rem;
+    // height: 15rem;
+    .el-upload-dragger {
+      // border: 1px solid red;
+      // width: 25rem;
+      // height: 15rem;
+      // display: flex;
+      // flex-direction: column;
+      // justify-content: center;
+    }
+  }
+  /*   .el-upload--picture-card {
+    width: 30rem;
+    height: 20rem;
+    .el-upload-dragger {
+      width: 100%;
+      height: 100%;
+      // display: flex;
+      // flex-direction: column;
+      // justify-content: center;
+      .el-icon-upload {
+        width: 100%;
+        position: relative;
+        &::before {
+          font-size: 10rem;
+          position: absolute;
+          left: 0;
+          right: 0;
+          top: 30px;
+          margin: auto;
+        }
+      }
+      .el-upload__text {
+        // margin-top: -30px;
+        // font-size: 20px;
+      }
+    }
+  }
+  .el-upload-list--picture-card {
+    position: absolute;
+    z-index: 2;
+    // width: 50%;
+    // height: 100%;
+    background-color: #fff;
+    .is-ready,
+    .is-success {
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      margin: auto;
+      width: 100%;
+      max-width: 29rem;
+      height: 100%;
+      max-height: 19rem;
+      // margin: 20px;
+    }
+    //     .is-success{
+    // border: 1px solid red;
+
+    // }
+  } */
+  .el-upload-list--text {
+    // border: 1px solid red;
+    // width: 100%;
+    position: absolute;
+    .is-ready,
+    .is-success {
+      // height: 10rem;
+      // width: 25rem;
+      font-size: 20px;
+      background-color: #f5f7fa;
+      box-shadow: 1px 1px 5px black;
+       .el-icon-close {
+        top: 10px;
+        bottom: 0;
+        margin: auto 0;
+        &::before {
+          top: 5px;
+          bottom: 0;
+          margin: auto 0;
+          // font-size: 20px;
+        }
+      }
+    }
+    .is-success {
+     
+    }
+  }
 }
 .key_wrap {
   margin: 0 0 50px;
@@ -177,11 +275,19 @@ export default {
   height: 50px;
   font-size: 18px;
 }
-.el-message-box__wrapper{
- .el-message-box {
-  // width: 250px;
-  width: 60%;
+.el-message-box__wrapper {
+  .el-message-box {
+    // width: 250px;
+    width: 60%;
+  }
 }
-}
+.hidden_style {
+  // pointer-events: none;
+    visibility: hidden;
 
+  // .el-icon-upload,
+  // .el-upload__text {
+  //   visibility: hidden;
+  // }
+}
 </style>
