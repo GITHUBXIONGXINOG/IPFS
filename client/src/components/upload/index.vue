@@ -2,7 +2,6 @@
   <div class="upload-panel">
     <!-- {{ fileList }} -->
     <!-- list-type="picture-card" -->
-
     <el-upload
       class="upload-file"
       drag
@@ -58,11 +57,13 @@ export default {
     };
   },
   methods: {
+ 
     handleRemove(file, fileList) {
       console.log(file, fileList);
       let panel = document.getElementsByClassName("el-upload--text");
       panel[0].setAttribute("class", "el-upload el-upload--text");
     },
+    //文件上传校验
     beforeUpload(file, files) {
       const isLt2G = file.size / 1024 / 1024 / 1024 / 2 < 1;
       if (!isLt2G) {
@@ -76,10 +77,53 @@ export default {
       this.fileList = files;
       let panel = document.getElementsByClassName("el-upload--text");
       panel[0].setAttribute("class", "el-upload el-upload--text hidden_style");
+      // console.log("解密：" + decryptData_ECB("sS0IZivEHObrNLNestJxQA=="));
+      // console.log("加密：" + encryptData_ECB(file));
+      // let encryECB = encryptData_ECB(file)
+      // debugger
+      // let decryECB = decryptData_ECB(encryECB)
+      // console.log('加密:',encryECB);
+      // console.log('解密:',decryECB);
+      // debugger
+      //  let fr = new FileReader()
+      //  console.log(fr);
+      //  debugger
+      //  console.log(file);
+      //  let uploadfile = this.$refs.upload
+      //  console.log(uploadfile);
+      // fr.readAsDataURL(file)
+      // fr.onloadend = function (e) {
+      //   // console.log(fr.result)
+      //   console.log(e.target);
+      // }
+      // fr.onerror = function (err) {
+      //   console.error(err)
+      // }
+      // if(file){
+      //   fr.readAsDataURL(file)
+      // }
       return isLt2G;
     },
+    //上传递交按钮
     submitUpload() {
       this.$refs.upload.submit();
+      // let fr = new FileReader();
+      // console.log(fr);
+      // <input type="file" name="upload_file" class="el-upload__input">
+      // debugger;
+      // console.log(file);
+      // let uploadfile = document.getElementsByClassName('el-upload__input').files[0];
+      // console.log(uploadfile);
+      // let file = this.$refs.upload
+      // debugger
+      // let fr = new FileReader()
+      // fr.readAsDataURL(file)
+      // fs.onload(function () {
+      //   console.log(fr.result)
+      // })
+      // console.log(file);
+      // console.log("解密：" + decryptData_ECB("4ncw+RSEdPY/gnet0Usv0LEtCGYrxBzm6zSzXrLScUA="));
+      // console.log("加密：" + encryptData_ECB("2477.39713035076"));
 
       // this.$alert(this.uploadPanelInfo, "文件上传成功", {
       //   confirmButtonText: "确定",
@@ -141,9 +185,11 @@ export default {
     // },
   },
   mounted() {
-    console.log("解密：" + decryptData_ECB("g24Xi8S5s4Hp/tQibBH5fayn8uMnMXV2d8mHqncgv0c=")
-    );
-    console.log("加密：" + encryptData_ECB("我数岁阿三本草不是"));
+    // let data = `https://todo-1258496109.cos.ap-chengdu.myqcloud.com/uploads/upload_02ab40edf0d28434279e0adddafdf9f9.png`;
+    // console.log("加密：" + encryptData_ECB(data));
+    // console.log(
+    //   "解密：" + decryptData_ECB("1xtLFzaFA9zRrY6idUDjsGrZyCHmEXKP105wep494jZ88R7TJX2qtPkFAE0L7nVtaNuffLUSCOJNjRRGzxpP2hfHIcrPjCslT5RJcjZ6BoHB6G46ROubmaNOwHVsYUfmniujJ5GnfgmAIyhBTK/kTg==")
+    // );
   },
 };
 </script>
