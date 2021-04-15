@@ -1,67 +1,50 @@
 let IpfsApi = require("ipfs-api")
 const fs = require('fs')
 const _path = require('path')
+const { SM4 } = require('gm-crypto')
 
 module.exports = {
     download: async (url) => {
         try {
             console.log(url);
-            let path = _path.join(__dirname,'../','public',url)
-            console.log(path);
-            // fs.unlink(path,(err)=>{if(err)console.error(err);})
-            return `/api/${url}`
-            // return 'http://localhost:3000/downloads/QmY6L_test.zip'
-            // var ipfs = await IpfsApi('localhost', '5001', { protocol: 'http' })
-            // let resultBuffer = await ipfs.cat(hash)
-            // console.log(resultBuffer);
-            // let fileInfoString = resultBuffer.toString('utf-8', 0, 300)
-            // let fileInfo = JSON.parse(fileInfoString.replace(/\u0000/g, ''))
-            // // console.log(fileInfo);
-            // let type = 'utf8'
-            // let head = ''
-            // console.log(fileInfo.type);
-            // switch (fileInfo.type) {
-            //     case 'image/png':
-            //     case 'image/jpeg':
-            //     case 'image/gif':
-            //     case 'image/bmp':
-            //         type = 'base64'
-            //         head = `data:${fileInfo.type};base64,`
-            //         break;
-
-            //     default:
-            //         type = 'utf8'
-            //         break;
-            // }
-            // console.log(type);
-            // // console.log(resultBuffer.toString('base64'));
-            // return head+resultBuffer.slice(300).toString(type)
-
-
-
-
-            // var ipfs = await IpfsApi('localhost', '5001', { protocol: 'http' })
-            // let resultBuffer = await ipfs.cat(hash)
-            // console.log(resultBuffer);
-            // console.log(fileInfo);
-            // let path = _path.join(__dirname,'../','../','public','downloads',`${hash.slice(0,5)}_${fileInfo.name}`)
-            // return resultBuffer.slice(300)
-            // return resultBuffer
-            // return file
-            // let path = _path.join(__dirname,'../','../','public',hash)
+            let path = _path.join(__dirname,'../','../','public',url)
             // console.log(path);
-            // var ws = fs.createReadStream(path)
-            // let resData = []
-            // if (ws) {
-            //     ws.on('data',function (chunk) {
-            //         resData.push(chunk)
-            //     })
-            //     ws.on('end',function () {
-            //         let finalData = Buffer.concat(resData)
+            // fs.unlink(path,(err)=>{if(err)console.error(err);})
 
-            //     })
-            // }
-            // console.log(ws);
+            const key = '0123456789abcdeffedcba9876543210' // Any string of 32 hexadecimal digits
+            fs.readFile(path, async (err, fd) => {
+                if (err) {
+                    console.error(err)
+                }   
+                // debugger
+                // console.log(path);
+                // console.log(fd);
+                const tempJSON = fd.toString()
+                // console.log('-----------------------------------------------');
+                // console.log('3.2-tempJSON:',tempJSON);
+    
+                decryptedData = SM4.decrypt(tempJSON, key, {
+                    inputEncoding: 'base64',
+                    outputEncoding: 'utf8'
+                })
+                // console.log('-----------------------------------------------');
+                // console.log('4-decryptedData:',decryptedData);
+                const jsonData = JSON.parse(decryptedData)
+                // console.log('-----------------------------------------------');
+                // console.log('5-jsonData',jsonData);
+                const decryptedDataBuffer = Buffer.from(jsonData)
+                // console.log('-----------------------------------------------');
+                // console.log("6-decryptedDataBuffer:",decryptedDataBuffer);
+                fs.writeFile(path,decryptedDataBuffer,(err)=>{
+                    if (err) {
+                        console.log(err)
+                    }  
+                })
+            })
+           
+
+            return `/api/${url}`
+   
         } catch (err) {
             console.error(err);
             return err
