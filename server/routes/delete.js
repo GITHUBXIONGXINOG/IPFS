@@ -15,9 +15,10 @@ router.get('/', async function (req, res, next) {
    ipfs.pin.rm(path,(err)=>{
       if (err) {
          console.error(err)
+        res.send({Error:'删除失败',Code: '401'})
       }
    })
-   res.send('ok')
+   res.send('删除固定成功')
 });
 
 module.exports = router;

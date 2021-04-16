@@ -10,105 +10,188 @@
       </tr>
       <tr>
         <td>文件hash</td>
-        <td>{{ data[0].value }}</td>
+        <td>{{ fileInfo().hash }}</td>
       </tr>
       <tr>
         <td>文件名字</td>
-        <td>{{ data[1].value }}</td>
+        <td>{{ fileInfo().name}}</td>
       </tr>
       <tr>
         <td>文件大小</td>
-        <td>{{ data[2].value }}</td>
+        <td>{{ fileInfo().size }}</td>
       </tr>
       <tr>
         <td>文件类型</td>
-        <td>{{ data[3].value }}</td>
+        <td>{{ fileInfo().type }}</td>
       </tr>
       <tr>
         <td>修改时间</td>
-        <td>{{ data[4].value }}</td>
+        <td>{{ fileInfo().lastModifiedDate }}</td>
       </tr>
       <tr>
         <td>解密密钥</td>
         <td>
           <el-input
-            placeholder="请输入密码"
+            placeholder="请输入密钥"
             v-model="smKey"
             class="input_key"
             onkeyup="this.value = this.value.replace(/[^\w.]/g,'');"
             maxlength="16"
             clearable
           ></el-input>
-            <el-button-group class="open_panel">
+          <el-button-group class="open_panel">
             <el-button
               type="primary"
               icon="el-icon-download"
               @click="clickGET"
-              :disabled="keyFlag"
+              :disabled="clickFlag"
+              title="下载到本地"
             ></el-button>
             <el-button
               type="primary"
               icon="el-icon-delete"
               @click="deleteIPFS"
-              :disabled="keyFlag"
+              title="删除IPFS固定"
             ></el-button>
             <el-button
               type="primary"
               icon="el-icon-close"
-              @click="panelFlag = false"
+              @click="changeFilePanel(false)"
+              title="关闭"
             ></el-button>
           </el-button-group>
         </td>
-
       </tr>
     </table>
+    <!-- {{fileInfo()}} -->
   </div>
 </template>
 <script>
+import {mapMutations, mapState} from 'vuex'
+import ajax from '../../utils/ajax'
 export default {
   props: {
     // data: Array,
   },
   data() {
     return {
-      data: [
-        {
-          name: "HASH",
-          key: "hash",
-          value: "QmaraZVg1jFzvV75cPw3z1dZ5TyvAG4jTAwhPh1nANE1NG",
-        },
-        { name: "文件名字", key: "name", value: "中文.txt" },
-        { name: "文件大小", key: "size", value: 6 },
-        { name: "文件类型", key: "type", value: "text/plain" },
-        {
-          name: "上次修改时间",
-          key: "lastModifiedDate",
-          value: "2021-04-16T11:59:31.340Z",
-        },
-        { name: "加密密钥", key: "smKey" },
-      ],
+      // data: [
+      //   {
+      //     name: "HASH",
+      //     key: "hash",
+      //     value: "QmaraZVg1jFzvV75cPw3z1dZ5TyvAG4jTAwhPh1nANE1NG",
+      //   },
+      //   { name: "文件名字", key: "name", value: "中文.txt" },
+      //   { name: "文件大小", key: "size", value: 6 },
+      //   { name: "文件类型", key: "type", value: "text/plain" },
+      //   {
+      //     name: "上次修改时间",
+      //     key: "lastModifiedDate",
+      //     value: "2021-04-16T11:59:31.340Z",
+      //   },
+      //   { name: "加密密钥", key: "smKey" },
+      // ],
       smKey: "", //输入密钥
     };
   },
   methods: {
-    errorHandler() {
+    ...mapMutations([
+      'changeFilePanel'
+    ]),
+    ...mapState({
+      fileInfo: 'fileInfo',
+    }),
+    //删除ipfs固定
+    async deleteIPFS() {
+      this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(async () => {
+          await ajax("/api/delete", { hash: this.fileInfo().hash });
+          this.$message({
+            type: 'success',
+            message: '删除成功!'
+          });
+          this.changeFilePanel(false)
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          });          
+        });
+
+
+
+      // let req = await ajax("/api/delete", { hash: this.fileInfo().hash });
+      // console.log(req);
+      // // this.panelFlag = false;
+      // this.changeFilePanel(false)
+    },
+    //点击下载文件
+    async clickGET() {
+      if (this.smKey) {
+        // debugger
+        // console.log(this.fileInfo);
+        // console.log(this.fileInfo());
+
+        //QmddpXWUJcg93FbGVKN3k7HvqrP8rSZXinWJVdzWxmevTW
+        let downloadUrl = await ajax(
+          "/api/download",
+          {
+            url: this.fileInfo().downloadUrl,
+            key: this.smKey,
+          },
+          "POST"
+        );
+        if (downloadUrl.Error) {
+          if (downloadUrl.Code === "401") {
+            this.$message.error("服务端解压失败,密钥错误!");
+          }
+        } else {
+          this.smKey = "";
+          let name = this.fileInfo().name;
+          var x = new XMLHttpRequest();
+          x.open("GET", downloadUrl, true);
+          x.responseType = "blob";
+          x.onload = function () {
+            var url = window.URL.createObjectURL(x.response);
+            var a = document.createElement("a");
+            a.href = url;
+            a.download = name;
+            a.click();
+          };
+          x.send();
+        }
+      } else {
+        this.$message.error("请输入密钥");
+      }
+    },
+  },
+  computed: {
+    clickFlag() {
+      if (this.smKey) {
+        return false;
+      }
       return true;
     },
   },
-  computed: {},
+  // mounted(){
+  //   // debugger
+  // }
 };
 </script>
 <style lang="scss" >
 .file_info {
   // border: 1px solid #eee;
-  border: 1px solid red;
+  // border: 1px solid red;
 
   height: 100%;
   width: 100%;
   z-index: 300;
   position: absolute;
   left: 0;
-  top: 0;
+  top: 1rem;
   background-color: #fff;
   margin: 10% 0;
   display: flex;
@@ -150,7 +233,6 @@ export default {
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
-
     }
   }
 }
@@ -176,9 +258,9 @@ export default {
     letter-spacing: 2px;
   }
 }
-.open_panel{
+.open_panel {
   right: 2rem;
-  position:absolute;
+  position: absolute;
 }
 //清除浮动
 .clear_float {

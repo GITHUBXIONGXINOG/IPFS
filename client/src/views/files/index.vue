@@ -9,20 +9,19 @@
       <PinInfo />
 
       <Upload />
-        <List />
-
+      <List v-show="filePanel"/>
     </div>
   </div>
 </template>
 <script>
 import Search from "../../components/search";
-import List from '../../components/list'
+import List from "../../components/list";
 import Upload from "../../components/upload";
-import PinInfo from '../../components/pinInfo'
+import PinInfo from "../../components/pinInfo";
+import {mapGetters,mapState} from 'vuex'
 export default {
   data() {
-    return {
-    };
+    return {};
   },
   components: {
     Search,
@@ -30,6 +29,14 @@ export default {
     Upload,
     PinInfo,
   },
+  computed:{
+  //  ...mapGetters([
+  //     'getFilePanelFlag'
+  //  ]),
+   ...mapState({
+     filePanel:'filePanel'
+   })
+  }
 };
 </script>
 <style lang="scss" scoped>

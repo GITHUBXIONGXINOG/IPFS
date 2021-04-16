@@ -13,7 +13,7 @@
       </div>
     </div>
     <div class="upload">
-<!--       <section class="panel_down" v-show="panelFlag === true">
+      <!--       <section class="panel_down" v-show="panelFlag === true">
         <div class="table_wrap">
           <el-table :data="tableData" style="width: 100%" class="fileInfo">
             <el-table-column prop="name" label="" width="180">
@@ -51,69 +51,66 @@
           </div>
         </div>
       </section> -->
-        <!-- <List :data="tableData"/> -->
-<!-- {{tableData}} -->
+      <!-- <List :data="tableData"/> -->
+      <!-- {{tableData}} -->
     </div>
   </div>
 </template>
 <script>
 import ajax from "../../utils/ajax";
 // import List from "../list";
+import {mapMutations} from 'vuex'
 export default {
   //QmaL3qoxGE8FpULDF6EYgt8ty2Fmj7g5yD5FfDiXxckcVh
   methods: {
-    async deleteIPFS() {
-      let req = await ajax("/api/delete", { hash: this.hashInfo });
-      console.log(req);
-      this.panelFlag = false;
-    },
+    ...mapMutations([
+      'changeFilePanel',
+      'saveFileInfo'
+    ]),
+    // async deleteIPFS() {
+    //   let req = await ajax("/api/delete", { hash: this.hashInfo });
+    //   console.log(req);
+    //   this.panelFlag = false;
+    // },
     handleClose() {
       this.panelFlag = false;
-      this.hashInfo = "";
+      // this.hashInfo = "";
     },
     async submitSearch() {
       //输入数量为46且限制范围
       if (this.searchRule) {
         const loading = this.$loading({
           lock: true,
-          text: "正在节点中搜索...",
+          text: "搜索中,请稍后...",
           spinner: "el-icon-loading",
           background: "rgba(0, 0, 0, 0.7)",
         });
-        setTimeout(() => {
-          loading.close();
-        }, 2000);
+        // setTimeout(() => {
+        //   loading.close();
+        // }, 2000);
         this.fileInfo = await ajax("/api/search", { hash: this.searchText });
+        loading.close();
+
         // console.log(this.fileInfo);
         // debugger;
         if (this.fileInfo.code === 0 && this.fileInfo.type === "error") {
           this.nullPanelFlag = true;
           this.$message.error("没有找到该HASH信息!");
         } else {
-          this.tableData.forEach((item, index) => {
-            // console.log(item);
-            // console.log(item.value);
-            if (index === 0) {
-              item.value = this.searchText || this.hashInfo;
-            } else {
-              item.value = this.fileInfo[item.key];
-            }
-          });
-          //QmaL3qoxGE8FpULDF6EYgt8ty2Fmj7g5yD5FfDiXxckcVh
-          // let table = document.getElementsByClassName('el-table__row')[5].childNodes
-          // console.log(table[1]);
-          // console.log(table[0]);
-          //QmPtRWBink1ic4sp2RrQVYPXzPqWLjiwcnTWZV4bH36pB5
-          // let image = await ajax("/api/search", { hash: this.searchText });
-          // console.log(this.resFile);
-          // console.log(image.length);
-          // this.imgurl = "data:image/png;base64," + image;
-          // this.imgurl = image;
-
+          
+          // this.tableData.forEach((item, index) => {
+          //   // console.log(item);
+          //   // console.log(item.value);
+          //   if (index === 0) {
+          //     item.value = this.searchText || this.hashInfo;
+          //   } else {
+          //     item.value = this.fileInfo[item.key];
+          //   }
+          // });
           if (this.fileInfo) {
-            // this.downLoadImage(this.imgurl);
-            this.panelFlag = true;
-            this.hashInfo = this.searchText;
+            this.changeFilePanel(true)
+            this.saveFileInfo({info:this.fileInfo,hash:this.searchText })
+            // this.hashInfo = this.searchText;
             this.searchText = "";
           }
         }
@@ -134,7 +131,7 @@ export default {
       this.downLoadImage(this.imgurl);
       this.panelFlag = false;
     },
-    //点击下载
+    /*     //点击下载
     async clickGET() {
       if (this.smKey) {
         //QmddpXWUJcg93FbGVKN3k7HvqrP8rSZXinWJVdzWxmevTW
@@ -168,7 +165,7 @@ export default {
       } else {
         this.$message.error("请输入密钥");
       }
-    },
+    }, */
   },
   data() {
     return {
@@ -177,40 +174,40 @@ export default {
       panelFlag: false, //显示面板
       downloadUrl: null, //下载地址
       downloadfilename: null, //图片名
-      hashInfo: "", //显示hash信息
+      // hashInfo: "", //显示hash信息
       fileInfo: {}, //文件信息
-      tableData: [
-        {
-          name: "HASH",
-          key: "hash",
-          value: "",
-        },
-        {
-          name: "文件名字",
-          key: "name",
-          value: "",
-        },
-        {
-          name: "文件大小",
-          key: "size",
-          value: "",
-        },
-        {
-          name: "文件类型",
-          key: "type",
-          value: "",
-        },
-        {
-          name: "上次修改时间",
-          key: "lastModifiedDate",
-          value: "",
-        },
-        {
-          name: "加密密钥",
-          key: "smKey",
-          value: "",
-        },
-      ],
+      // tableData: [
+      //   {
+      //     name: "HASH",
+      //     key: "hash",
+      //     value: "",
+      //   },
+      //   {
+      //     name: "文件名字",
+      //     key: "name",
+      //     value: "",
+      //   },
+      //   {
+      //     name: "文件大小",
+      //     key: "size",
+      //     value: "",
+      //   },
+      //   {
+      //     name: "文件类型",
+      //     key: "type",
+      //     value: "",
+      //   },
+      //   {
+      //     name: "上次修改时间",
+      //     key: "lastModifiedDate",
+      //     value: "",
+      //   },
+      //   {
+      //     name: "加密密钥",
+      //     key: "smKey",
+      //     value: "",
+      //   },
+      // ],
       nullPanelFlag: false, //空搜索
       smKey: "",
       keyFlag: true, //
