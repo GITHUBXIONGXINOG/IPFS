@@ -135,25 +135,34 @@ export default {
     async clickGET() {
       if (this.smKey) {
         //QmddpXWUJcg93FbGVKN3k7HvqrP8rSZXinWJVdzWxmevTW
-        let downloadUrl = await ajax("/api/download", {
-          url: this.fileInfo.downloadUrl,
-          key: this.smKey,
-        },'POST');
-
-        let name = this.tableData[1].value;
-        var x = new XMLHttpRequest();
-        x.open("GET", downloadUrl, true);
-        x.responseType = "blob";
-        x.onload = function () {
-          var url = window.URL.createObjectURL(x.response);
-          var a = document.createElement("a");
-          a.href = url;
-          a.download = name;
-          a.click();
-        };
-        x.send();
-      }else{
-        this.$message.error('请输入密钥')
+        let downloadUrl = await ajax(
+          "/api/download",
+          {
+            url: this.fileInfo.downloadUrl,
+            key: this.smKey,
+          },
+          "POST"
+        );
+        if (downloadUrl.Error) {
+            if (downloadUrl.Code === '401') {
+              this.$message.error("密钥错误");
+            }
+        } else {
+          let name = this.tableData[1].value;
+          var x = new XMLHttpRequest();
+          x.open("GET", downloadUrl, true);
+          x.responseType = "blob";
+          x.onload = function () {
+            var url = window.URL.createObjectURL(x.response);
+            var a = document.createElement("a");
+            a.href = url;
+            a.download = name;
+            a.click();
+          };
+          x.send();
+        }
+      } else {
+        this.$message.error("请输入密钥");
       }
     },
   },
