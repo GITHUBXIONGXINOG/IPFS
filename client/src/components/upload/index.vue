@@ -2,6 +2,9 @@
   <div class="upload-panel">
     <!-- {{ fileList }} -->
     <!-- list-type="picture-card" -->
+    <input type="file" id="avatar" />
+    <button @click="to_upload_file()">上传</button>
+
     <el-upload
       class="upload-file"
       drag
@@ -57,7 +60,7 @@ export default {
         hash: "",
         key: "",
       },
-      uploadFlag: false,//上传标记
+      uploadFlag: false, //上传标记
       dialogImageUrl: "",
       // dialogVisible: false,
       uploadListFlag: true,
@@ -65,6 +68,56 @@ export default {
     };
   },
   methods: {
+    // 处理上传进度
+    progressFunction(e) {
+      var progress_bar = document.getElementById("progress_bar");
+      var loading_dom = document.getElementById("loading");
+      var loading = Math.round((e.loaded / e.total) * 100);
+      console.log("loading::", loading);
+
+      if (loading === 100) {
+        loading_dom.innerHTML = "上传成功^_^";
+      } else {
+        loading_dom.innerHTML = "上传进度" + loading + "%";
+      }
+
+      progress_bar.style.width = String(loading * 3) + "px";
+    },
+
+    // to_upload_file() {
+    //   var file_obj = document.getElementById("avatar").files[0];
+    //   if (file_obj) {
+    //     var url = "/api/upload";
+    //     var form = new FormData();
+    //     form.append("file", file_obj);
+
+    //     var xhr = new XMLHttpRequest();
+    //     xhr.open("POST", url, true);
+
+    //     // 添加 上传成功后的回调函数
+    //     xhr.onload = function (e) {
+    //       console.log("上传成功", e);
+    //     };
+    //     // 添加 上传失败后的回调函数
+    //     xhr.onerror = function (e) {
+    //       console.log("上传失败", e);
+    //     };
+    //     // 添加 进度监听函数
+    //     xhr.upload.onprogress = function (event) {
+    //       console.log(event.loaded);
+    //       console.log(event.total);
+    //       if (event.lengthComputable) {
+    //         var percent = Math.floor((event.loaded / event.total) * 100);
+    //         // document.querySelector("#progress .progress-item").style.width = percent + "%";
+    //         // 设置进度显示
+    //         console.log(percent);
+    //       }
+    //     };
+    //     xhr.send(form);
+    //   } else {
+    //     alert("请先选择文件后再上传");
+    //   }
+    // },
     cleanData(type = 0) {
       this.smKey = "";
       this.fileInfo = { hash: "", key: "" };
@@ -72,21 +125,108 @@ export default {
         this.fileList = [];
       }
     },
+    //自定义上传实现,点击提交按钮后触发
     async UploadFile(param) {
       // console.log(param);
+      var url = "/api/upload";
       var formData = new FormData();
       formData.append("file", param.file);
       formData.append("smKey", this.smKey);
-      let res = await ajax("/api/upload", formData, "POST");
-      if (res.hash) {
-        //成功提交
-        this.handle_success(res.hash);
-        this.cleanData();
-         this.uploadFlag = false
+      var xhr = new XMLHttpRequest();
+      xhr.open("POST", url, true);
+      let _self = this
+      // 添加 上传成功后的回调函数
+      xhr.onload = function (e) {
+        console.log("上传成功", e);
+        _self.upload_success(e)
+        
+      };
+      // 添加 上传失败后的回调函数
+      xhr.onerror = function (e) {
+        console.log("上传失败", e);
+        _self.upload_failed(e)
+      };
+      // 添加 进度监听函数
+      xhr.upload.onprogress = function (event) {
+        console.log(event.loaded);
+        console.log(event.total);
+        if (event.lengthComputable) {
+          var percent = Math.floor((event.loaded / event.total) * 100);
+          // document.querySelector("#progress .progress-item").style.width = percent + "%";
+          // 设置进度显示
+          console.log(percent);
+        }
+      };
+      xhr.send(formData);
 
-      }
+      // let res = await ajax("/api/upload", formData, "POST");
+      // if (res.hash) {
+      //   //成功提交
+      //   this.handle_success(res.hash);
+      //   this.cleanData();
+      //   this.uploadFlag = false;
+      // }
       // console.log(res);
     },
+    //成功上传返回值
+    upload_success(e) {
+      // console.log(res);
+      // console.log("上传成功", e);
+      this.uploadFlag = false;
+      let hash = JSON.parse(e.target.response).hash
+      const h = this.$createElement;
+      this.$msgbox({
+        title: "上传成功",
+        message: h("p", null, [
+          h(
+            "span",
+            {
+              style:
+                "display:inline-block;color: teal;user-select: none;width: 65px;",
+            },
+            "文件hash: "
+          ),
+          h(
+            "span",
+            { style: "border:1px dotted #409EFF; border-radius:5px;" },
+            hash
+          ),
+          h("div", null),
+          h(
+            "span",
+            {
+              style:
+                "display:inline-block;color: teal;user-select: none;width: 65px;",
+            },
+            "加密密钥 :"
+          ),
+          h(
+            "span",
+            { style: "border:1px dotted #409EFF; border-radius:5px;" },
+            this.smKey
+          ),
+        ]),
+        showCancelButton: true,
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+      }).then((action) => {
+        this.$message({
+          type: "info",
+          message: "action: " + action,
+        });
+      });
+    },
+    //上传失败回调函数
+    upload_failed(e) {
+      console.log("上传失败", e);
+    },
+    //进度监听函数
+    // progressFunction(e) {
+    //   console.log(e);
+    //   console.log(e.loaded);
+    //   console.log(e.total);
+    // },
+
     handleRemove(file, fileList) {
       // console.log(file, fileList);
       let panel = document.getElementsByClassName("el-upload--text");
@@ -111,61 +251,16 @@ export default {
       }
       let panel = document.getElementsByClassName("el-upload--text");
       panel[0].setAttribute("class", "el-upload el-upload--text hidden_style");
- 
+
       return isLt2G;
     },
     //上传递交按钮
     submitUpload() {
-      this.uploadFlag = true
-
+      //显示加载面板
+      this.uploadFlag = true;
       this.$refs.upload.submit();
     },
-    //成功上传返回值
-    handle_success(res) {
-      // console.log(res);
-      const h = this.$createElement;
-      this.$msgbox({
-        title: "上传成功",
-        message: h("p", null, [
-          h(
-            "span",
-            {
-              style:
-                "display:inline-block;color: teal;user-select: none;width: 65px;",
-            },
-            "文件hash: "
-          ),
-          h(
-            "span",
-            { style: "border:1px dotted #409EFF; border-radius:5px;" },
-            res
-          ),
-          h("div", null),
-          h(
-            "span",
-            {
-              style:
-                "display:inline-block;color: teal;user-select: none;width: 65px;",
-            },
-            "加密密钥 :"
-          ),
-          h(
-            "span",
-            { style: "border:1px dotted #409EFF; border-radius:5px;" },
-            this.smKey
-          ),
-        ]),
-        showCancelButton: true,
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
- 
-      }).then((action) => {
-        this.$message({
-          type: "info",
-          message: "action: " + action,
-        });
-      });
-    },
+
     //字符串转换成16进制
     stringToHex(str) {
       var val = "";
@@ -195,8 +290,6 @@ export default {
   watch: {
     smKey(newValue, oldValue) {
       if (newValue && this.fileList.length === 1) {
-  
-
         this.uploadRuleFlag = false;
       } else {
         this.uploadRuleFlag = true;
@@ -233,8 +326,7 @@ export default {
   justify-content: center;
   align-items: center;
   position: relative;
- 
- 
+
   .el-upload-list--text {
     // border: 1px solid red;
     // width: 100%;
@@ -299,12 +391,12 @@ export default {
     background: #3890e7;
   }
 }
-.el-loading-mask{
+.el-loading-mask {
   width: 100%;
   height: 40rem;
   position: absolute;
-  .el-loading-spinner{
-      margin-top: -10rem;
+  .el-loading-spinner {
+    margin-top: -10rem;
   }
 }
 </style>
