@@ -28,7 +28,7 @@
         placeholder="请输入密钥"
         class="key_input"
         show-password
-        onkeyup="this.value = this.value.replace(/[^\w.]/g,'');"
+        maxlength="16"
       ></el-input>
     </div>
 
@@ -62,13 +62,12 @@ export default {
     };
   },
   methods: {
-    cleanData(type=0) {
+    cleanData(type = 0) {
       this.smKey = "";
       this.fileInfo = { hash: "", key: "" };
-      if (type==1) {
-          this.fileList = [];
+      if (type == 1) {
+        this.fileList = [];
       }
-    
     },
     async UploadFile(param) {
       // console.log(param);
@@ -103,7 +102,7 @@ export default {
       // img.src = ' '
       this.fileList = files;
       if (this.smKey) {
-      this.uploadRuleFlag = false;
+        this.uploadRuleFlag = false;
       }
       let panel = document.getElementsByClassName("el-upload--text");
       panel[0].setAttribute("class", "el-upload el-upload--text hidden_style");
@@ -153,7 +152,11 @@ export default {
             },
             "文件hash: "
           ),
-          h("span", { style: "border:1px dotted #409EFF; border-radius:5px;" }, res),
+          h(
+            "span",
+            { style: "border:1px dotted #409EFF; border-radius:5px;" },
+            res
+          ),
           h("div", null),
           h(
             "span",
@@ -163,7 +166,11 @@ export default {
             },
             "加密密钥 :"
           ),
-          h("span", { style: "border:1px dotted #409EFF; border-radius:5px;" }, this.smKey),
+          h(
+            "span",
+            { style: "border:1px dotted #409EFF; border-radius:5px;" },
+            this.smKey
+          ),
         ]),
         showCancelButton: true,
         confirmButtonText: "确定",
@@ -189,18 +196,22 @@ export default {
         });
       });
     },
-    // handleRemove(file, fileList) {
-    //   console.log(file, fileList);
-    // },
-    // handlePreview(file) {
-    //   console.log(file);
-    //   debugger;
-    //   this.dialogImageUrl = file.url;
-    //   this.dialogVisible = true;
-    // },
-    // fileSet(file, fileList) {
-    // //   console.log(file, fileList);
-    // },
+    //字符串转换成16进制
+    stringToHex(str) {
+      var val = "";
+      for (var i = 0; i < str.length; i++) {
+        val += str.charCodeAt(i).toString(16);
+      }
+      return val;
+    },
+    HexToString(hex) {
+      let val = ""
+      for (var i = 0; i < hex.length; i = i + 2) {
+        let p = hex.slice(i, i + 2);
+        val += String.fromCharCode(parseInt(p, 16));
+      }
+      return val
+    },
   },
   computed: {
     submitRule() {
@@ -214,7 +225,27 @@ export default {
   watch: {
     smKey(newValue, oldValue) {
       if (newValue && this.fileList.length === 1) {
+      // if (newValue) {
+        // var val = "";
+        // // var arr = Hex.split(",");
+        // for (var i = 0; i < Hex.length; i=i+2) {
+        //     debugger
+        //     let p = Hex.slice(i,i+2)
+        //     val += String.fromCharCode(parseInt(p, 16));
+        // }
+        // // for (var i = 0; i < Hex.length; i++) {
+
+        // //     val += String.fromCharCode(parseInt(arr[i], 16));
+        // // }
+        // console.log(val);
         // console.log(this.fileList);
+        // debugger
+        // console.log(newValue);
+        // let res = this.stringToHex(newValue);
+        // console.log(res);
+        // let resT = this.HexToString(res)
+      // console.log(resT);
+
         this.uploadRuleFlag = false;
       } else {
         this.uploadRuleFlag = true;

@@ -34,22 +34,23 @@ module.exports = {
                     // const fdBuffer = Buffer.from(fd)
                     // console.log(content);
                     //当输入密钥不足32位时进行填充
-                    while (key.length < 32) {
-                        let len = 32 - key.length
-                        let fill = len < key.length ? len : key.length
-                        key += key.slice(0, fill)
-                    }
+                    
                     // console.log(key);
-                    // function stringToHex(str) {
-                    //     var val = "";
-                    //     for (var i = 0; i < str.length; i++) {
-                    //             val += str.charCodeAt(i).toString(16);
-                    //     }
-                    //     return val;
-                    // }
+                    function stringToHex(str) {
+                        var val = "";
+                        for (var i = 0; i < str.length; i++) {
+                                val += str.charCodeAt(i).toString(16);
+                        }
+                        while (val.length < 32) {
+                            let len = 32 - val.length
+                            let fill = len < val.length ? len : val.length
+                            val += val.slice(0, fill)
+                        }
+                        return val;
+                    }
                      
                     // var str = "pytdthrsw54w456565653541234567890qwertyuiopasdfghjk";
-                    // let Hex = stringToHex(str);
+                    let hexKey = stringToHex(key);
                     // console.log(Hex);
                     // var val = "";
                     // // var arr = Hex.split(",");
@@ -72,7 +73,7 @@ module.exports = {
                     // console.log('-----------------------------------------------');
                     // console.log('2-jsonFd:',jsonFd);
                     // ECB
-                    encryptedData = SM4.encrypt(jsonFd, key, {
+                    encryptedData = SM4.encrypt(jsonFd, hexKey, {
                         inputEncoding: 'utf8',
                         outputEncoding: 'base64'
                     })

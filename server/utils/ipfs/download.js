@@ -24,13 +24,24 @@ module.exports = {
                     // console.log('-----------------------------------------------');
                     // console.log('3.2-tempJSON:',tempJSON);
                     //当输入密钥不足32位时进行填充
-                    while (key.length < 32) {
-                        let len = 32 - key.length
-                        let fill = len < key.length ? len : key.length
-                        key += key.slice(0, fill)
+                    function stringToHex(str) {
+                        var val = "";
+                        for (var i = 0; i < str.length; i++) {
+                                val += str.charCodeAt(i).toString(16);
+                        }
+                        while (val.length < 32) {
+                            let len = 32 - val.length
+                            let fill = len < val.length ? len : val.length
+                            val += val.slice(0, fill)
+                        }
+                        return val;
                     }
+                    let hexKey = stringToHex(key);
+
+
+
                     try {
-                        decryptedData = SM4.decrypt(tempJSON, key, {
+                        decryptedData = SM4.decrypt(tempJSON, hexKey, {
                             inputEncoding: 'base64',
                             outputEncoding: 'utf8'
                         })

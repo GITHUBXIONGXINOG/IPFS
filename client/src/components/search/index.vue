@@ -26,6 +26,7 @@
             show-password
             class="input_key"
             onkeyup="this.value = this.value.replace(/[^\w.]/g,'');"
+            maxlength="16"
           ></el-input>
           <div class="download_button">
             <!-- <el-button class="down" @click="clickGET">点击下载到本地 </el-button> -->
@@ -145,9 +146,10 @@ export default {
         );
         if (downloadUrl.Error) {
             if (downloadUrl.Code === '401') {
-              this.$message.error("密钥错误");
+              this.$message.error("服务端解压失败,密钥错误!");
             }
         } else {
+          this.smKey = ''
           let name = this.tableData[1].value;
           var x = new XMLHttpRequest();
           x.open("GET", downloadUrl, true);
@@ -233,6 +235,8 @@ export default {
     smKey(newVal) {
       if (newVal) {
         this.keyFlag = false;
+        // debugger
+        // console.log(newVal);
       } else {
         this.keyFlag = true;
       }
