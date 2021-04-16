@@ -9,12 +9,14 @@
       <PinInfo />
 
       <Upload />
+        <List />
+
     </div>
   </div>
 </template>
 <script>
 import Search from "../../components/search";
-// import List from '../../components/list'
+import List from '../../components/list'
 import Upload from "../../components/upload";
 import PinInfo from '../../components/pinInfo'
 export default {
@@ -24,7 +26,7 @@ export default {
   },
   components: {
     Search,
-    // List,
+    List,
     Upload,
     PinInfo,
   },

@@ -13,7 +13,7 @@
       </div>
     </div>
     <div class="upload">
-      <section class="panel_down" v-show="panelFlag === true">
+<!--       <section class="panel_down" v-show="panelFlag === true">
         <div class="table_wrap">
           <el-table :data="tableData" style="width: 100%" class="fileInfo">
             <el-table-column prop="name" label="" width="180">
@@ -29,7 +29,6 @@
             maxlength="16"
           ></el-input>
           <div class="download_button">
-            <!-- <el-button class="down" @click="clickGET">点击下载到本地 </el-button> -->
             <el-button-group>
               <el-button
                 type="primary"
@@ -51,12 +50,15 @@
             </el-button-group>
           </div>
         </div>
-      </section>
+      </section> -->
+        <!-- <List :data="tableData"/> -->
+<!-- {{tableData}} -->
     </div>
   </div>
 </template>
 <script>
 import ajax from "../../utils/ajax";
+// import List from "../list";
 export default {
   //QmaL3qoxGE8FpULDF6EYgt8ty2Fmj7g5yD5FfDiXxckcVh
   methods: {
@@ -145,11 +147,11 @@ export default {
           "POST"
         );
         if (downloadUrl.Error) {
-            if (downloadUrl.Code === '401') {
-              this.$message.error("服务端解压失败,密钥错误!");
-            }
+          if (downloadUrl.Code === "401") {
+            this.$message.error("服务端解压失败,密钥错误!");
+          }
         } else {
-          this.smKey = ''
+          this.smKey = "";
           let name = this.tableData[1].value;
           var x = new XMLHttpRequest();
           x.open("GET", downloadUrl, true);
@@ -216,6 +218,7 @@ export default {
   },
   components: {
     // Upload
+    // List,
   },
   computed: {
     searchRule() {
@@ -406,7 +409,7 @@ export default {
 //输入密码
 .input_key {
   // border: 1px solid red;
-  left: 12%;
+  left: 0;
   position: absolute;
   width: 65% !important;
   height: 10%;

@@ -6,6 +6,69 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "2295978",
+      "name": "zip",
+      "font_class": "zip",
+      "unicode": "e60b",
+      "unicode_decimal": 58891
+    },
+    {
+      "icon_id": "3705478",
+      "name": "图片",
+      "font_class": "tupian",
+      "unicode": "e644",
+      "unicode_decimal": 58948
+    },
+    {
+      "icon_id": "6376410",
+      "name": "Pdf",
+      "font_class": "Pdf",
+      "unicode": "e733",
+      "unicode_decimal": 59187
+    },
+    {
+      "icon_id": "9881677",
+      "name": "KHCFDC_TXT",
+      "font_class": "TXTCopy",
+      "unicode": "e6ec",
+      "unicode_decimal": 59116
+    },
+    {
+      "icon_id": "10566282",
+      "name": "exe",
+      "font_class": "exe",
+      "unicode": "e605",
+      "unicode_decimal": 58885
+    },
+    {
+      "icon_id": "12904098",
+      "name": "MP3",
+      "font_class": "MP",
+      "unicode": "e613",
+      "unicode_decimal": 58899
+    },
+    {
+      "icon_id": "12904125",
+      "name": "HTML",
+      "font_class": "HTML",
+      "unicode": "e620",
+      "unicode_decimal": 58912
+    },
+    {
+      "icon_id": "15799251",
+      "name": "文件",
+      "font_class": "wenjianjia",
+      "unicode": "e603",
+      "unicode_decimal": 58883
+    },
+    {
+      "icon_id": "19649329",
+      "name": "MP4",
+      "font_class": "MP4",
+      "unicode": "e643",
+      "unicode_decimal": 58947
+    },
+    {
       "icon_id": "124495",
       "name": "警告",
       "font_class": "jinggao",

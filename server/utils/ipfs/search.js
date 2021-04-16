@@ -8,8 +8,8 @@ module.exports = {
         try {
             debugger
             var ipfs = await IpfsApi('localhost', '5001', { protocol: 'http' })
+             await ipfs.pin.ls(hash)
             let result = await ipfs.cat(hash)
-            // let pathInfo =  await ipfs.pin.ls(hash)
             // console.log(pathInfo);
             // console.log(result);
             let fileInfoString = result.toString('utf-8',0,300)
