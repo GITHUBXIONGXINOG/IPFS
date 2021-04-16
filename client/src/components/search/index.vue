@@ -90,7 +90,6 @@ export default {
         // }, 2000);
         this.fileInfo = await ajax("/api/search", { hash: this.searchText });
         loading.close();
-
         // console.log(this.fileInfo);
         // debugger;
         if (this.fileInfo.code === 0 && this.fileInfo.type === "error") {
@@ -107,6 +106,10 @@ export default {
           //     item.value = this.fileInfo[item.key];
           //   }
           // });
+          // debugger
+          let upSm = document.getElementsByClassName('el-input__inner')
+          console.log(upSm);
+          upSm[0].value = ""
           if (this.fileInfo) {
             this.changeFilePanel(true)
             this.saveFileInfo({info:this.fileInfo,hash:this.searchText })

@@ -4,7 +4,7 @@
       <tr class="file_img">
         <td>
           <svg class="icon" aria-hidden="true">
-            <use xlink:href="#iconTXTCopy"></use>
+            <use :xlink:href="imgForType"></use>
           </svg>
         </td>
       </tr>
@@ -14,7 +14,7 @@
       </tr>
       <tr>
         <td>文件名字</td>
-        <td>{{ fileInfo().name}}</td>
+        <td>{{ fileInfo().name }}</td>
       </tr>
       <tr>
         <td>文件大小</td>
@@ -56,7 +56,7 @@
             <el-button
               type="primary"
               icon="el-icon-close"
-              @click="changeFilePanel(false)"
+              @click="closeFilePanel"
               title="关闭"
             ></el-button>
           </el-button-group>
@@ -67,8 +67,8 @@
   </div>
 </template>
 <script>
-import {mapMutations, mapState} from 'vuex'
-import ajax from '../../utils/ajax'
+import { mapMutations, mapState } from "vuex";
+import ajax from "../../utils/ajax";
 export default {
   props: {
     // data: Array,
@@ -95,39 +95,10 @@ export default {
     };
   },
   methods: {
-    ...mapMutations([
-      'changeFilePanel'
-    ]),
+    ...mapMutations(["changeFilePanel"]),
     ...mapState({
-      fileInfo: 'fileInfo',
+      fileInfo: "fileInfo",
     }),
-    //删除ipfs固定
-    async deleteIPFS() {
-      this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(async () => {
-          await ajax("/api/delete", { hash: this.fileInfo().hash });
-          this.$message({
-            type: 'success',
-            message: '删除成功!'
-          });
-          this.changeFilePanel(false)
-        }).catch(() => {
-          this.$message({
-            type: 'info',
-            message: '已取消删除'
-          });          
-        });
-
-
-
-      // let req = await ajax("/api/delete", { hash: this.fileInfo().hash });
-      // console.log(req);
-      // // this.panelFlag = false;
-      // this.changeFilePanel(false)
-    },
     //点击下载文件
     async clickGET() {
       if (this.smKey) {
@@ -167,6 +138,40 @@ export default {
         this.$message.error("请输入密钥");
       }
     },
+    //删除ipfs固定
+    async deleteIPFS() {
+      this.$confirm("此操作将永久删除该文件, 是否继续?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
+      })
+        .then(async () => {
+          await ajax("/api/delete", { hash: this.fileInfo().hash });
+          this.smKey = "";
+          this.$message({
+            type: "success",
+            message: "删除成功!",
+          });
+          this.changeFilePanel(false);
+        })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "已取消删除",
+          });
+        });
+
+      // let req = await ajax("/api/delete", { hash: this.fileInfo().hash });
+      // console.log(req);
+      // // this.panelFlag = false;
+      // this.changeFilePanel(false)
+    },
+    //关闭面板
+    closeFilePanel() {
+      // debugger;
+      this.changeFilePanel(false);
+      this.smKey = "";
+    },
   },
   computed: {
     clickFlag() {
@@ -174,6 +179,31 @@ export default {
         return false;
       }
       return true;
+    },
+    //文件类型缩略图
+    imgForType() {
+      switch (this.fileInfo().type) {
+        case "text/plain":
+          return "#iconTXTCopy";
+        case "application/pdf":
+          return "#iconPdf";
+        case "video/mp4":
+          return "#iconMP4";
+        case "image/png":
+        case "image/jpeg":
+        case "image/x-icon":
+          return "#icontupian";
+        case "text/html":
+          return "#iconHTML";
+        case "application/x-zip-compressed":
+          return "#iconzip";
+        case "application/octet-stream":
+          return "#iconexe";
+        case "audio/mpeg":
+          return "#iconMP";
+        default:
+          return "#iconfiles";
+      }
     },
   },
   // mounted(){

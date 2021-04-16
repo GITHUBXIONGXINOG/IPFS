@@ -26,6 +26,7 @@ export default new Vuex.Store({
       state.fileInfo  = data.info
       state.fileInfo.hash = data.hash
     }
+    
   },
   actions: {
     

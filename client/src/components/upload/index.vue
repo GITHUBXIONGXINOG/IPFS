@@ -13,6 +13,8 @@
       :on-remove="handleRemove"
       name="upload_file"
       :http-request="UploadFile"
+      v-loading="uploadFlag"
+      element-loading-text="正在上传并加密文件,请稍后"
     >
       <!-- v-show="!fileList.length" -->
       <i class="el-icon-upload"></i>
@@ -29,6 +31,7 @@
         class="key_input"
         show-password
         maxlength="16"
+        ref="key_input"
       ></el-input>
     </div>
 
@@ -54,7 +57,7 @@ export default {
         hash: "",
         key: "",
       },
-      uploadFlag: false,
+      uploadFlag: false,//上传标记
       dialogImageUrl: "",
       // dialogVisible: false,
       uploadListFlag: true,
@@ -79,6 +82,8 @@ export default {
         //成功提交
         this.handle_success(res.hash);
         this.cleanData();
+         this.uploadFlag = false
+
       }
       // console.log(res);
     },
@@ -106,35 +111,13 @@ export default {
       }
       let panel = document.getElementsByClassName("el-upload--text");
       panel[0].setAttribute("class", "el-upload el-upload--text hidden_style");
-      // console.log("解密：" + decryptData_ECB("sS0IZivEHObrNLNestJxQA=="));
-      // console.log("加密：" + encryptData_ECB(file));
-      // let encryECB = encryptData_ECB(file)
-      // debugger
-      // let decryECB = decryptData_ECB(encryECB)
-      // console.log('加密:',encryECB);
-      // console.log('解密:',decryECB);
-      // debugger
-      //  let fr = new FileReader()
-      //  console.log(fr);
-      //  debugger
-      //  console.log(file);
-      //  let uploadfile = this.$refs.upload
-      //  console.log(uploadfile);
-      // fr.readAsDataURL(file)
-      // fr.onloadend = function (e) {
-      //   // console.log(fr.result)
-      //   console.log(e.target);
-      // }
-      // fr.onerror = function (err) {
-      //   console.error(err)
-      // }
-      // if(file){
-      //   fr.readAsDataURL(file)
-      // }
+ 
       return isLt2G;
     },
     //上传递交按钮
     submitUpload() {
+      this.uploadFlag = true
+
       this.$refs.upload.submit();
     },
     //成功上传返回值
@@ -175,20 +158,7 @@ export default {
         showCancelButton: true,
         confirmButtonText: "确定",
         cancelButtonText: "取消",
-        // beforeClose: (action, instance, done) => {
-        //   if (action === "confirm") {
-        //     instance.confirmButtonLoading = true;
-        //     instance.confirmButtonText = "执行中...";
-        //     setTimeout(() => {
-        //       done();
-        //       setTimeout(() => {
-        //         instance.confirmButtonLoading = false;
-        //       }, 300);
-        //     }, 3000);
-        //   } else {
-        //     done();
-        //   }
-        // },
+ 
       }).then((action) => {
         this.$message({
           type: "info",
@@ -205,12 +175,12 @@ export default {
       return val;
     },
     HexToString(hex) {
-      let val = ""
+      let val = "";
       for (var i = 0; i < hex.length; i = i + 2) {
         let p = hex.slice(i, i + 2);
         val += String.fromCharCode(parseInt(p, 16));
       }
-      return val
+      return val;
     },
   },
   computed: {
@@ -225,26 +195,7 @@ export default {
   watch: {
     smKey(newValue, oldValue) {
       if (newValue && this.fileList.length === 1) {
-      // if (newValue) {
-        // var val = "";
-        // // var arr = Hex.split(",");
-        // for (var i = 0; i < Hex.length; i=i+2) {
-        //     debugger
-        //     let p = Hex.slice(i,i+2)
-        //     val += String.fromCharCode(parseInt(p, 16));
-        // }
-        // // for (var i = 0; i < Hex.length; i++) {
-
-        // //     val += String.fromCharCode(parseInt(arr[i], 16));
-        // // }
-        // console.log(val);
-        // console.log(this.fileList);
-        // debugger
-        // console.log(newValue);
-        // let res = this.stringToHex(newValue);
-        // console.log(res);
-        // let resT = this.HexToString(res)
-      // console.log(resT);
+  
 
         this.uploadRuleFlag = false;
       } else {
@@ -282,70 +233,8 @@ export default {
   justify-content: center;
   align-items: center;
   position: relative;
-  .el-upload--text {
-    // border: 1px solid red;
-    // width: 30rem;
-    // height: 15rem;
-    .el-upload-dragger {
-      // border: 1px solid red;
-      // width: 25rem;
-      // height: 15rem;
-      // display: flex;
-      // flex-direction: column;
-      // justify-content: center;
-    }
-  }
-  /*   .el-upload--picture-card {
-    width: 30rem;
-    height: 20rem;
-    .el-upload-dragger {
-      width: 100%;
-      height: 100%;
-      // display: flex;
-      // flex-direction: column;
-      // justify-content: center;
-      .el-icon-upload {
-        width: 100%;
-        position: relative;
-        &::before {
-          font-size: 10rem;
-          position: absolute;
-          left: 0;
-          right: 0;
-          top: 30px;
-          margin: auto;
-        }
-      }
-      .el-upload__text {
-        // margin-top: -30px;
-        // font-size: 20px;
-      }
-    }
-  }
-  .el-upload-list--picture-card {
-    position: absolute;
-    z-index: 2;
-    // width: 50%;
-    // height: 100%;
-    background-color: #fff;
-    .is-ready,
-    .is-success {
-      top: 0;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      margin: auto;
-      width: 100%;
-      max-width: 29rem;
-      height: 100%;
-      max-height: 19rem;
-      // margin: 20px;
-    }
-    //     .is-success{
-    // border: 1px solid red;
-
-    // }
-  } */
+ 
+ 
   .el-upload-list--text {
     // border: 1px solid red;
     // width: 100%;
@@ -408,6 +297,14 @@ export default {
   background-color: #409eff;
   &:hover {
     background: #3890e7;
+  }
+}
+.el-loading-mask{
+  width: 100%;
+  height: 40rem;
+  position: absolute;
+  .el-loading-spinner{
+      margin-top: -10rem;
   }
 }
 </style>
