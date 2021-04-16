@@ -5,15 +5,15 @@ const { SM4 } = require('gm-crypto')
 
 module.exports = {
     download: (url, key) => {
-        return new Promise(async (resolve,reject) => {
+        return new Promise(async (resolve, reject) => {
             try {
                 let path = _path.join(__dirname, '../', '../', 'public', url)
                 // console.log(path);
                 // fs.unlink(path,(err)=>{if(err)console.error(err);})
-                console.log('----------');
+
                 // console.log(_key);
                 // const key = '0123456789abcdeffedcba9876543210' // Any string of 32 hexadecimal digits
-               fs.readFile(path, (err, fd) => {
+                fs.readFile(path, (err, fd) => {
                     if (err) {
                         console.error(err)
                     }
@@ -23,14 +23,19 @@ module.exports = {
                     const tempJSON = fd.toString()
                     // console.log('-----------------------------------------------');
                     // console.log('3.2-tempJSON:',tempJSON);
-    
-                    decryptedData = SM4.decrypt(tempJSON, key, {
-                        inputEncoding: 'base64',
-                        outputEncoding: 'utf8'
-                    })
-                    // console.log('-----------------------------------------------');
-                    // console.log('4-decryptedData:', decryptedData);
+                    //当输入密钥不足32位时进行填充
+                    while (key.length < 32) {
+                        let len = 32 - key.length
+                        let fill = len < key.length ? len : key.length
+                        key += key.slice(0, fill)
+                    }
                     try {
+                        decryptedData = SM4.decrypt(tempJSON, key, {
+                            inputEncoding: 'base64',
+                            outputEncoding: 'utf8'
+                        })
+                        // console.log('-----------------------------------------------');
+                        // console.log('4-decryptedData:', decryptedData);
                         const jsonData = JSON.parse(decryptedData)
                         // console.log('-----------------------------------------------');
                         // console.log('5-jsonData',jsonData);
@@ -43,7 +48,7 @@ module.exports = {
                             if (err) {
                                 // console.log(err)
                                 reject(err)
-                            }else{
+                            } else {
                                 resolve(`/api/${url}_decrypted`)
                             }
                         })
@@ -51,17 +56,17 @@ module.exports = {
                         // console.error(err);
                         reject(err)
                     }
-    
+
                 })
                 // console.log(fss);
                 // return `/api/${url}_decrypted`
-    
+
             } catch (err) {
                 console.error(err);
                 return err
             }
         })
-      
+
 
     }
 }

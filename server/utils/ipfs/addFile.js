@@ -3,7 +3,7 @@ const pathFn = require('path')
 const fs = require('fs')
 const { SM4 } = require('gm-crypto')
 module.exports = {
-    addfile: async (param,key) => {
+    addfile: async (param, key) => {
         return new Promise(async (resolve) => {
             try {
                 var ipfs = IpfsApi('localhost', '5001', { protocol: 'http' })
@@ -18,7 +18,7 @@ module.exports = {
                 //hash
                 let hash = null
                 // console.log(path, type, name, size, lastModifiedDate);
-               
+
 
                 fs.readFile(path, async (err, fd) => {
                     if (err) {
@@ -33,9 +33,38 @@ module.exports = {
                     // 把数据转换成Buffer
                     // const fdBuffer = Buffer.from(fd)
                     // console.log(content);
-                    
+                    //当输入密钥不足32位时进行填充
+                    while (key.length < 32) {
+                        let len = 32 - key.length
+                        let fill = len < key.length ? len : key.length
+                        key += key.slice(0, fill)
+                    }
+                    // console.log(key);
+                    // function stringToHex(str) {
+                    //     var val = "";
+                    //     for (var i = 0; i < str.length; i++) {
+                    //             val += str.charCodeAt(i).toString(16);
+                    //     }
+                    //     return val;
+                    // }
+                     
+                    // var str = "pytdthrsw54w456565653541234567890qwertyuiopasdfghjk";
+                    // let Hex = stringToHex(str);
+                    // console.log(Hex);
+                    // var val = "";
+                    // // var arr = Hex.split(",");
+                    // for (var i = 0; i < Hex.length; i=i+2) {
+                    //     debugger
+                    //     let p = Hex.slice(i,i+2)
+                    //     val += String.fromCharCode(parseInt(p, 16));
+                    // }
+                    // // for (var i = 0; i < Hex.length; i++) {
+
+                    // //     val += String.fromCharCode(parseInt(arr[i], 16));
+                    // // }
+                    // console.log(val);
                     // const key = '0123456789abcdeffedcba9876543210' // Any string of 32 hexadecimal digits
-                    const key = '11111111111111111111111111111111' // Any string of 32 hexadecimal digits
+                    // const key = '11111111111111111111111111111111' // Any string of 32 hexadecimal digits
                     // const originalData = fd
                     let encryptedData, decryptedData
                     // console.log('1-fd:',fd);
