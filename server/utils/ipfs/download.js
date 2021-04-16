@@ -4,14 +4,14 @@ const _path = require('path')
 const { SM4 } = require('gm-crypto')
 
 module.exports = {
-    download: async (url) => {
+    download: async (url,key) => {
         try {
-            console.log(url);
             let path = _path.join(__dirname,'../','../','public',url)
             // console.log(path);
             // fs.unlink(path,(err)=>{if(err)console.error(err);})
-
-            const key = '0123456789abcdeffedcba9876543210' // Any string of 32 hexadecimal digits
+            console.log('----------');
+            // console.log(_key);
+            // const key = '0123456789abcdeffedcba9876543210' // Any string of 32 hexadecimal digits
             fs.readFile(path, async (err, fd) => {
                 if (err) {
                     console.error(err)

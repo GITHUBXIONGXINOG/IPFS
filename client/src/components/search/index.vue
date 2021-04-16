@@ -27,31 +27,29 @@
             class="input_key"
             onkeyup="this.value = this.value.replace(/[^\w.]/g,'');"
           ></el-input>
-             <div class="download_button">
-          <!-- <el-button class="down" @click="clickGET">点击下载到本地 </el-button> -->
-          <el-button-group>
-            <el-button
-              type="primary"
-              icon="el-icon-download"
-              @click="clickGET"
-               :disabled="keyFlag"
-            ></el-button>
-            <el-button
-              type="primary"
-              icon="el-icon-close"
-              @click="panelFlag = false"
-            ></el-button>
-            <el-button
-              type="primary"
-              icon="el-icon-delete"
-              @click="deleteIPFS"
-               :disabled="keyFlag"
-            ></el-button>
-          </el-button-group>
+          <div class="download_button">
+            <!-- <el-button class="down" @click="clickGET">点击下载到本地 </el-button> -->
+            <el-button-group>
+              <el-button
+                type="primary"
+                icon="el-icon-download"
+                @click="clickGET"
+                :disabled="keyFlag"
+              ></el-button>
+              <el-button
+                type="primary"
+                icon="el-icon-delete"
+                @click="deleteIPFS"
+                :disabled="keyFlag"
+              ></el-button>
+              <el-button
+                type="primary"
+                icon="el-icon-close"
+                @click="panelFlag = false"
+              ></el-button>
+            </el-button-group>
+          </div>
         </div>
-        </div>
-
-     
       </section>
     </div>
   </div>
@@ -133,31 +131,30 @@ export default {
       this.downLoadImage(this.imgurl);
       this.panelFlag = false;
     },
+    //点击下载
     async clickGET() {
-      // window.open(this.testUrl)
-      // let downloadUrl = await ajax("/api/download", { hash: this.hashInfo });
-      // var url = "";
-      // console.log(this.fileInfo.downloadUrl);
-      let downloadUrl = await ajax("/api/download", {
-        url: this.fileInfo.downloadUrl,
-        key: this.smKey
-      });
-      // console.log(data);
-      // debugger
-      // console.log(downloadUrl);
-      // let downloadUrl = await this.imgGetUrl;
-      let name = this.tableData[1].value;
-      var x = new XMLHttpRequest();
-      x.open("GET", downloadUrl, true);
-      x.responseType = "blob";
-      x.onload = function () {
-        var url = window.URL.createObjectURL(x.response);
-        var a = document.createElement("a");
-        a.href = url;
-        a.download = name;
-        a.click();
-      };
-      x.send();
+      if (this.smKey) {
+        //QmddpXWUJcg93FbGVKN3k7HvqrP8rSZXinWJVdzWxmevTW
+        let downloadUrl = await ajax("/api/download", {
+          url: this.fileInfo.downloadUrl,
+          key: this.smKey,
+        },'POST');
+
+        let name = this.tableData[1].value;
+        var x = new XMLHttpRequest();
+        x.open("GET", downloadUrl, true);
+        x.responseType = "blob";
+        x.onload = function () {
+          var url = window.URL.createObjectURL(x.response);
+          var a = document.createElement("a");
+          a.href = url;
+          a.download = name;
+          a.click();
+        };
+        x.send();
+      }else{
+        this.$message.error('请输入密钥')
+      }
     },
   },
   data() {
@@ -203,7 +200,7 @@ export default {
       ],
       nullPanelFlag: false, //空搜索
       smKey: "",
-      keyFlag: true,//
+      keyFlag: true, //
     };
   },
   components: {
@@ -221,6 +218,15 @@ export default {
       let image = ajax("/api/search", { hash: this.searchText });
       // console.log(image);
       return image;
+    },
+  },
+  watch: {
+    smKey(newVal) {
+      if (newVal) {
+        this.keyFlag = false;
+      } else {
+        this.keyFlag = true;
+      }
     },
   },
 };

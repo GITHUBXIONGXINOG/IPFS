@@ -4,10 +4,9 @@ const _path = require('path')
 const fs = require('fs')
 const { download } = require('../utils/ipfs/download')
 /* GET users listing. */
-router.get('/', async function (req, res, next) {
-    // debugger
-    let file = await download(req.query.url)
-
+router.post('/', async function (req, res, next) {
+    const {url, key} = req.body
+    let file = await download(url,key)
     res.send(file)
 
 });

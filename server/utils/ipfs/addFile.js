@@ -34,7 +34,8 @@ module.exports = {
                     // const fdBuffer = Buffer.from(fd)
                     // console.log(content);
                     
-                    const key = '0123456789abcdeffedcba9876543210' // Any string of 32 hexadecimal digits
+                    // const key = '0123456789abcdeffedcba9876543210' // Any string of 32 hexadecimal digits
+                    const key = '11111111111111111111111111111111' // Any string of 32 hexadecimal digits
                     // const originalData = fd
                     let encryptedData, decryptedData
                     // console.log('1-fd:',fd);

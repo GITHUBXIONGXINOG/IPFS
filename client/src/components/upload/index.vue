@@ -102,7 +102,9 @@ export default {
       // console.log(img.src);
       // img.src = ' '
       this.fileList = files;
+      if (this.smKey) {
       this.uploadRuleFlag = false;
+      }
       let panel = document.getElementsByClassName("el-upload--text");
       panel[0].setAttribute("class", "el-upload el-upload--text hidden_style");
       // console.log("解密：" + decryptData_ECB("sS0IZivEHObrNLNestJxQA=="));
