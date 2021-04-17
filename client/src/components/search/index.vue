@@ -246,10 +246,10 @@ export default {
     },
   },
   mounted(){
-    setInterval(async ()=>{
-        let progress = await ajax('/api/progress')
-        console.log(progress);
-    },2000)
+    // setInterval(async ()=>{
+    //     let progress = await ajax('/api/progress')
+    //     console.log(progress);
+    // },2000)
   }
 };
 </script>

@@ -2,7 +2,7 @@ let IpfsApi = require("ipfs-api")
 const pathFn = require('path')
 const fs = require('fs')
 const { SM4 } = require('gm-crypto')
-const {progress} = require('./progress')
+const { progress } = require('./progress')
 module.exports = {
     addfile: async (param, key) => {
         return new Promise(async (resolve) => {
@@ -35,12 +35,12 @@ module.exports = {
                     // const fdBuffer = Buffer.from(fd)
                     // console.log(content);
                     //当输入密钥不足32位时进行填充
-                    
+
                     // console.log(key);
                     function stringToHex(str) {
                         var val = "";
                         for (var i = 0; i < str.length; i++) {
-                                val += str.charCodeAt(i).toString(16);
+                            val += str.charCodeAt(i).toString(16);
                         }
                         while (val.length < 32) {
                             let len = 32 - val.length
@@ -49,7 +49,7 @@ module.exports = {
                         }
                         return val;
                     }
-                     
+
                     // var str = "pytdthrsw54w456565653541234567890qwertyuiopasdfghjk";
                     let hexKey = stringToHex(key);
                     // console.log(Hex);
@@ -72,30 +72,71 @@ module.exports = {
                     // console.log('1-fd:',fd);
                     let jsonFd = JSON.stringify(fd)
                     console.log(fd);
-                    console.log(fd.length);
+                    // console.log(fd.length);
 
-                        // buf.slice([start[, end]])
-                        let arrBuf = []
-                    let buf = Buffer.alloc(25)
-                    
-                    for (let index = 0; index < fd.length; index+=25) {
+                    // buf.slice([start[, end]])
+                    let arrBuf = []
+                    // let buf = Buffer.alloc(25)
+
+                    for (let index = 0; index < fd.length; index += 25) {
                         // debugger
                         // arrBuf.push(fd.slice(index,index+25)  )  
-                        encryptedData = SM4.encrypt(fd.slice(index,index+25), hexKey, {
+                        encryptedData = SM4.encrypt(JSON.stringify(fd.slice(index, index + 25)), hexKey, {
                             inputEncoding: 'utf8',
                             outputEncoding: 'base64'
                         })
-                        arrBuf.push(Buffer.from(encryptedData))
-                        
-                       }
-                       progress(100)
-                       console.log(progress());
-                    //    console.log(arrBuf);
-                    //    let AllBuf = Buffer.concat(arrBuf)
-                    //    console.log(AllBuf);
-                    //    for (var i = 0; i < arrBuf.length; i++) {
-                        
-                    //    }
+                        // debugger
+                        arrBuf.push(encryptedData)
+
+                    }
+                    progress(100)
+                    console.log(progress());
+                    console.log(arrBuf);
+                    let AllBuf = []
+                    for (var i = 0; i < arrBuf.length; i++) {
+                        AllBuf = AllBuf.concat(arrBuf[i])
+                    }
+
+                    // let AllBuf = Buffer.concat(arrBuf)
+                    // console.log(AllBuf);
+                    let resBuf = []
+                    for (var index = 0; index < AllBuf.length; index++) {
+                        let chunkBuf = AllBuf.slice(index, index + 25)
+                        let chunkJSON = chunkBuf.toString()
+                        // debugger
+                        decryptedData = SM4.decrypt(chunkJSON, hexKey, {
+                            inputEncoding: 'base64',
+                            outputEncoding: 'utf8'
+                        })
+                        // debugger
+                        // console.log(decryptedData.toString());
+                        resBuf.push(Buffer.from(JSON.parse(decryptedData)))
+                    }
+                    debugger
+                    console.log(resBuf);
+                    
+                     let resAllBuf = Buffer.concat(resBuf)
+                     console.log(resAllBuf);
+                     console.log(resAllBuf.toString());
+                    // for (var i = 0; i < resBuf.length; i++) {
+
+                    // }
+                    // let eee = Buffer.from(resBuf[0])
+                    // console.log(eee);
+                    // console.log(eee.toString());
+
+
+                    // let chunkJSON = 'aLQfIBhTZnDWt9RLdRVz1AOeNCNqwC7e3ayY3imDg8A='
+                    // decryptedData = SM4.decrypt(chunkJSON, hexKey, {
+                    //             inputEncoding: 'base64',
+                    //             outputEncoding: 'utf8'
+                    //         })
+                    //         console.log(decryptedData);
+
+
+
+
+
 
                     // console.log('-----------------------------------------------');
                     // console.log('2-jsonFd:',jsonFd);
@@ -105,7 +146,7 @@ module.exports = {
                         outputEncoding: 'base64'
                     })
                     // console.log('-----------------------------------------------');
-                    console.log('3-encryptedData:',encryptedData);
+                    // console.log('3-encryptedData:', encryptedData);
 
                     const tempBuffer = Buffer.from(encryptedData)
                     // console.log('-----------------------------------------------');
