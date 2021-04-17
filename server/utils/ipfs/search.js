@@ -38,8 +38,9 @@ module.exports = {
             // const decryptedDataBuffer = Buffer.from(jsonData)
             // // console.log('-----------------------------------------------');
             // // console.log("6-decryptedDataBuffer:",decryptedDataBuffer);
-
-
+        
+                debugger
+                console.log(result.slice(300));
 
             //写入文件到本地
             fs.writeFile(path,result.slice(300),(err)=>{

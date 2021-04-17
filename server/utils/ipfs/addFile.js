@@ -70,8 +70,8 @@ module.exports = {
                     // const originalData = fd
                     let encryptedData, decryptedData
                     // console.log('1-fd:',fd);
-                    let jsonFd = JSON.stringify(fd)
-                    console.log(fd);
+                    // let jsonFd = JSON.stringify(fd)
+                    // console.log(fd);
                     // console.log(fd.length);
 
                     // buf.slice([start[, end]])
@@ -80,7 +80,7 @@ module.exports = {
 
                     for (let index = 0; index < fd.length; index += 25) {
                         //1.将文件读取的buffer数据以每25个为一组,转为JSON数据,进行加密
-                        encryptedData = SM4.encrypt(JSON.stringify(fd.slice(index, index + 25)), hexKey, {
+                             encryptedData = SM4.encrypt(JSON.stringify(fd.slice(index, index + 25)), hexKey, {
                             inputEncoding: 'utf8',
                             outputEncoding: 'base64'
                         })
@@ -92,26 +92,38 @@ module.exports = {
                     console.log(progress());
                     console.log(arrData);
                     let AllBuf = []
-                    //3.将多个字符串数组拼接成一个字符串数组
+                    //3.将多个字符串数组转换为buffer数组
                     for (var i = 0; i < arrData.length; i++) {
-                        AllBuf = AllBuf.concat(arrData[i])
+                        AllBuf.push(Buffer.from(arrData[i]+'==+=='))
                     }
-                    //4.转换为buffer数据进行传输
-                    let tempBuf = Buffer.from(AllBuf)
-                    console.log(tempBuf);
-                    
+                    // debugger
+                    // arrData.forEach(item=>{
+                    //     debugger
+                    //     console.log(item);
+                    //     AllBuf.push(item+'==+==')
+                    // })
+                    //4.合并为一个buffer进行传输
+                    let tempBuffer = Buffer.concat(AllBuf)
+                    console.log(tempBuffer);
+                    debugger
+
                     //........................中间以buffer传输
-                    
-                    //5.接收到buffer数据,转为json
-                    let tempJso = tempBuf.toJSON()
-                    console.log(tempJso);
+
+                    //5.接收到buffer数据,转为字符串
+                    let tempString = tempBuffer.toString()
+                    console.log(tempString);
 
                     // let AllBuf = Buffer.concat(arrData)
                     // console.log(AllBuf);
                     let resBuf = []
-                    for (var index = 0; index < AllBuf.length; index++) {
+                    debugger
+                    //6.根据预定义的特征字符串进行切割
+                    let arrString = tempString.split('==+==')
+                    console.log(arrString);
+                    //循环,由于切割后最后一个是空,所以循环次数减一
+                    for (var index = 0; index < arrString.length-1; index++) {
                         //6.以每25为一组进行分组
-                        let chunkBuf = AllBuf.slice(index, index + 25)
+                        let chunkBuf =  arrString[index]
                         //7.转换为对应的json
                         let chunkJSON = chunkBuf.toString()
                         // 8.传入json进行解密,得到json字符串格式的数据
@@ -125,11 +137,11 @@ module.exports = {
                     }
                     console.log(resBuf);
                     //10.对buffer数组进行拼接
-                     let resAllBuf = Buffer.concat(resBuf)
-                     console.log(resAllBuf);
-                     //11.对buffer数据进行解析
-                     console.log(resAllBuf.toString());
-                 
+                    let resAllBuf = Buffer.concat(resBuf)
+                    console.log(resAllBuf);
+                    //11.对buffer数据进行解析
+                    console.log(resAllBuf.toString());
+
 
 
 
@@ -137,14 +149,14 @@ module.exports = {
                     // console.log('-----------------------------------------------');
                     // console.log('2-jsonFd:',jsonFd);
                     // ECB
-                    encryptedData = SM4.encrypt(jsonFd, hexKey, {
-                        inputEncoding: 'utf8',
-                        outputEncoding: 'base64'
-                    })
+                    // encryptedData = SM4.encrypt(jsonFd, hexKey, {
+                    //     inputEncoding: 'utf8',
+                    //     outputEncoding: 'base64'
+                    // })
                     // console.log('-----------------------------------------------');
                     // console.log('3-encryptedData:', encryptedData);
 
-                    const tempBuffer = Buffer.from(encryptedData)
+                    // const tempBuffer = Buffer.from(encryptedData)
                     // console.log('-----------------------------------------------');
                     // console.log('3.1-tempBuffer:',tempBuffer);
                     // const tempJSON = tempBuffer.toString()
@@ -166,7 +178,7 @@ module.exports = {
 
                     //拼接文件信息和文件内容
                     const content = Buffer.concat([fdInfoBuf, tempBuffer])
-
+                    console.log(content.slice(300));
                     // 添加到ipfs
                     let resFile = await ipfs.add({
                         path: path,

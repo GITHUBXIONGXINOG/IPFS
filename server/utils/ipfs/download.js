@@ -17,17 +17,19 @@ module.exports = {
                     if (err) {
                         console.error(err)
                     }
-                    // debugger
+                    debugger
                     // console.log(path);
                     // console.log(fd);
-                    const tempJSON = fd.toString()
+
+                    //5.接收到buffer数据,转为json
+                    let tempJSON = fd.toJSON()
                     // console.log('-----------------------------------------------');
                     // console.log('3.2-tempJSON:',tempJSON);
                     //当输入密钥不足32位时进行填充
                     function stringToHex(str) {
                         var val = "";
                         for (var i = 0; i < str.length; i++) {
-                                val += str.charCodeAt(i).toString(16);
+                            val += str.charCodeAt(i).toString(16);
                         }
                         while (val.length < 32) {
                             let len = 32 - val.length
@@ -39,18 +41,47 @@ module.exports = {
                     let hexKey = stringToHex(key);
 
 
-
-                    try {
-                        decryptedData = SM4.decrypt(tempJSON, hexKey, {
+                    let resBuf = []
+                    for (var index = 0; index < tempJSON.length; index++) {
+                        //6.以每25为一组进行分组
+                        let chunkBuf = tempJSON.slice(index, index + 25)
+                        //7.转换为对应的json
+                        let chunkJSON = chunkBuf.toString()
+                        // 8.传入json进行解密,得到json字符串格式的数据
+                        decryptedData = SM4.decrypt(chunkJSON, hexKey, {
                             inputEncoding: 'base64',
                             outputEncoding: 'utf8'
                         })
+                        // debugger
+                        // 9.将数据解析为json格式,并转为buffer,存入buffer数组
+                        resBuf.push(Buffer.from(JSON.parse(decryptedData)))
+                    }
+                    console.log(resBuf);
+                    //10.对buffer数组进行拼接
+                    let decryptedDataBuffer = Buffer.concat(resBuf)
+                    console.log(decryptedDataBuffer);
+                    //11.对buffer数据进行解析
+                    // console.log(resAllData.toString());
+
+
+
+
+                    try {
+
+
+
+
+
+                        // decryptedData = SM4.decrypt(tempJSON, hexKey, {
+                        //     inputEncoding: 'base64',
+                        //     outputEncoding: 'utf8'
+                        // })
                         // console.log('-----------------------------------------------');
                         // console.log('4-decryptedData:', decryptedData);
-                        const jsonData = JSON.parse(decryptedData)
+                        // const jsonData = JSON.parse(decryptedData)
                         // console.log('-----------------------------------------------');
                         // console.log('5-jsonData',jsonData);
-                        const decryptedDataBuffer = Buffer.from(jsonData)
+                        // const decryptedDataBuffer = Buffer.from(jsonData)
                         // console.log('-----------------------------------------------');
                         // console.log("6-decryptedDataBuffer:",decryptedDataBuffer);
                         // console.log(path);
