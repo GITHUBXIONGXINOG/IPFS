@@ -25,7 +25,7 @@
         <i class="el-icon-upload"></i>
         <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
       </el-upload>
-      <div class="upload_progress" v-show="uploadProcess!=0">
+      <div class="upload_progress" v-show="uploadProcess != 0">
         <el-progress type="circle" :percentage="uploadProcess"></el-progress>
         <!-- <el-progress :text-inside="true" :stroke-width="26" :percentage="uploadProcess" v-show="uploadProcess!=0"></el-progress> -->
       </div>
@@ -58,6 +58,7 @@
   </div>
 </template>
 <script>
+import ajax from "../../utils/ajax";
 export default {
   data() {
     return {
@@ -160,6 +161,14 @@ export default {
       xhr.upload.onprogress = function (event) {
         console.log(event.loaded);
         console.log(event.total);
+        // if (event.loaded === event.total) {
+        //   // console.log("hhhhhhhhhhh");
+          
+        //   // setInterval(async () => {
+        //   //   let progress = await ajax("/api/progress");
+        //   //   console.log(progress);
+        //   // }, 1000);
+        // }
         if (event.lengthComputable) {
           _self.uploadProcess = Math.floor((event.loaded / event.total) * 100);
           // 设置进度显示
@@ -223,7 +232,7 @@ export default {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
       }).then((action) => {
-        this.uploadProcess = 0
+        this.uploadProcess = 0;
         // this.$message({
         //   type: "info",
         //   message: "action: " + action,
@@ -298,6 +307,12 @@ export default {
     //   console.log(newValue);
     // }
   },
+  mounted(){
+     setInterval(async () => {
+        let progress = await ajax("/api/progress");
+        console.log(progress);
+      }, 1000);
+  }
 };
 </script>
 

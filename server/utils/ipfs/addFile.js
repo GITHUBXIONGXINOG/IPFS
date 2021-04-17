@@ -78,23 +78,24 @@ module.exports = {
                     let arrData = []
                     // let buf = Buffer.alloc(25)
 
-                    for (let index = 0; index < fd.length; index += 25) {
-                        //1.将文件读取的buffer数据以每25个为一组,转为JSON数据,进行加密
-                             encryptedData = SM4.encrypt(JSON.stringify(fd.slice(index, index + 25)), hexKey, {
+                    for (let index = 0,len = fd.length; index < len; index += 1024) {
+                        progress(Math.floor((index/len)*100))
+
+                        //1.将文件读取的buffer数据以每1024个为一组,转为JSON数据,进行加密
+                        encryptedData = SM4.encrypt(JSON.stringify(fd.slice(index, index + 1024)), hexKey, {
                             inputEncoding: 'utf8',
                             outputEncoding: 'base64'
                         })
                         //2.将解密后生成的密文(一串字符串)放入数组
                         arrData.push(encryptedData)
-
                     }
-                    progress(100)
-                    console.log(progress());
+                    // progress(100)
+                    // console.log(progress());
                     // console.log(arrData);
                     let AllBuf = []
                     //3.将多个字符串数组转换为buffer数组
                     for (var i = 0; i < arrData.length; i++) {
-                        AllBuf.push(Buffer.from(arrData[i]+'==+=='))
+                        AllBuf.push(Buffer.from(arrData[i] + '==+=='))
                     }
                     // debugger
                     // arrData.forEach(item=>{

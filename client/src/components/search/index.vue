@@ -249,7 +249,7 @@ export default {
     // setInterval(async ()=>{
     //     let progress = await ajax('/api/progress')
     //     console.log(progress);
-    // },2000)
+    // },1000)
   }
 };
 </script>
