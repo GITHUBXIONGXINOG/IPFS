@@ -2,27 +2,35 @@
   <div class="upload-panel">
     <!-- {{ fileList }} -->
     <!-- list-type="picture-card" -->
-    <input type="file" id="avatar" />
-    <button @click="to_upload_file()">上传</button>
+    <!-- <div class="upload_progress"> -->
+    <!-- <el-progress type="circle" :percentage="uploadProcess" ></el-progress> -->
+    <!-- <el-progress :text-inside="true" :stroke-width="26" :percentage="uploadProcess" v-show="uploadProcess!=0"></el-progress> -->
+    <!-- </div> -->
+    <div class="upload-file-wrap">
+      <el-upload
+        class="upload-file"
+        drag
+        action="/api/upload"
+        ref="upload"
+        :file-list="fileList"
+        :auto-upload="false"
+        :on-change="beforeUpload"
+        :on-remove="handleRemove"
+        name="upload_file"
+        :http-request="UploadFile"
+        v-loading="uploadFlag"
+        element-loading-text="正在加密文件,请稍后"
+      >
+        <!-- v-show="!fileList.length" -->
+        <i class="el-icon-upload"></i>
+        <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
+      </el-upload>
+      <div class="upload_progress" v-show="uploadProcess!=0">
+        <el-progress type="circle" :percentage="uploadProcess"></el-progress>
+        <!-- <el-progress :text-inside="true" :stroke-width="26" :percentage="uploadProcess" v-show="uploadProcess!=0"></el-progress> -->
+      </div>
+    </div>
 
-    <el-upload
-      class="upload-file"
-      drag
-      action="/api/upload"
-      ref="upload"
-      :file-list="fileList"
-      :auto-upload="false"
-      :on-change="beforeUpload"
-      :on-remove="handleRemove"
-      name="upload_file"
-      :http-request="UploadFile"
-      v-loading="uploadFlag"
-      element-loading-text="正在上传并加密文件,请稍后"
-    >
-      <!-- v-show="!fileList.length" -->
-      <i class="el-icon-upload"></i>
-      <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
-    </el-upload>
     <!-- <el-dialog :visible.sync="dialogVisible">
       <img width="100%" :src="dialogImageUrl" alt="" />
     </el-dialog> -->
@@ -50,7 +58,6 @@
   </div>
 </template>
 <script>
-import ajax from "../../utils/ajax";
 export default {
   data() {
     return {
@@ -65,24 +72,28 @@ export default {
       // dialogVisible: false,
       uploadListFlag: true,
       uploadRuleFlag: true, //是否满足条件上传
+      uploadProcess: 0, //上传进度条
     };
   },
   methods: {
     // 处理上传进度
-    progressFunction(e) {
-      var progress_bar = document.getElementById("progress_bar");
-      var loading_dom = document.getElementById("loading");
-      var loading = Math.round((e.loaded / e.total) * 100);
-      console.log("loading::", loading);
+    // progressFunction(e) {
+    //   // var progress_bar = document.getElementById("progress_bar");
+    //   // var loading_dom = document.getElementById("loading");
+    //   // this.uploadProcess = Math.round((e.loaded / e.total) * 100);
+    //   // console.log("loading::",  this.uploadProcess);
+    //   console.log('aaa');
+    //   this.$nextTick(()=>{
 
-      if (loading === 100) {
-        loading_dom.innerHTML = "上传成功^_^";
-      } else {
-        loading_dom.innerHTML = "上传进度" + loading + "%";
-      }
+    //   })
+    //   // if (loading === 100) {
+    //   //   loading_dom.innerHTML = "上传成功^_^";
+    //   // } else {
+    //   //   loading_dom.innerHTML = "上传进度" + loading + "%";
+    //   // }
 
-      progress_bar.style.width = String(loading * 3) + "px";
-    },
+    //   // progress_bar.style.width = String(loading * 3) + "px";
+    // },
 
     // to_upload_file() {
     //   var file_obj = document.getElementById("avatar").files[0];
@@ -134,27 +145,29 @@ export default {
       formData.append("smKey", this.smKey);
       var xhr = new XMLHttpRequest();
       xhr.open("POST", url, true);
-      let _self = this
+      let _self = this;
       // 添加 上传成功后的回调函数
       xhr.onload = function (e) {
         console.log("上传成功", e);
-        _self.upload_success(e)
-        
+        _self.upload_success(e);
       };
       // 添加 上传失败后的回调函数
       xhr.onerror = function (e) {
         console.log("上传失败", e);
-        _self.upload_failed(e)
+        _self.upload_failed(e);
       };
       // 添加 进度监听函数
       xhr.upload.onprogress = function (event) {
         console.log(event.loaded);
         console.log(event.total);
         if (event.lengthComputable) {
-          var percent = Math.floor((event.loaded / event.total) * 100);
-          // document.querySelector("#progress .progress-item").style.width = percent + "%";
+          _self.uploadProcess = Math.floor((event.loaded / event.total) * 100);
           // 设置进度显示
-          console.log(percent);
+          console.log(_self.uploadProcess);
+        }
+        if (_self.uploadProcess == 100) {
+          // debugger
+          _self.uploadFlag = true;
         }
       };
       xhr.send(formData);
@@ -173,7 +186,7 @@ export default {
       // console.log(res);
       // console.log("上传成功", e);
       this.uploadFlag = false;
-      let hash = JSON.parse(e.target.response).hash
+      let hash = JSON.parse(e.target.response).hash;
       const h = this.$createElement;
       this.$msgbox({
         title: "上传成功",
@@ -210,10 +223,11 @@ export default {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
       }).then((action) => {
-        this.$message({
-          type: "info",
-          message: "action: " + action,
-        });
+        this.uploadProcess = 0
+        // this.$message({
+        //   type: "info",
+        //   message: "action: " + action,
+        // });
       });
     },
     //上传失败回调函数
@@ -227,10 +241,12 @@ export default {
     //   console.log(e.total);
     // },
 
+    //关闭上传文件列表
     handleRemove(file, fileList) {
       // console.log(file, fileList);
       let panel = document.getElementsByClassName("el-upload--text");
       panel[0].setAttribute("class", "el-upload el-upload--text");
+      this.uploadProcess = 0;
       // this.smKey = ''
       this.cleanData(1);
     },
@@ -257,25 +273,8 @@ export default {
     //上传递交按钮
     submitUpload() {
       //显示加载面板
-      this.uploadFlag = true;
+      // this.uploadFlag = true;
       this.$refs.upload.submit();
-    },
-
-    //字符串转换成16进制
-    stringToHex(str) {
-      var val = "";
-      for (var i = 0; i < str.length; i++) {
-        val += str.charCodeAt(i).toString(16);
-      }
-      return val;
-    },
-    HexToString(hex) {
-      let val = "";
-      for (var i = 0; i < hex.length; i = i + 2) {
-        let p = hex.slice(i, i + 2);
-        val += String.fromCharCode(parseInt(p, 16));
-      }
-      return val;
     },
   },
   computed: {
@@ -398,5 +397,21 @@ export default {
   .el-loading-spinner {
     margin-top: -10rem;
   }
+}
+
+.upload_progress {
+  position: absolute;
+  z-index: 9;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  margin: auto;
+  width: 100%;
+  height: 30%;
+  top: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #fbfbfb;
 }
 </style>

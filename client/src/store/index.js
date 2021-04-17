@@ -5,7 +5,7 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    filePanel: true,//显示文件面板
+    filePanel: false,//显示文件面板
     fileInfo: {},//文件信息
   },
   mutations: {
