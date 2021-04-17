@@ -79,13 +79,12 @@ module.exports = {
                     // let buf = Buffer.alloc(25)
 
                     for (let index = 0; index < fd.length; index += 25) {
-                        // debugger
-                        // arrBuf.push(fd.slice(index,index+25)  )  
+                        //1.将文件读取的buffer数据以每25个为一组,转为JSON数据,进行加密
                         encryptedData = SM4.encrypt(JSON.stringify(fd.slice(index, index + 25)), hexKey, {
                             inputEncoding: 'utf8',
                             outputEncoding: 'base64'
                         })
-                        // debugger
+                        //2.将解密后生成的密文(一串字符串)放入数组
                         arrBuf.push(encryptedData)
 
                     }
@@ -93,47 +92,40 @@ module.exports = {
                     console.log(progress());
                     console.log(arrBuf);
                     let AllBuf = []
+                    //3.将多个字符串数组拼接成一个字符串数组
                     for (var i = 0; i < arrBuf.length; i++) {
                         AllBuf = AllBuf.concat(arrBuf[i])
                     }
+                    
+                    let tempBuf = Buffer.from(AllBuf)
+                    console.log(tempBuf);
+                    let tempJso = tempBuf.toJSON()
+                    console.log(tempJso);
 
                     // let AllBuf = Buffer.concat(arrBuf)
                     // console.log(AllBuf);
                     let resBuf = []
                     for (var index = 0; index < AllBuf.length; index++) {
+                        //4.以每25为一组进行分组
                         let chunkBuf = AllBuf.slice(index, index + 25)
+                        //5.转换为对应的json
                         let chunkJSON = chunkBuf.toString()
-                        // debugger
+                        // 6.传入json进行解密,得到json字符串格式的数据
                         decryptedData = SM4.decrypt(chunkJSON, hexKey, {
                             inputEncoding: 'base64',
                             outputEncoding: 'utf8'
                         })
                         // debugger
-                        // console.log(decryptedData.toString());
+                        // 7.将数据解析为json格式,并转为buffer,存入buffer数组
                         resBuf.push(Buffer.from(JSON.parse(decryptedData)))
                     }
-                    debugger
                     console.log(resBuf);
-                    
+                    //8.对buffer数组进行拼接
                      let resAllBuf = Buffer.concat(resBuf)
                      console.log(resAllBuf);
+                     //9.对buffer数据进行解析
                      console.log(resAllBuf.toString());
-                    // for (var i = 0; i < resBuf.length; i++) {
-
-                    // }
-                    // let eee = Buffer.from(resBuf[0])
-                    // console.log(eee);
-                    // console.log(eee.toString());
-
-
-                    // let chunkJSON = 'aLQfIBhTZnDWt9RLdRVz1AOeNCNqwC7e3ayY3imDg8A='
-                    // decryptedData = SM4.decrypt(chunkJSON, hexKey, {
-                    //             inputEncoding: 'base64',
-                    //             outputEncoding: 'utf8'
-                    //         })
-                    //         console.log(decryptedData);
-
-
+                 
 
 
 
