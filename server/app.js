@@ -13,7 +13,7 @@ var searchRouter = require('./routes/search')
 var downRouter = require('./routes/download')
 var deleteRouter = require('./routes/delete')
 var pinRouter = require('./routes/pininfo')
-
+var ipfsRouter = require('./routes/ipfs')
 var app = express();
 
 // view engine setup
@@ -35,6 +35,7 @@ app.use('/search',searchRouter)
 app.use('/download',downRouter)
 app.use('/delete',deleteRouter)
 app.use('/pininfo',pinRouter)
+app.use('/ipfscore',ipfsRouter)
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   next(createError(404));

@@ -1,12 +1,27 @@
-let IpfsApi = require("ipfs-api")
-const pathFn = require('path')
+// const ipfs_core = require('ipfs-core')
+const ipfs = require('./ipfs')
+// const pathFn = require('path')
 const fs = require('fs')
 const { SM4 } = require('gm-crypto')
 module.exports = {
     addfile: async (param, key) => {
         return new Promise(async (resolve) => {
             try {
-                var ipfs = IpfsApi('localhost', '5001', { protocol: 'http' })
+                let result = await ipfs()
+                const a = await result.add('ssssac')
+                 console.log(a);
+
+                // const ipfs = await ipfs_core.create()
+                // const result = await ipfs.add('sss')
+                // console.log(result);
+                // console.log(await ipfs.add('aaa'));
+                // console.log( await ipfs.add('s'));
+                // console.log(JSON.stringify(ipfs));
+                // console.log(await ipfs.add());
+                // const file = await ifs.add('hhh')
+                // console.log(file)
+                // const ipfs = await IPFS.create()
+                // var ipfs = IpfsApi('localhost', '5001', { protocol: 'http' })
                 //获取文件信息
                 // console.log(param);
                 // console.log(key);
@@ -34,12 +49,12 @@ module.exports = {
                     // const fdBuffer = Buffer.from(fd)
                     // console.log(content);
                     //当输入密钥不足32位时进行填充
-                    
+
                     // console.log(key);
                     function stringToHex(str) {
                         var val = "";
                         for (var i = 0; i < str.length; i++) {
-                                val += str.charCodeAt(i).toString(16);
+                            val += str.charCodeAt(i).toString(16);
                         }
                         while (val.length < 32) {
                             let len = 32 - val.length
@@ -48,7 +63,7 @@ module.exports = {
                         }
                         return val;
                     }
-                     
+
                     // var str = "pytdthrsw54w456565653541234567890qwertyuiopasdfghjk";
                     let hexKey = stringToHex(key);
                     // console.log(Hex);
@@ -104,15 +119,12 @@ module.exports = {
                     const content = Buffer.concat([fdInfoBuf, tempBuffer])
 
                     // 添加到ipfs
-                    let resFile = await ipfs.add({
-                        path: path,
-                        content: content
-                    })
-                    hash = await resFile[0].hash
-                    if (hash) {
-                        fs.unlink(path, (err) => { if (err) console.error(err); })
-                    }
-                    resolve(hash)
+                    //    await IPFS()
+
+                    // if (cid) {
+                    //     fs.unlink(path, (err) => { if (err) console.error(err); })
+                    // }
+                    // resolve(cid.toString())
                 })
             } catch (err) {
                 console.error(err);
