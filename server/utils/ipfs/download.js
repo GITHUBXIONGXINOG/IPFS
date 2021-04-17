@@ -22,7 +22,7 @@ module.exports = {
                     // console.log(fd);
 
                     //5.接收到buffer数据,转为json
-                    let tempJSON = fd.toJSON()
+                    // let tempJSON = fd.toJSON()
                     // console.log('-----------------------------------------------');
                     // console.log('3.2-tempJSON:',tempJSON);
                     //当输入密钥不足32位时进行填充
@@ -41,10 +41,21 @@ module.exports = {
                     let hexKey = stringToHex(key);
 
 
+                    //5.接收到buffer数据,转为字符串
+                    let tempString = fd.toString()
+                    console.log(tempString);
+
+                    // let AllBuf = Buffer.concat(arrData)
+                    // console.log(AllBuf);
                     let resBuf = []
-                    for (var index = 0; index < tempJSON.length; index++) {
+                    debugger
+                    //6.根据预定义的特征字符串进行切割
+                    let arrString = tempString.split('==+==')
+                    console.log(arrString);
+                    //循环,由于切割后最后一个是空,所以循环次数减一
+                    for (var index = 0; index < arrString.length - 1; index++) {
                         //6.以每25为一组进行分组
-                        let chunkBuf = tempJSON.slice(index, index + 25)
+                        let chunkBuf = arrString[index]
                         //7.转换为对应的json
                         let chunkJSON = chunkBuf.toString()
                         // 8.传入json进行解密,得到json字符串格式的数据
@@ -58,10 +69,11 @@ module.exports = {
                     }
                     console.log(resBuf);
                     //10.对buffer数组进行拼接
-                    let decryptedDataBuffer = Buffer.concat(resBuf)
-                    console.log(decryptedDataBuffer);
+                    let resAllBuf = Buffer.concat(resBuf)
+                    console.log(resAllBuf);
                     //11.对buffer数据进行解析
-                    // console.log(resAllData.toString());
+                    console.log(resAllBuf.toString());
+
 
 
 
@@ -86,7 +98,7 @@ module.exports = {
                         // console.log("6-decryptedDataBuffer:",decryptedDataBuffer);
                         // console.log(path);
                         let decryptedParh = path + '_decrypted'
-                        fs.writeFile(decryptedParh, decryptedDataBuffer, (err) => {
+                        fs.writeFile(decryptedParh, resAllBuf, (err) => {
                             if (err) {
                                 // console.log(err)
                                 reject(err)

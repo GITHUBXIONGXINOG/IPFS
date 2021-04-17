@@ -109,38 +109,38 @@ module.exports = {
 
                     //........................中间以buffer传输
 
-                    //5.接收到buffer数据,转为字符串
-                    let tempString = tempBuffer.toString()
-                    console.log(tempString);
+                    // //5.接收到buffer数据,转为字符串
+                    // let tempString = tempBuffer.toString()
+                    // console.log(tempString);
 
-                    // let AllBuf = Buffer.concat(arrData)
-                    // console.log(AllBuf);
-                    let resBuf = []
-                    debugger
-                    //6.根据预定义的特征字符串进行切割
-                    let arrString = tempString.split('==+==')
-                    console.log(arrString);
-                    //循环,由于切割后最后一个是空,所以循环次数减一
-                    for (var index = 0; index < arrString.length-1; index++) {
-                        //6.以每25为一组进行分组
-                        let chunkBuf =  arrString[index]
-                        //7.转换为对应的json
-                        let chunkJSON = chunkBuf.toString()
-                        // 8.传入json进行解密,得到json字符串格式的数据
-                        decryptedData = SM4.decrypt(chunkJSON, hexKey, {
-                            inputEncoding: 'base64',
-                            outputEncoding: 'utf8'
-                        })
-                        // debugger
-                        // 9.将数据解析为json格式,并转为buffer,存入buffer数组
-                        resBuf.push(Buffer.from(JSON.parse(decryptedData)))
-                    }
-                    console.log(resBuf);
-                    //10.对buffer数组进行拼接
-                    let resAllBuf = Buffer.concat(resBuf)
-                    console.log(resAllBuf);
-                    //11.对buffer数据进行解析
-                    console.log(resAllBuf.toString());
+                    // // let AllBuf = Buffer.concat(arrData)
+                    // // console.log(AllBuf);
+                    // let resBuf = []
+                    // debugger
+                    // //6.根据预定义的特征字符串进行切割
+                    // let arrString = tempString.split('==+==')
+                    // console.log(arrString);
+                    // //循环,由于切割后最后一个是空,所以循环次数减一
+                    // for (var index = 0; index < arrString.length-1; index++) {
+                    //     //6.以每25为一组进行分组
+                    //     let chunkBuf =  arrString[index]
+                    //     //7.转换为对应的json
+                    //     let chunkJSON = chunkBuf.toString()
+                    //     // 8.传入json进行解密,得到json字符串格式的数据
+                    //     decryptedData = SM4.decrypt(chunkJSON, hexKey, {
+                    //         inputEncoding: 'base64',
+                    //         outputEncoding: 'utf8'
+                    //     })
+                    //     // debugger
+                    //     // 9.将数据解析为json格式,并转为buffer,存入buffer数组
+                    //     resBuf.push(Buffer.from(JSON.parse(decryptedData)))
+                    // }
+                    // console.log(resBuf);
+                    // //10.对buffer数组进行拼接
+                    // let resAllBuf = Buffer.concat(resBuf)
+                    // console.log(resAllBuf);
+                    // //11.对buffer数据进行解析
+                    // console.log(resAllBuf.toString());
 
 
 
