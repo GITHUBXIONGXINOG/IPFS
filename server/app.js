@@ -13,9 +13,9 @@ var searchRouter = require('./routes/search')
 var downRouter = require('./routes/download')
 var deleteRouter = require('./routes/delete')
 var pinRouter = require('./routes/pininfo')
+var progressRouter = require('./routes/progress')
 
 var app = express();
-
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
@@ -35,6 +35,7 @@ app.use('/search',searchRouter)
 app.use('/download',downRouter)
 app.use('/delete',deleteRouter)
 app.use('/pininfo',pinRouter)
+app.use('/progress',progressRouter)
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   next(createError(404));

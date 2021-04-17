@@ -2,6 +2,7 @@ let IpfsApi = require("ipfs-api")
 const pathFn = require('path')
 const fs = require('fs')
 const { SM4 } = require('gm-crypto')
+const {progress} = require('./progress')
 module.exports = {
     addfile: async (param, key) => {
         return new Promise(async (resolve) => {
@@ -70,6 +71,32 @@ module.exports = {
                     let encryptedData, decryptedData
                     // console.log('1-fd:',fd);
                     let jsonFd = JSON.stringify(fd)
+                    console.log(fd);
+                    console.log(fd.length);
+
+                        // buf.slice([start[, end]])
+                        let arrBuf = []
+                    let buf = Buffer.alloc(25)
+                    
+                    for (let index = 0; index < fd.length; index+=25) {
+                        // debugger
+                        // arrBuf.push(fd.slice(index,index+25)  )  
+                        encryptedData = SM4.encrypt(fd.slice(index,index+25), hexKey, {
+                            inputEncoding: 'utf8',
+                            outputEncoding: 'base64'
+                        })
+                        arrBuf.push(Buffer.from(encryptedData))
+                        
+                       }
+                       progress(100)
+                       console.log(progress());
+                    //    console.log(arrBuf);
+                    //    let AllBuf = Buffer.concat(arrBuf)
+                    //    console.log(AllBuf);
+                    //    for (var i = 0; i < arrBuf.length; i++) {
+                        
+                    //    }
+
                     // console.log('-----------------------------------------------');
                     // console.log('2-jsonFd:',jsonFd);
                     // ECB
@@ -78,7 +105,7 @@ module.exports = {
                         outputEncoding: 'base64'
                     })
                     // console.log('-----------------------------------------------');
-                    // console.log('3-encryptedData:',encryptedData);
+                    console.log('3-encryptedData:',encryptedData);
 
                     const tempBuffer = Buffer.from(encryptedData)
                     // console.log('-----------------------------------------------');
