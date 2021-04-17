@@ -6,7 +6,7 @@ const { SM4 } = require('gm-crypto')
 module.exports = {
     search: async (hash) => {
         try {
-            debugger
+            // debugger
             var ipfs = await IpfsApi('localhost', '5001', { protocol: 'http' })
              await ipfs.pin.ls(hash)
             let result = await ipfs.cat(hash)
@@ -39,8 +39,8 @@ module.exports = {
             // // console.log('-----------------------------------------------');
             // // console.log("6-decryptedDataBuffer:",decryptedDataBuffer);
         
-                debugger
-                console.log(result.slice(300));
+                // debugger
+                // console.log(result.slice(300));
 
             //写入文件到本地
             fs.writeFile(path,result.slice(300),(err)=>{

@@ -90,7 +90,7 @@ module.exports = {
                     }
                     progress(100)
                     console.log(progress());
-                    console.log(arrData);
+                    // console.log(arrData);
                     let AllBuf = []
                     //3.将多个字符串数组转换为buffer数组
                     for (var i = 0; i < arrData.length; i++) {
@@ -104,8 +104,8 @@ module.exports = {
                     // })
                     //4.合并为一个buffer进行传输
                     let tempBuffer = Buffer.concat(AllBuf)
-                    console.log(tempBuffer);
-                    debugger
+                    // console.log(tempBuffer);
+                    // debugger
 
                     //........................中间以buffer传输
 
@@ -178,7 +178,7 @@ module.exports = {
 
                     //拼接文件信息和文件内容
                     const content = Buffer.concat([fdInfoBuf, tempBuffer])
-                    console.log(content.slice(300));
+                    // console.log(content.slice(300));
                     // 添加到ipfs
                     let resFile = await ipfs.add({
                         path: path,

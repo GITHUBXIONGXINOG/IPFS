@@ -13,6 +13,7 @@ router.post('/', async function (req, res, next) {
     }catch(err){
         // console.log('密码错误');
         // console.error(err);
+        debugger
         res.send({Error:'密钥错误',Code: '401'})
     }
 
