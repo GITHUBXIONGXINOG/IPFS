@@ -95,7 +95,7 @@ module.exports = {
                     arrData.forEach((item) => {
                         AllBuf.push(Buffer.from(item + '==+=='))
                     })
-                    debugger
+                    // debugger
                     // console.log(AllBuf);
                     //4.合并为一个buffer进行传输
                     let tempBuffer = Buffer.concat(AllBuf)

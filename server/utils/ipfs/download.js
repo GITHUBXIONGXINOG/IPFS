@@ -13,14 +13,14 @@ module.exports = {
 
                 // console.log(_key);
                 // const key = '0123456789abcdeffedcba9876543210' // Any string of 32 hexadecimal digits
-                debugger
-                console.log(hash, key);
+                // debugger
+                // console.log(hash, key);
                 var ipfs = IpfsApi('localhost', '5001', { protocol: 'http' })
-
+                // debugger
                 await ipfs.ls(hash)
                 let file = await ipfs.cat(hash)
-                console.log(file);
-                console.log(file.toString());
+                // console.log(file);
+                // console.log(file.toString());s
                 //5.接收到buffer数据,转为json
                 // let tempJSON = fd.toJSON()
                 // console.log('-----------------------------------------------');
@@ -49,7 +49,7 @@ module.exports = {
                 // console.log(AllBuf);
                 try {
                     let resBuf = []
-                    debugger
+                    // debugger
                     //6.根据预定义的特征字符串进行切割
                     let arrString = tempString.split('==+==')
                     // console.log(arrString);
@@ -89,27 +89,34 @@ module.exports = {
                     // console.log(path);
                     
                    // console.log('-----------------------------------------------');
-                    // let decryptedPath = path + '_decrypted'
-                    // fs.writeFile(decryptedPath, resAllBuf, (err) => {
-                    //     if (err) {
-                    //         // console.log(err)
-                    //         reject(err)
-                    //     } else {
-                    //         resolve(`/api/${url}_decrypted`)
-                    //     }
-                    // })  
+                   let time = new Date().getTime() 
+                   debugger
+                   console.log(time);
+                   let fileName = hash+time
+                    let filePath = _path.join(__dirname,'../','../','public/','downloads',fileName) 
+                    // console.log(filePath);
+                    debugger
+                    // console.log(createWebSocket);
+                    // createWebSocket()
+                    fs.writeFile(filePath, resAllBuf, (err) => {
+                        if (err) {
+                            // console.log(err)
+                            reject(err)
+                        } else {
+                            resolve(`/api/downloads/${fileName}`)
+                        }
+                    })  
                     // console.log('-----------------------------------------------');
-                    if(isMainThread){
-                        debugger
-                        let path = _path.join(__dirname,'../','websocket','server.js')
-                        console.log(path);
-                        const worker = new Worker(path,{workerData:resAllBuf})
-
-                    }
+                    // if(isMainThread){
+                    //     // debugger
+                    //     let path = _path.join(__dirname,'../','websocket','server.js')
+                    //     // console.log(path);
+                    //     const worker = new Worker(path,{workerData:resAllBuf})
+                    // }
                     tempString = ''
                     resBuf = []
                 } catch (err) {
-                    // console.error(err);
+                    console.error(err);
                     reject(err)
                 }
 

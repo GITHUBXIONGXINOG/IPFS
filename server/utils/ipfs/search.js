@@ -6,7 +6,7 @@ const { SM4 } = require('gm-crypto')
 module.exports = {
     search: async (hash) => {
         try {
-            debugger
+            // debugger
             var ipfs = await IpfsApi('localhost', '5001', { protocol: 'http' })
             //  await ipfs.pin.ls(hash)
             let result = await ipfs.cat(hash)

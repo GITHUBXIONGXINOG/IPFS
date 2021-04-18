@@ -92,7 +92,7 @@ export default {
 
       ws.onmessage = function (evt) {
         console.log("Received Message: " + evt.data);
-        ws.close();
+        // ws.close();
       };
 
       ws.onclose = function (evt) {
@@ -110,10 +110,11 @@ export default {
         // setInterval(()=>{
         //   _self.connectWebSockets()
         // },2000)
-        for (var i = 0; i < 2; i++) {
-          _self.connectWebSockets()
+        // for (var i = 0; i < 10; i++) {
           
-        }
+        // }
+          _self.connectWebSockets()
+
         let downloadUrl = await ajax(
           "/api/download",
           {
