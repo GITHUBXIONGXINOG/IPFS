@@ -12,66 +12,17 @@
         >浏览
       </div>
     </div>
-    <div class="upload">
-      <!--       <section class="panel_down" v-show="panelFlag === true">
-        <div class="table_wrap">
-          <el-table :data="tableData" style="width: 100%" class="fileInfo">
-            <el-table-column prop="name" label="" width="180">
-            </el-table-column>
-            <el-table-column prop="value" label=""> </el-table-column>
-          </el-table>
-          <el-input
-            placeholder="请输入密码"
-            v-model="smKey"
-            show-password
-            class="input_key"
-            onkeyup="this.value = this.value.replace(/[^\w.]/g,'');"
-            maxlength="16"
-          ></el-input>
-          <div class="download_button">
-            <el-button-group>
-              <el-button
-                type="primary"
-                icon="el-icon-download"
-                @click="clickGET"
-                :disabled="keyFlag"
-              ></el-button>
-              <el-button
-                type="primary"
-                icon="el-icon-delete"
-                @click="deleteIPFS"
-                :disabled="keyFlag"
-              ></el-button>
-              <el-button
-                type="primary"
-                icon="el-icon-close"
-                @click="panelFlag = false"
-              ></el-button>
-            </el-button-group>
-          </div>
-        </div>
-      </section> -->
-      <!-- <List :data="tableData"/> -->
-      <!-- {{tableData}} -->
-    </div>
+    <div class="upload"></div>
   </div>
 </template>
 <script>
 import ajax from "../../utils/ajax";
 // import List from "../list";
-import {mapMutations} from 'vuex'
+import { mapMutations } from "vuex";
 export default {
-  //QmaL3qoxGE8FpULDF6EYgt8ty2Fmj7g5yD5FfDiXxckcVh
   methods: {
-    ...mapMutations([
-      'changeFilePanel',
-      'saveFileInfo'
-    ]),
-    // async deleteIPFS() {
-    //   let req = await ajax("/api/delete", { hash: this.hashInfo });
-    //   console.log(req);
-    //   this.panelFlag = false;
-    // },
+    ...mapMutations(["changeFilePanel", "saveFileInfo"]),
+
     handleClose() {
       this.panelFlag = false;
       // this.hashInfo = "";
@@ -85,9 +36,7 @@ export default {
           spinner: "el-icon-loading",
           background: "rgba(0, 0, 0, 0.7)",
         });
-        // setTimeout(() => {
-        //   loading.close();
-        // }, 2000);
+
         this.fileInfo = await ajax("/api/search", { hash: this.searchText });
         loading.close();
         // console.log(this.fileInfo);
@@ -96,79 +45,33 @@ export default {
           this.nullPanelFlag = true;
           this.$message.error("没有找到该HASH信息!");
         } else {
-          
-          // this.tableData.forEach((item, index) => {
-          //   // console.log(item);
-          //   // console.log(item.value);
-          //   if (index === 0) {
-          //     item.value = this.searchText || this.hashInfo;
-          //   } else {
-          //     item.value = this.fileInfo[item.key];
-          //   }
-          // });
-          // debugger
-          let upSm = document.getElementsByClassName('el-input__inner')
-          console.log(upSm);
-          upSm[0].value = ""
+          let upSm = document.getElementsByClassName("el-input__inner");
+          // console.log(upSm);
+          upSm[0].value = "";
           if (this.fileInfo) {
-            this.changeFilePanel(true)
-            this.saveFileInfo({info:this.fileInfo,hash:this.searchText })
+            this.changeFilePanel(true);
+            this.saveFileInfo({ info: this.fileInfo, hash: this.searchText });
             // this.hashInfo = this.searchText;
             this.searchText = "";
           }
         }
       }
     },
-    async downLoadImage(imgUrl) {
-      let timestamp = new Date().getTime();
-      // let name = imgUrl.substring(22, 30) + timestamp + ".png";
-      let name = timestamp + ".png";
+    // async downLoadImage(imgUrl) {
+    //   let timestamp = new Date().getTime();
+    //   // let name = imgUrl.substring(22, 30) + timestamp + ".png";
+    //   let name = timestamp + ".png";
 
-      this.downloadUrl = imgUrl;
-      console.log(this.downloadUrl);
-      this.downloadfilename = name;
-    },
-    Download() {
-      // debugger
+    //   this.downloadUrl = imgUrl;
+    //   console.log(this.downloadUrl);
+    //   this.downloadfilename = name;
+    // },
+    // Download() {
+    //   // debugger
 
-      this.downLoadImage(this.imgurl);
-      this.panelFlag = false;
-    },
-    /*     //点击下载
-    async clickGET() {
-      if (this.smKey) {
-        //QmddpXWUJcg93FbGVKN3k7HvqrP8rSZXinWJVdzWxmevTW
-        let downloadUrl = await ajax(
-          "/api/download",
-          {
-            url: this.fileInfo.downloadUrl,
-            key: this.smKey,
-          },
-          "POST"
-        );
-        if (downloadUrl.Error) {
-          if (downloadUrl.Code === "401") {
-            this.$message.error("服务端解压失败,密钥错误!");
-          }
-        } else {
-          this.smKey = "";
-          let name = this.tableData[1].value;
-          var x = new XMLHttpRequest();
-          x.open("GET", downloadUrl, true);
-          x.responseType = "blob";
-          x.onload = function () {
-            var url = window.URL.createObjectURL(x.response);
-            var a = document.createElement("a");
-            a.href = url;
-            a.download = name;
-            a.click();
-          };
-          x.send();
-        }
-      } else {
-        this.$message.error("请输入密钥");
-      }
-    }, */
+    //   this.downLoadImage(this.imgurl);
+    //   this.panelFlag = false;
+    // },
   },
   data() {
     return {
@@ -177,40 +80,7 @@ export default {
       panelFlag: false, //显示面板
       downloadUrl: null, //下载地址
       downloadfilename: null, //图片名
-      // hashInfo: "", //显示hash信息
       fileInfo: {}, //文件信息
-      // tableData: [
-      //   {
-      //     name: "HASH",
-      //     key: "hash",
-      //     value: "",
-      //   },
-      //   {
-      //     name: "文件名字",
-      //     key: "name",
-      //     value: "",
-      //   },
-      //   {
-      //     name: "文件大小",
-      //     key: "size",
-      //     value: "",
-      //   },
-      //   {
-      //     name: "文件类型",
-      //     key: "type",
-      //     value: "",
-      //   },
-      //   {
-      //     name: "上次修改时间",
-      //     key: "lastModifiedDate",
-      //     value: "",
-      //   },
-      //   {
-      //     name: "加密密钥",
-      //     key: "smKey",
-      //     value: "",
-      //   },
-      // ],
       nullPanelFlag: false, //空搜索
       smKey: "",
       keyFlag: true, //
@@ -245,12 +115,6 @@ export default {
       }
     },
   },
-  mounted(){
-    // setInterval(async ()=>{
-    //     let progress = await ajax('/api/progress')
-    //     console.log(progress);
-    // },1000)
-  }
 };
 </script>
 <style lang="scss">
@@ -420,5 +284,9 @@ export default {
   width: 65% !important;
   height: 10%;
   bottom: 15%;
+}
+.el-loading-mask {
+    // border: 1px solid red;
+    height: 100% !important;
 }
 </style>

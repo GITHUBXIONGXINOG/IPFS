@@ -75,22 +75,6 @@ export default {
   },
   data() {
     return {
-      // data: [
-      //   {
-      //     name: "HASH",
-      //     key: "hash",
-      //     value: "QmaraZVg1jFzvV75cPw3z1dZ5TyvAG4jTAwhPh1nANE1NG",
-      //   },
-      //   { name: "文件名字", key: "name", value: "中文.txt" },
-      //   { name: "文件大小", key: "size", value: 6 },
-      //   { name: "文件类型", key: "type", value: "text/plain" },
-      //   {
-      //     name: "上次修改时间",
-      //     key: "lastModifiedDate",
-      //     value: "2021-04-16T11:59:31.340Z",
-      //   },
-      //   { name: "加密密钥", key: "smKey" },
-      // ],
       smKey: "", //输入密钥
     };
   },
@@ -105,12 +89,11 @@ export default {
         // debugger
         // console.log(this.fileInfo);
         // console.log(this.fileInfo());
-
-        //QmddpXWUJcg93FbGVKN3k7HvqrP8rSZXinWJVdzWxmevTW
+        // debugger
         let downloadUrl = await ajax(
           "/api/download",
           {
-            url: this.fileInfo().downloadUrl,
+            hash: this.fileInfo().filehash,
             key: this.smKey,
           },
           "POST"
