@@ -1,11 +1,5 @@
 <template>
   <div class="upload-panel">
-    <!-- {{ fileList }} -->
-    <!-- list-type="picture-card" -->
-    <!-- <div class="upload_progress"> -->
-    <!-- <el-progress type="circle" :percentage="uploadProcess" ></el-progress> -->
-    <!-- <el-progress :text-inside="true" :stroke-width="26" :percentage="uploadProcess" v-show="uploadProcess!=0"></el-progress> -->
-    <!-- </div> -->
     <div class="upload-file-wrap">
       <el-upload
         class="upload-file"
@@ -18,16 +12,36 @@
         :on-remove="handleRemove"
         name="upload_file"
         :http-request="UploadFile"
-        v-loading="uploadFlag"
-        element-loading-text="正在加密文件,请稍后"
       >
         <!-- v-show="!fileList.length" -->
         <i class="el-icon-upload"></i>
         <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
       </el-upload>
-      <div class="upload_progress" v-show="uploadProcess != 0">
-        <el-progress type="circle" :percentage="uploadProcess"></el-progress>
-        <!-- <el-progress :text-inside="true" :stroke-width="26" :percentage="uploadProcess" v-show="uploadProcess!=0"></el-progress> -->
+      <div class="upload_wrap" v-show="uploadProcess != 0">
+        <div class="upload_progress_wrap" v-show="!encryProgress">
+          <el-progress
+            type="circle"
+            :percentage="uploadProcess"
+            class="upload_progress"
+          ></el-progress>
+          <div class="upload_text">上传中...</div>
+        </div>
+        <div class="encry_progress_wrap" v-show="encryProgress">
+          <el-progress
+            type="circle"
+            :percentage="encryProgress"
+            class="encry_progress"
+            v-show="encryProgress != 100"
+          ></el-progress>
+          <el-progress
+            type="circle"
+            :percentage="100"
+            class="encry_progress"
+            status="success"
+            v-show="encryProgress == 100"
+          ></el-progress>
+          <div class="upload_text">加密中...</div>
+        </div>
       </div>
     </div>
 
@@ -68,68 +82,34 @@ export default {
         hash: "",
         key: "",
       },
-      uploadFlag: false, //上传标记
+      // uploadFlag: false, //上传标记
       dialogImageUrl: "",
       // dialogVisible: false,
       uploadListFlag: true,
       uploadRuleFlag: true, //是否满足条件上传
       uploadProcess: 0, //上传进度条
+      encryProgress: 0, //加密进度条
+      encryStatus: "", //加密状态
     };
   },
   methods: {
-    // 处理上传进度
-    // progressFunction(e) {
-    //   // var progress_bar = document.getElementById("progress_bar");
-    //   // var loading_dom = document.getElementById("loading");
-    //   // this.uploadProcess = Math.round((e.loaded / e.total) * 100);
-    //   // console.log("loading::",  this.uploadProcess);
-    //   console.log('aaa');
-    //   this.$nextTick(()=>{
-
-    //   })
-    //   // if (loading === 100) {
-    //   //   loading_dom.innerHTML = "上传成功^_^";
-    //   // } else {
-    //   //   loading_dom.innerHTML = "上传进度" + loading + "%";
-    //   // }
-
-    //   // progress_bar.style.width = String(loading * 3) + "px";
-    // },
-
-    // to_upload_file() {
-    //   var file_obj = document.getElementById("avatar").files[0];
-    //   if (file_obj) {
-    //     var url = "/api/upload";
-    //     var form = new FormData();
-    //     form.append("file", file_obj);
-
-    //     var xhr = new XMLHttpRequest();
-    //     xhr.open("POST", url, true);
-
-    //     // 添加 上传成功后的回调函数
-    //     xhr.onload = function (e) {
-    //       console.log("上传成功", e);
-    //     };
-    //     // 添加 上传失败后的回调函数
-    //     xhr.onerror = function (e) {
-    //       console.log("上传失败", e);
-    //     };
-    //     // 添加 进度监听函数
-    //     xhr.upload.onprogress = function (event) {
-    //       console.log(event.loaded);
-    //       console.log(event.total);
-    //       if (event.lengthComputable) {
-    //         var percent = Math.floor((event.loaded / event.total) * 100);
-    //         // document.querySelector("#progress .progress-item").style.width = percent + "%";
-    //         // 设置进度显示
-    //         console.log(percent);
-    //       }
-    //     };
-    //     xhr.send(form);
-    //   } else {
-    //     alert("请先选择文件后再上传");
-    //   }
-    // },
+    //获取加密进度
+    GetEncryProgress() {
+      let timer = null;
+      let _self = this;
+      return function () {
+        timer = setInterval(async () => {
+          let res = await ajax("/api/progress");
+          // console.log(res);
+          _self.encryProgress = res.progress;
+          if (res.progress === 100) {
+            // debugger;
+            clearInterval(timer);
+            _self.encryStatus = "success";
+          }
+        }, 1000);
+      };
+    },
     cleanData(type = 0) {
       this.smKey = "";
       this.fileInfo = { hash: "", key: "" };
@@ -149,7 +129,7 @@ export default {
       let _self = this;
       // 添加 上传成功后的回调函数
       xhr.onload = function (e) {
-        console.log("上传成功", e);
+        console.log("上传成功");
         _self.upload_success(e);
       };
       // 添加 上传失败后的回调函数
@@ -159,25 +139,29 @@ export default {
       };
       // 添加 进度监听函数
       xhr.upload.onprogress = function (event) {
-        console.log(event.loaded);
-        console.log(event.total);
-        // if (event.loaded === event.total) {
-        //   // console.log("hhhhhhhhhhh");
-          
-        //   // setInterval(async () => {
-        //   //   let progress = await ajax("/api/progress");
-        //   //   console.log(progress);
-        //   // }, 1000);
-        // }
+        // console.log(event.loaded);
+        // console.log(event.total);
+        if (event.loaded === event.total) {
+          // console.log("hhhhhhhhhhh");
+
+          // setInterval(async () => {
+          //   let progress = await ajax("/api/progress");
+          //   console.log(progress);
+          // }, 1000);
+          // debugger
+          let encryProgress = _self.GetEncryProgress();
+          encryProgress();
+        }
         if (event.lengthComputable) {
           _self.uploadProcess = Math.floor((event.loaded / event.total) * 100);
           // 设置进度显示
-          console.log(_self.uploadProcess);
+          // console.log(_self.uploadProcess);
         }
-        if (_self.uploadProcess == 100) {
-          // debugger
-          _self.uploadFlag = true;
-        }
+        // if (_self.uploadProcess == 100) {
+        //   // debugger
+        //   // _self.uploadFlag = true;
+
+        // }
       };
       xhr.send(formData);
 
@@ -194,7 +178,7 @@ export default {
     upload_success(e) {
       // console.log(res);
       // console.log("上传成功", e);
-      this.uploadFlag = false;
+      // this.uploadFlag = false;
       let hash = JSON.parse(e.target.response).hash;
       const h = this.$createElement;
       this.$msgbox({
@@ -230,8 +214,8 @@ export default {
         ]),
         showCancelButton: true,
         confirmButtonText: "确定",
-        cancelButtonText: "取消",
       }).then((action) => {
+        this.encryProgress = 0;
         this.uploadProcess = 0;
         // this.$message({
         //   type: "info",
@@ -413,8 +397,8 @@ export default {
     margin-top: -10rem;
   }
 }
-
-.upload_progress {
+//上传进度
+.upload_wrap {
   position: absolute;
   z-index: 9;
   left: 0;
@@ -428,5 +412,21 @@ export default {
   justify-content: center;
   align-items: center;
   background-color: #fbfbfb;
+  .upload_progress_wrap,
+  .encry_progress_wrap {
+    // border: 1px solid red;
+    position: relative;
+    // display: flex;
+    // align-items: center;
+    .upload_text {
+      // border: 1px solid red;
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 20%;
+      margin: auto;
+    }
+  }
+ 
 }
 </style>
