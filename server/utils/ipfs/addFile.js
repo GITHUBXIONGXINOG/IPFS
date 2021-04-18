@@ -1,8 +1,9 @@
 let IpfsApi = require("ipfs-api")
-const pathFn = require('path')
+const _path = require('path')
 const fs = require('fs')
 const { SM4 } = require('gm-crypto')
-const { progress } = require('./progress')
+// const { progress } = require('./progress')
+const { Worker, isMainThread, parentPort, workerData } = require('worker_threads')
 module.exports = {
     addfile: async (param, key) => {
         return new Promise(async (resolve) => {
@@ -78,17 +79,92 @@ module.exports = {
                     let arrData = []
                     // let buf = Buffer.alloc(25)
 
-                    for (let index = 0,len = fd.length; index < len; index += 1024) {
-                        progress(Math.floor((index/len)*100))
+                    // for (let index = 0, len = fd.length; index < len; index += 1024) {
+                    //     // progress(Math.floor((index/len)*100))
+                    //     // progress(index)
+                    //     if (isMainThread) {
+                    //         module.exports = function parseJs(script) {
+                    //             return new Promise((resolve,reject)=>{
+                    //                 // debugger
+                    //                 const work = new Work(__filename,{
+                    //                     workerData: script
+                    //                 })
+                    //                 work.on('message',resolve)
+                    //                 work.on('error',rekect)
+                    //                 work.on('exit',(code)=>{
+                    //                     if(code !== 0){
+                    //                         reject(new Error(`工作线程使用退出码 ${code} 停止`));
+                    //                     }
+                    //                 })
+                    //             })
+                    //         }
+                    //     }else{
+                    //         // debugger
+                    //         const { progress } = require('./progress')
+                    //         const script = workerData
+                    //         parentPort.postMessage(progress(script))
+                    //     }
 
-                        //1.将文件读取的buffer数据以每1024个为一组,转为JSON数据,进行加密
-                        encryptedData = SM4.encrypt(JSON.stringify(fd.slice(index, index + 1024)), hexKey, {
-                            inputEncoding: 'utf8',
-                            outputEncoding: 'base64'
+
+                    //     // //1.将文件读取的buffer数据以每1024个为一组,转为JSON数据,进行加密
+                    //     // encryptedData = SM4.encrypt(JSON.stringify(fd.slice(index, index + 1024)), hexKey, {
+                    //     //     inputEncoding: 'utf8',
+                    //     //     outputEncoding: 'base64'
+                    //     // })
+                    //     // //2.将解密后生成的密文(一串字符串)放入数组
+                    //     // arrData.push(encryptedData)
+
+                    //     // console.log(index);
+                    //     // console.log(progress());
+
+                    // }
+
+
+
+
+                    debugger
+                    if (isMainThread) {
+                        // let path = _path.join(__dirname,'progress.js')
+                        //  `${__dirname}/progress.js`
+                        const now = Date.now()
+                        // 主线程
+                        const worker = new Worker(__filename, {
+                            workerData: 'script'
+                        });
+                        worker.on('message', () => {
+                            console.log(Date.now() - now);
+                        });
+                        const worker1 = new Worker(__filename, {
+                            workerData: 'script'
                         })
-                        //2.将解密后生成的密文(一串字符串)放入数组
-                        arrData.push(encryptedData)
+                        worker1.on('message', () => {
+                            console.log(Date.now() - now);
+                        });
+                        const worker2 = new Worker(__filename, {
+                            workerData: 'script'
+                        })
+                        worker2.on('message', () => {
+                            console.log(Date.now() - now);
+                        });
+                        // console.log(worker);
+                        // parentPort.postMessage('hello') // 向工作线程发送数据
+                    } else {
+                        const fib = n =>{
+                            if (n===0) {
+                                return 0
+                            }
+                            else if (n===1) return 1
+                            else return fib(n-1)+fib(n-2)
+                        }
+                        const number = workerData
+                        const result = fib(number)
+                        parentPort.postMessage(result)
                     }
+
+
+
+
+
                     // progress(100)
                     // console.log(progress());
                     // console.log(arrData);

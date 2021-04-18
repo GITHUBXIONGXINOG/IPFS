@@ -307,12 +307,12 @@ export default {
     //   console.log(newValue);
     // }
   },
-  mounted(){
-     setInterval(async () => {
-        let progress = await ajax("/api/progress");
-        console.log(progress);
-      }, 1000);
-  }
+  // mounted(){
+  //    setInterval(async () => {
+  //       let progress = await ajax("/api/progress");
+  //       console.log(progress);
+  //     }, 1000);
+  // }
 };
 </script>
 

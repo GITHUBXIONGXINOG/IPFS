@@ -1,25 +1,25 @@
 const { Worker, isMainThread, parentPort, workerData } = require('worker_threads')
-const _path = require('path')
+
 debugger
 if (isMainThread) {
     debugger
-    let path = _path.join(__dirname,'worker_threads_test.js')
+    // let path = _path.join(__dirname,'progress.js')
     //  `${__dirname}/progress.js`
     const now = Date.now()
     // 主线程
-    const worker = new Worker(path, {
+    const worker = new Worker(__filename, {
         workerData: 20
     });
     worker.on('message', () => {
         console.log(Date.now() - now);
     });
-    const worker1 = new Worker(path, {
+    const worker1 = new Worker(__filename, {
         workerData: 20
     })
     worker1.on('message', () => {
         console.log(Date.now() - now);
     });
-    const worker2 = new Worker(path, {
+    const worker2 = new Worker(__filename, {
         workerData: 20
     })
     worker2.on('message', () => {
