@@ -83,22 +83,24 @@ export default {
     ...mapState({
       fileInfo: "fileInfo",
     }),
-    connectWebSockets() {
-      var ws = new WebSocket("ws://localhost:3001","echo-protocol");
-      ws.onopen = function (evt) {
-        console.log("Connection open ...");
-        ws.send("Hello WebSockets!");
-      };
+ 
+    // connectWebSockets() {
+    //   var ws = new WebSocket("ws://localhost:3001","echo-protocol");
+    //   ws.onopen = function (evt) {
+    //     console.log("Connection open ...");
+    //     ws.send("Hello WebSockets!");
+    //   };
 
-      ws.onmessage = function (evt) {
-        console.log("Received Message: " + evt.data);
-        // ws.close();
-      };
-
-      ws.onclose = function (evt) {
-        console.log("Connection closed.");
-      };
-    },
+    //   ws.onmessage = function (evt) {
+    //     console.log("Received Message: " + evt.data);
+    //     // ws.close();
+    //   };
+    //   let _self = this
+    //   ws.onclose = function (evt) {
+    //     console.log("Connection closed.");
+    //     _self.connectWebSockets()
+    //   };
+    // },
     //点击下载文件
     async clickGET() {
       if (this.smKey) {
@@ -113,7 +115,7 @@ export default {
         // for (var i = 0; i < 10; i++) {
           
         // }
-          _self.connectWebSockets()
+          // _self.connectWebSockets()
 
         let downloadUrl = await ajax(
           "/api/download",

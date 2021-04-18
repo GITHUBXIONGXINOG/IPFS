@@ -2,7 +2,10 @@ let IpfsApi = require("ipfs-api")
 const fs = require('fs')
 const _path = require('path')
 const { SM4 } = require('gm-crypto')
-const { Worker, isMainThread, parentPort, workerData } = require('worker_threads')
+// var http = require('http')
+// var WebSocketServer = require('websocket').server
+// const {initWebSocket,setProgress} = require('./webSocket')
+const {progress} = require('./progress')
 module.exports = {
     download: (hash, key) => {
         return new Promise(async (resolve, reject) => {
@@ -16,6 +19,7 @@ module.exports = {
                 // debugger
                 // console.log(hash, key);
                 var ipfs = IpfsApi('localhost', '5001', { protocol: 'http' })
+                // initWebSocket()
                 // debugger
                 await ipfs.ls(hash)
                 let file = await ipfs.cat(hash)
@@ -49,12 +53,24 @@ module.exports = {
                 // console.log(AllBuf);
                 try {
                     let resBuf = []
+                    let encryptProgress = 0
                     // debugger
                     //6.根据预定义的特征字符串进行切割
                     let arrString = tempString.split('==+==')
                     // console.log(arrString);
+                    //--------------------------------------------------------------
+                    
+                    // debugger
+                    // console.log(initWebSocket);
+                    // setProgress('ssss')
+
+
+//---------------------------------------------------------------------------------------
+
+                    
                     //循环,由于切割后最后一个是空,所以循环次数减一
-                    for (var index = 0; index < arrString.length - 1; index++) {
+                    for (var index = 0,len = arrString.length; index < len - 1; index++) {
+                        progress(index,len)
                         //6.以之前定义的每1024为一组进行分组
                         let chunkBuf = arrString[index]
                         //7.转换为对应的json
@@ -64,10 +80,16 @@ module.exports = {
                             inputEncoding: 'base64',
                             outputEncoding: 'utf8'
                         })
+                        // console.log(connection);
+                        // setProgress(Math.floor((index/len)*100))
                         // debugger
                         // 9.将数据解析为json格式,并转为buffer,存入buffer数组
                         resBuf.push(Buffer.from(JSON.parse(decryptedData)))
                     }
+//---------------------------------------------------------------------------------------
+
+
+        
                     // console.log(resBuf);
                     //10.对buffer数组进行拼接
                     let resAllBuf = Buffer.concat(resBuf)
@@ -87,13 +109,11 @@ module.exports = {
                     // console.log('-----------------------------------------------');
                     // console.log("6-decryptedDataBuffer:",decryptedDataBuffer);
                     // console.log(path);
-                    
-                   // console.log('-----------------------------------------------');
-                   let time = new Date().getTime() 
-                   debugger
-                   console.log(time);
-                   let fileName = hash+time
-                    let filePath = _path.join(__dirname,'../','../','public/','downloads',fileName) 
+
+                    // console.log('-----------------------------------------------');
+                    let time = new Date().getTime()
+                    let fileName = hash + time
+                    let filePath = _path.join(__dirname, '../', '../', 'public/', 'downloads', fileName)
                     // console.log(filePath);
                     debugger
                     // console.log(createWebSocket);
@@ -105,14 +125,7 @@ module.exports = {
                         } else {
                             resolve(`/api/downloads/${fileName}`)
                         }
-                    })  
-                    // console.log('-----------------------------------------------');
-                    // if(isMainThread){
-                    //     // debugger
-                    //     let path = _path.join(__dirname,'../','websocket','server.js')
-                    //     // console.log(path);
-                    //     const worker = new Worker(path,{workerData:resAllBuf})
-                    // }
+                    })
                     tempString = ''
                     resBuf = []
                 } catch (err) {

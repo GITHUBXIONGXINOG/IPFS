@@ -9,7 +9,7 @@ router.post('/', async function (req, res, next) {
     try{
         let fileUrl = await download(hash,key)
         // console.log('file',fileUrl);
-        debugger
+        // debugger
         res.send(fileUrl)
     }catch(err){
         // console.log('密码错误');
