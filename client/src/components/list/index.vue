@@ -83,6 +83,22 @@ export default {
     ...mapState({
       fileInfo: "fileInfo",
     }),
+    connectWebSockets() {
+      var ws = new WebSocket("ws://localhost:3001");
+      ws.onopen = function (evt) {
+        console.log("Connection open ...");
+        ws.send("Hello WebSockets!");
+      };
+
+      ws.onmessage = function (evt) {
+        console.log("Received Message: " + evt.data);
+        ws.close();
+      };
+
+      ws.onclose = function (evt) {
+        console.log("Connection closed.");
+      };
+    },
     //点击下载文件
     async clickGET() {
       if (this.smKey) {
@@ -189,9 +205,10 @@ export default {
       }
     },
   },
-  // mounted(){
-  //   // debugger
-  // }
+  mounted(){
+    // debugger
+    // connectWebSockets()
+  }
 };
 </script>
 <style lang="scss" >
