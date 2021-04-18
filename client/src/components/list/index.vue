@@ -84,7 +84,7 @@ export default {
       fileInfo: "fileInfo",
     }),
     connectWebSockets() {
-      var ws = new WebSocket("ws://localhost:3001");
+      var ws = new WebSocket("ws://localhost:3001","echo-protocol");
       ws.onopen = function (evt) {
         console.log("Connection open ...");
         ws.send("Hello WebSockets!");
@@ -106,6 +106,14 @@ export default {
         // console.log(this.fileInfo);
         // console.log(this.fileInfo());
         // debugger
+        let _self  = this
+        // setInterval(()=>{
+        //   _self.connectWebSockets()
+        // },2000)
+        for (var i = 0; i < 2; i++) {
+          _self.connectWebSockets()
+          
+        }
         let downloadUrl = await ajax(
           "/api/download",
           {
@@ -205,10 +213,23 @@ export default {
       }
     },
   },
-  mounted(){
+  mounted() {
     // debugger
-    // connectWebSockets()
-  }
+    // var ws = new WebSocket("ws://localhost:3001",'echo-protocol');
+    // ws.onopen = function (evt) {
+    //   console.log("Connection open ...");
+    //   ws.send("Hello WebSockets!");
+    // };
+
+    // ws.onmessage = function (evt) {
+    //   console.log("Received Message: " + evt.data);
+    //   // ws.close();
+    // };
+
+    // ws.onclose = function (evt) {
+    //   console.log("Connection closed.");
+    // };
+  },
 };
 </script>
 <style lang="scss" >

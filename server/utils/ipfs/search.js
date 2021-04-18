@@ -10,14 +10,17 @@ module.exports = {
             var ipfs = await IpfsApi('localhost', '5001', { protocol: 'http' })
             //  await ipfs.pin.ls(hash)
             let result = await ipfs.cat(hash)
-            debugger
+            // debugger
 
             // console.log(pathInfo);
-            console.log(result);
+            // console.log(result);
             let fileInfoString = result.toString('utf-8')
-            let fileInfo = JSON.parse(fileInfoString.replace(/\u0000/g,''))
+            // let fileInfo = JSON.parse(fileInfoString)
+            // let fileInfo = JSON.parse(fileInfoString)
+
             // console.log(fileInfo);
-            return fileInfo
+            // return fileInfo
+            return JSON.parse(fileInfoString)
  //---------------------------------------------------------------------------------------------           
 /*             let fileInfoString = result.toString('utf-8',0,300)
             let fileInfo = JSON.parse(fileInfoString.replace(/\u0000/g,''))

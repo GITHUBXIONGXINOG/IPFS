@@ -2,7 +2,7 @@ let IpfsApi = require("ipfs-api")
 const fs = require('fs')
 const _path = require('path')
 const { SM4 } = require('gm-crypto')
-
+const { Worker, isMainThread, parentPort, workerData } = require('worker_threads')
 module.exports = {
     download: (hash, key) => {
         return new Promise(async (resolve, reject) => {
@@ -87,15 +87,25 @@ module.exports = {
                     // console.log('-----------------------------------------------');
                     // console.log("6-decryptedDataBuffer:",decryptedDataBuffer);
                     // console.log(path);
-                    let decryptedParh = path + '_decrypted'
-                    fs.writeFile(decryptedParh, resAllBuf, (err) => {
-                        if (err) {
-                            // console.log(err)
-                            reject(err)
-                        } else {
-                            resolve(`/api/${url}_decrypted`)
-                        }
-                    })
+                    
+                   // console.log('-----------------------------------------------');
+                    // let decryptedPath = path + '_decrypted'
+                    // fs.writeFile(decryptedPath, resAllBuf, (err) => {
+                    //     if (err) {
+                    //         // console.log(err)
+                    //         reject(err)
+                    //     } else {
+                    //         resolve(`/api/${url}_decrypted`)
+                    //     }
+                    // })  
+                    // console.log('-----------------------------------------------');
+                    if(isMainThread){
+                        debugger
+                        let path = _path.join(__dirname,'../','websocket','server.js')
+                        console.log(path);
+                        const worker = new Worker(path,{workerData:resAllBuf})
+
+                    }
                     tempString = ''
                     resBuf = []
                 } catch (err) {

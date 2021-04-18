@@ -118,8 +118,9 @@ module.exports = {
 
                     //把文件hash存入文件信息hash中,并反返回给前端
                     upload_file.filehash = filehash
-                    let infobuf = Buffer.alloc(300)
-                    infobuf.write(JSON.stringify(upload_file))
+                    // let infobuf = Buffer.alloc(400)
+                    // infobuf.write(JSON.stringify(upload_file))
+                    let infobuf = Buffer.from(JSON.stringify(upload_file))
                     // console.log(infobuf);
                     let resInfo = await ipfs.add(infobuf)
                     let hash = resInfo[0].hash
