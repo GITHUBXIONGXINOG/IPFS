@@ -7,7 +7,9 @@ import './assets/icon/iconfont.js'
 Vue.config.productionTip = false
 import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
+import VueWorker from 'vue-worker'
 Vue.use(ElementUI);
+Vue.use(VueWorker)
 
 new Vue({
   router,

@@ -1,5 +1,6 @@
 <template>
   <div class="upload-panel">
+    <!-- <work :fileData="smKey" /> -->
     <div class="upload-file-wrap">
       <el-upload
         class="upload-file"
@@ -73,6 +74,10 @@
 </template>
 <script>
 import ajax from "../../utils/ajax";
+// import { encryptData_ECB, decryptData_ECB } from "../../utils/SM4Util";
+// import encryWork from '../../utils//encryWork'
+// import work from "../../components/worker";
+
 export default {
   data() {
     return {
@@ -119,7 +124,41 @@ export default {
     },
     //自定义上传实现,点击提交按钮后触发
     async UploadFile(param) {
-      // console.log(param);
+      // debugger;
+      // var blob = param;
+      // const CHUNK_SIZE = 20;
+      // const SIZE = blob.size;
+      // var start = 0;
+      // var end = CHUNK_SIZE;
+      // while (start < SIZE) {
+      //   console.log(start);
+      //   console.log(blob.file.slice(start, end));
+      //   start = end;
+      //   end = start + CHUNK_SIZE;
+      // }
+
+      // let blob = param.file.slice(0, 20);
+      // console.log(blob.toString());
+      var reader = new FileReader();
+      reader.readAsDataURL(param.file);
+      reader.onload = (e) => {
+        debugger
+        const fileString = e.target.result;
+        console.log(fileString);
+        let worker = new Worker("/utils/encryWork.js");
+        worker.postMessage(fileString);
+        worker.onmessage = function (event) {
+          console.log("加密后的数据:", event.data);
+        };
+      };
+      // let worker = new Worker("/utils/encryWork.js");
+      // worker.postMessage({fileInfo:param.file});
+      // worker.onmessage = function (event) {
+      //   console.log("加密后的数据:", event.data);
+      // };
+
+      // let res =  encryWork(param.file)
+      // console.log(res);
       var url = "/api/upload";
       var formData = new FormData();
       formData.append("file", param.file);
@@ -142,43 +181,17 @@ export default {
         // console.log(event.loaded);
         // console.log(event.total);
         if (event.loaded === event.total) {
-          // console.log("hhhhhhhhhhh");
-
-          // setInterval(async () => {
-          //   let progress = await ajax("/api/progress");
-          //   console.log(progress);
-          // }, 1000);
-          // debugger
           let encryProgress = _self.GetEncryProgress();
           encryProgress();
         }
         if (event.lengthComputable) {
           _self.uploadProcess = Math.floor((event.loaded / event.total) * 100);
-          // 设置进度显示
-          // console.log(_self.uploadProcess);
         }
-        // if (_self.uploadProcess == 100) {
-        //   // debugger
-        //   // _self.uploadFlag = true;
-
-        // }
       };
       xhr.send(formData);
-
-      // let res = await ajax("/api/upload", formData, "POST");
-      // if (res.hash) {
-      //   //成功提交
-      //   this.handle_success(res.hash);
-      //   this.cleanData();
-      //   this.uploadFlag = false;
-      // }
-      // console.log(res);
     },
     //成功上传返回值
     upload_success(e) {
-      // console.log(res);
-      // console.log("上传成功", e);
-      // this.uploadFlag = false;
       let hash = JSON.parse(e.target.response).hash;
       const h = this.$createElement;
       this.$msgbox({
@@ -260,6 +273,31 @@ export default {
       }
       let panel = document.getElementsByClassName("el-upload--text");
       panel[0].setAttribute("class", "el-upload el-upload--text hidden_style");
+      // debugger;
+      // var blob = files[0];
+      // const CHUNK_SIZE = 20;
+      // const SIZE = blob.size;
+      // var start = 0;
+      // var end = CHUNK_SIZE;
+      // while (start < SIZE) {
+      //   console.log(blob.raw.slice(start, end));
+      //   start = end;
+      //   end = start + CHUNK_SIZE;
+      // }
+      // console.log();
+      // var reader = new FileReader();
+      // // console.log(file.slice(0,100));
+      // reader.readAsDataURL(files[0]);
+      //   reader.onload = function(){
+      //           var binary = this.result;
+      //   }
+      // var reader = new FileReader()
+      // reader.readAsArrayBuffer(file.raw)
+      // reader.onload =(e)=>{
+      //   const fileString = e.target.result
+      // console.log(fileString);
+
+      // }
 
       return isLt2G;
     },
@@ -291,12 +329,15 @@ export default {
     //   console.log(newValue);
     // }
   },
-  // mounted(){
-  //    setInterval(async () => {
-  //       let progress = await ajax("/api/progress");
-  //       console.log(progress);
-  //     }, 1000);
-  // }
+  // components: {
+  //   work,
+  // },
+  // mounted() {
+  //   console.log(
+  //     "解密：" + decryptData_ECB("4ncw+RSEdPY/gnet0Usv0LEtCGYrxBzm6zSzXrLScUA=")
+  //   );
+  //   console.log("加密：" + encryptData_ECB("2477.39713035076"));
+  // },
 };
 </script>
 
@@ -427,6 +468,5 @@ export default {
       margin: auto;
     }
   }
- 
 }
 </style>

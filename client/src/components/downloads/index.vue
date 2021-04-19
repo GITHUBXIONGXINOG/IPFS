@@ -1,10 +1,10 @@
-// <template>
-//     <div class="downloads"></div>
-// </template>
-// <script>
-//  var ws = new WebSocket()
-// </script>
+<template>
+    <div class="downloads"></div>
+</template>
+<script>
+ var ws = new WebSocket()
+</script>
 
-// <style lang="scss" scoped>
+<style lang="scss" scoped>
 
-// </style>
+</style>

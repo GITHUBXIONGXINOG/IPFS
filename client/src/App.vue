@@ -2,7 +2,7 @@
   <div id="app">
     <nav-header />
     <keep-alive>
-    <router-view />
+      <router-view />
     </keep-alive>
   </div>
 </template>
@@ -24,12 +24,11 @@ export default {
   text-align: center;
   color: #2c3e50;
   display: flex;
-  font-family: "Helvetica Neue",Helvetica,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","微软雅黑",Arial,sans-serif;
-
+  font-family: "Helvetica Neue", Helvetica, "PingFang SC", "Hiragino Sans GB",
+    "Microsoft YaHei", "微软雅黑", Arial, sans-serif;
 }
 
 div {
   padding: 30px;
- 
 }
 </style>
