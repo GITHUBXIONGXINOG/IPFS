@@ -53,6 +53,6 @@ onmessage = function (event) {
     // console.log('解密数据:',decryptData);
     // console.log(decryptData_ECB('4ncw+RSEdPY/gnet0Usv0LEtCGYrxBzm6zSzXrLScUA='));
     // console.log();
-    postMessage(encryptData_ECB(event.data))
+    postMessage(encryData)
     //  postMessage(decryptData_ECB(event.data))
 }
