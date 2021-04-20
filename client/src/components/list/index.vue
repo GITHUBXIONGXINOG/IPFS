@@ -191,6 +191,7 @@ export default {
                 event.data.decryptData,
                 _self.fileInfo().name
               );
+              worker.terminate()
               // _self.formSubmit(event.data.decryptData, fileInfo);
             }
           };

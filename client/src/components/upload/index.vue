@@ -151,6 +151,8 @@ export default {
             //上传标记
             _self.uploadFlag = true;
             _self.formSubmit(event.data.encryData,fileInfo);
+              worker.terminate()
+
           }
         };
       };
