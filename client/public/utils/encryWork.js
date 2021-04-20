@@ -1,6 +1,6 @@
 importScripts('SM4Util.js')
 onmessage = function (event) {
-    debugger
+    // debugger
     console.log("worker1 onmessage");
     // let data = event.data
     // console.log(data);
@@ -14,9 +14,12 @@ onmessage = function (event) {
     // var reader = new FileReader();
     // let rs = reader.readAsArrayBuffer(data)
     // console.log(rs);
-    let encryData = encryptData_ECB(event.data)
+    debugger
+    const {file,key} = event.data
+    let encryData = encryptData_ECB(file,key)
     console.log('加密数据:', encryData);
-    let decryptData = decryptData_ECB(encryData)
+    debugger
+    let decryptData = decryptData_ECB(encryData,key)
     console.log('解密数据:', decryptData);
     // console.log(decryptData_ECB('4ncw+RSEdPY/gnet0Usv0LEtCGYrxBzm6zSzXrLScUA='));
     // console.log();

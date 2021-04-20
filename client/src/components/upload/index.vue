@@ -74,7 +74,7 @@
 </template>
 <script>
 import ajax from "../../utils/ajax";
-// import { encryptData_ECB, decryptData_ECB } from "../../utils/SM4Util";
+import { encryptData_ECB, decryptData_ECB } from "../../utils/SM4Util";
 // import encryWork from '../../utils//encryWork'
 // import work from "../../components/worker";
 
@@ -139,18 +139,28 @@ export default {
 
       // let blob = param.file.slice(0, 20);
       // console.log(blob.toString());
+      let _self = this;
       var reader = new FileReader();
       reader.readAsDataURL(param.file);
       reader.onload = (e) => {
-        debugger
+        // debugger
         const fileString = e.target.result;
-        console.log(fileString);
+        // console.log(fileString);
+        //创建子线程
         let worker = new Worker("/utils/encryWork.js");
-        worker.postMessage(fileString);
+        debugger
+        worker.postMessage({file:fileString,key:_self.smKey});
         worker.onmessage = function (event) {
           console.log("加密后的数据:", event.data);
         };
       };
+
+      // console.log(
+    //   "解密：" + decryptData_ECB("4ncw+RSEdPY/gnet0Usv0LEtCGYrxBzm6zSzXrLScUA=")
+    // );
+    // console.log("加密：" + encryptData_ECB("2477.39713035076"));
+
+
       // let worker = new Worker("/utils/encryWork.js");
       // worker.postMessage({fileInfo:param.file});
       // worker.onmessage = function (event) {
@@ -165,7 +175,6 @@ export default {
       formData.append("smKey", this.smKey);
       var xhr = new XMLHttpRequest();
       xhr.open("POST", url, true);
-      let _self = this;
       // 添加 上传成功后的回调函数
       xhr.onload = function (e) {
         console.log("上传成功");
@@ -332,12 +341,13 @@ export default {
   // components: {
   //   work,
   // },
-  // mounted() {
-  //   console.log(
-  //     "解密：" + decryptData_ECB("4ncw+RSEdPY/gnet0Usv0LEtCGYrxBzm6zSzXrLScUA=")
-  //   );
-  //   console.log("加密：" + encryptData_ECB("2477.39713035076"));
-  // },
+  mounted() {
+    // debugger
+    // console.log(
+    //   "解密：" + decryptData_ECB("4ncw+RSEdPY/gnet0Usv0LEtCGYrxBzm6zSzXrLScUA=")
+    // );
+    // console.log("加密：" + encryptData_ECB("2477.39713035076"));
+  },
 };
 </script>
 

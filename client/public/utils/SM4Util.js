@@ -1,17 +1,164 @@
 /**
-        * base64js
-        */
+ * base64js
+ */
 /**
  * base64js
  * base64js.toByteArray(d.input)
  * base64js.fromByteArray(c);
- * @author c.z.s
- * @email 70255403@qq.com
- * @company
- * @date 2018-07
  *
  */
-(function (r) { if (typeof exports === "object" && typeof module !== "undefined") { module.exports = r() } else { if (typeof define === "function" && define.amd) { define([], r) } else { var e; if (typeof window !== "undefined") { e = window } else { if (typeof global !== "undefined") { e = global } else { if (typeof self !== "undefined") { e = self } else { e = this } } } e.base64js = r() } } })(function () { var r, e, t; return function r(e, t, n) { function o(i, a) { if (!t[i]) { if (!e[i]) { var u = typeof require == "function" && require; if (!a && u) { return u(i, !0) } if (f) { return f(i, !0) } var d = new Error("Cannot find module '" + i + "'"); throw d.code = "MODULE_NOT_FOUND", d } var c = t[i] = { exports: {} }; e[i][0].call(c.exports, function (r) { var t = e[i][1][r]; return o(t ? t : r) }, c, c.exports, r, e, t, n) } return t[i].exports } var f = typeof require == "function" && require; for (var i = 0; i < n.length; i++) { o(n[i]) } return o }({ "/": [function (r, e, t) { t.byteLength = c; t.toByteArray = v; t.fromByteArray = s; var n = []; var o = []; var f = typeof Uint8Array !== "undefined" ? Uint8Array : Array; var i = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"; for (var a = 0, u = i.length; a < u; ++a) { n[a] = i[a]; o[i.charCodeAt(a)] = a } o["-".charCodeAt(0)] = 62; o["_".charCodeAt(0)] = 63; function d(r) { var e = r.length; if (e % 4 > 0) { throw new Error("Invalid string. Length must be a multiple of 4") } return r[e - 2] === "=" ? 2 : r[e - 1] === "=" ? 1 : 0 } function c(r) { return r.length * 3 / 4 - d(r) } function v(r) { var e, t, n, i, a; var u = r.length; i = d(r); a = new f(u * 3 / 4 - i); t = i > 0 ? u - 4 : u; var c = 0; for (e = 0; e < t; e += 4) { n = o[r.charCodeAt(e)] << 18 | o[r.charCodeAt(e + 1)] << 12 | o[r.charCodeAt(e + 2)] << 6 | o[r.charCodeAt(e + 3)]; a[c++] = n >> 16 & 255; a[c++] = n >> 8 & 255; a[c++] = n & 255 } if (i === 2) { n = o[r.charCodeAt(e)] << 2 | o[r.charCodeAt(e + 1)] >> 4; a[c++] = n & 255 } else { if (i === 1) { n = o[r.charCodeAt(e)] << 10 | o[r.charCodeAt(e + 1)] << 4 | o[r.charCodeAt(e + 2)] >> 2; a[c++] = n >> 8 & 255; a[c++] = n & 255 } } return a } function l(r) { return n[r >> 18 & 63] + n[r >> 12 & 63] + n[r >> 6 & 63] + n[r & 63] } function h(r, e, t) { var n; var o = []; for (var f = e; f < t; f += 3) { n = (r[f] << 16) + (r[f + 1] << 8) + r[f + 2]; o.push(l(n)) } return o.join("") } function s(r) { var e; var t = r.length; var o = t % 3; var f = ""; var i = []; var a = 16383; for (var u = 0, d = t - o; u < d; u += a) { i.push(h(r, u, u + a > d ? d : u + a)) } if (o === 1) { e = r[t - 1]; f += n[e >> 2]; f += n[e << 4 & 63]; f += "==" } else { if (o === 2) { e = (r[t - 2] << 8) + r[t - 1]; f += n[e >> 10]; f += n[e >> 4 & 63]; f += n[e << 2 & 63]; f += "=" } } i.push(f); return i.join("") } }, {}] }, {}, [])("/") });
+ (function (r) {
+    if (typeof exports === "object" && typeof module !== "undefined") {
+        module.exports = r()
+    } else {
+        if (typeof define === "function" && define.amd) {
+            define([], r)
+        } else {
+            var e;
+            if (typeof window !== "undefined") {
+                e = window
+            } else {
+                if (typeof global !== "undefined") {
+                    e = global
+                } else {
+                    if (typeof self !== "undefined") {
+                        e = self
+                    } else {
+                        e = this
+                    }
+                }
+            }
+            e.base64js = r()
+        }
+    }
+})(function () {
+    var r, e, t;
+    return function r(e, t, n) {
+        function o(i, a) {
+            if (!t[i]) {
+                if (!e[i]) {
+                    var u = typeof require == "function" && require;
+                    if (!a && u) {
+                        return u(i, !0)
+                    }
+                    if (f) {
+                        return f(i, !0)
+                    }
+                    var d = new Error("Cannot find module '" + i + "'");
+                    throw d.code = "MODULE_NOT_FOUND", d
+                }
+                var c = t[i] = {exports: {}};
+                e[i][0].call(c.exports, function (r) {
+                    var t = e[i][1][r];
+                    return o(t ? t : r)
+                }, c, c.exports, r, e, t, n)
+            }
+            return t[i].exports
+        }
+
+        var f = typeof require == "function" && require;
+        for (var i = 0; i < n.length; i++) {
+            o(n[i])
+        }
+        return o
+    }({
+        "/": [function (r, e, t) {
+            t.byteLength = c;
+            t.toByteArray = v;
+            t.fromByteArray = s;
+            var n = [];
+            var o = [];
+            var f = typeof Uint8Array !== "undefined" ? Uint8Array : Array;
+            var i = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+            for (var a = 0, u = i.length; a < u; ++a) {
+                n[a] = i[a];
+                o[i.charCodeAt(a)] = a
+            }
+            o["-".charCodeAt(0)] = 62;
+            o["_".charCodeAt(0)] = 63;
+
+            function d(r) {
+                var e = r.length;
+                if (e % 4 > 0) {
+                    throw new Error("Invalid string. Length must be a multiple of 4")
+                }
+                return r[e - 2] === "=" ? 2 : r[e - 1] === "=" ? 1 : 0
+            }
+
+            function c(r) {
+                return r.length * 3 / 4 - d(r)
+            }
+
+            function v(r) {
+                var e, t, n, i, a;
+                var u = r.length;
+                i = d(r);
+                a = new f(u * 3 / 4 - i);
+                t = i > 0 ? u - 4 : u;
+                var c = 0;
+                for (e = 0; e < t; e += 4) {
+                    n = o[r.charCodeAt(e)] << 18 | o[r.charCodeAt(e + 1)] << 12 | o[r.charCodeAt(e + 2)] << 6 | o[r.charCodeAt(e + 3)];
+                    a[c++] = n >> 16 & 255;
+                    a[c++] = n >> 8 & 255;
+                    a[c++] = n & 255
+                }
+                if (i === 2) {
+                    n = o[r.charCodeAt(e)] << 2 | o[r.charCodeAt(e + 1)] >> 4;
+                    a[c++] = n & 255
+                } else {
+                    if (i === 1) {
+                        n = o[r.charCodeAt(e)] << 10 | o[r.charCodeAt(e + 1)] << 4 | o[r.charCodeAt(e + 2)] >> 2;
+                        a[c++] = n >> 8 & 255;
+                        a[c++] = n & 255
+                    }
+                }
+                return a
+            }
+
+            function l(r) {
+                return n[r >> 18 & 63] + n[r >> 12 & 63] + n[r >> 6 & 63] + n[r & 63]
+            }
+
+            function h(r, e, t) {
+                var n;
+                var o = [];
+                for (var f = e; f < t; f += 3) {
+                    n = (r[f] << 16) + (r[f + 1] << 8) + r[f + 2];
+                    o.push(l(n))
+                }
+                return o.join("")
+            }
+
+            function s(r) {
+                var e;
+                var t = r.length;
+                var o = t % 3;
+                var f = "";
+                var i = [];
+                var a = 16383;
+                for (var u = 0, d = t - o; u < d; u += a) {
+                    i.push(h(r, u, u + a > d ? d : u + a))
+                }
+                if (o === 1) {
+                    e = r[t - 1];
+                    f += n[e >> 2];
+                    f += n[e << 4 & 63];
+                    f += "=="
+                } else {
+                    if (o === 2) {
+                        e = (r[t - 2] << 8) + r[t - 1];
+                        f += n[e >> 10];
+                        f += n[e >> 4 & 63];
+                        f += n[e << 2 & 63];
+                        f += "="
+                    }
+                }
+                i.push(f);
+                return i.join("")
+            }
+        }, {}]
+    }, {}, [])("/")
+});
 
 
 /**
@@ -22,6 +169,7 @@ function SM4_Context() {
     this.isPadding = true;
     this.sk = new Array(32);
 }
+
 //定义SM4函数
 function SM4() {
     this.SM4_ENCRYPT = 1;
@@ -82,6 +230,7 @@ function SM4() {
 
 
     this.sm4Lt = function (ka) {
+        // debugger
         var bb = 0;
         var c = 0;
         var a = new Array(4);
@@ -97,10 +246,12 @@ function SM4() {
     }
 
     this.sm4F = function (x0, x1, x2, x3, rk) {
+        // debugger
         return x0 ^ this.sm4Lt(x1 ^ x2 ^ x3 ^ rk);
     }
 
     this.sm4CalciRK = function (ka) {
+        // debugger
         var bb = 0;
         var rk = 0;
         var a = new Array(4);
@@ -116,21 +267,28 @@ function SM4() {
     }
 
 
-
     this.sm4Sbox = function (inch) {
+        // debugger
         var i = inch & 0xFF;
         var retVal = SboxTable[i];
         return retVal > 128 ? retVal - 256 : retVal;
     }
-
+    //对密钥进行判断和加密处理
     this.sm4_setkey_enc = function (ctx, key) {
+        // debugger
         if (ctx == null) {
             alert("ctx is null!");
             return false;
         }
-        if (key == null || key.length != 16) {
+        if (key == null ) {
             alert("key error!");
             return false;
+        }
+        if (key.length != 16) {
+            let keyLen = 16-key.length
+            for (var i = 0; i < keyLen; i++) {
+                key.push(key[i])
+            }
         }
         ctx.mode = this.SM4_ENCRYPT;
         this.sm4_setkey(ctx.sk, key);
@@ -138,14 +296,20 @@ function SM4() {
     };
     //生成解密密钥
     this.sm4_setkey_dec = function (ctx, key) {
+        // debugger
         if (ctx == null) {
             Error("ctx is null!");
         }
 
-        if (key == null || key.length != 16) {
+        if (key == null) {
             Error("key error!");
         }
-
+        if (key.length != 16) {
+            let keyLen = 16-key.length
+            for (var i = 0; i < keyLen; i++) {
+                key.push(key[i])
+            }
+        }
         var i = 0;
         ctx.mode = 0;
         this.sm4_setkey(ctx.sk, key);
@@ -154,6 +318,7 @@ function SM4() {
 
 
     this.sm4_setkey = function (SK, key) {
+        // debugger
         var MK = new Array(4);
         var k = new Array(36);
         var i = 0;
@@ -207,6 +372,7 @@ function SM4() {
     }
 
     this.sm4_crypt_ecb = function (ctx, input) {
+        // debugger
         if (input == null) {
             alert("input is null!");
         }
@@ -238,6 +404,7 @@ function SM4() {
     }
 
     this.sm4_crypt_cbc = function (ctx, iv, input) {
+        // debugger
         if (iv == null || iv.length != 16) {
             alert("iv error!");
         }
@@ -268,8 +435,7 @@ function SM4() {
                 bous = bous.concat(out1);
                 k++;
             }
-        }
-        else {
+        } else {
             var temp = [];
             var k = 0;
             for (; length > 0; length -= 16) {
@@ -303,16 +469,20 @@ function SM4() {
 
 
 function SM4Util() {
-    this.secretKey = "11HDESAAHIHHUGDZ";
+    // this.secretKey = "11HDESAAHIHHUGDZ";
+    // debugger
+    this.secretKey = "";
     this.iv = "";
     this.hexString = false;
 
     this.encryptData_ECB = function (plainText) {
+        // debugger
         try {
             var sm4 = new SM4();
             var ctx = new SM4_Context();
             ctx.isPadding = true;
             ctx.mode = sm4.SM4_ENCRYPT;
+            //将密码字符串转为字节存储
             var keyBytes = stringToByte(this.secretKey);
             sm4.sm4_setkey_enc(ctx, keyBytes);
             var encrypted = sm4.sm4_crypt_ecb(ctx, stringToByte(plainText));
@@ -328,6 +498,7 @@ function SM4Util() {
 
     }
     this.decryptData_ECB = function (cipherText) {
+        // debugger
         // let serkey = "11HDESAAHIHHUGDZ"
         try {
             var sm4 = new SM4();
@@ -347,6 +518,7 @@ function SM4Util() {
     }
 
     this.encryptData_CBC = function (plainText) {
+        // debugger
         try {
             var sm4 = new SM4();
             var ctx = new SM4_Context();
@@ -363,13 +535,12 @@ function SM4Util() {
                 cipherText.replace(/(\s*|\t|\r|\n)/g, "");
             }
             return cipherText;
-        }
-        catch (e) {
+        } catch (e) {
             console.error(e);
             return null;
         }
     }
-
+    // 字符串转换成Byte类型
     function stringToByte(str) {
         var bytes = new Array();
         var len, c;
@@ -397,6 +568,7 @@ function SM4Util() {
 
 
     function byteToString(arr) {
+        // debugger
         if (typeof arr === 'string') {
             return arr;
         }
@@ -422,11 +594,19 @@ function SM4Util() {
 };
 let s4 = new SM4Util();
 s4.iv = "UISwD9fW6cFh9SNS";
+
 // 加密
-function encryptData_ECB(data) {
+function encryptData_ECB(data,secretKey) {
+    // debugger
+    // this.secretKey = "11HDESAAHIHHUGDZ";
+    s4.secretKey=secretKey
+    // console.log(s4);
     return s4.encryptData_ECB(data)
 }
+
 // 解密
-function decryptData_ECB(data) {
+function decryptData_ECB(data,secretKey) {
+    debugger
+    s4.secretKey=secretKey
     return s4.decryptData_ECB(data)
 }
