@@ -62,8 +62,36 @@
           </el-button-group>
         </td>
       </tr>
+      <div class="progress_wrap" v-show="decryProcess">
+      <el-progress :percentage="decryProcess" :format="progressformat"></el-progress>
+
+      </div>
     </table>
     <!-- {{fileInfo()}} -->
+    <!-- 
+    <div class="upload_wrap">
+           <el-progress
+          :text-inside="true"
+          :stroke-width="26"
+          :percentage="decryProcess"
+        ></el-progress>
+      <div class="encry_progress_wrap">
+    
+        <el-progress
+          :text-inside="true"
+          :stroke-width="26"
+          :percentage="decryProcess"
+        ></el-progress>
+
+        <el-progress
+          :percentage="100"
+          class="encry_progress"
+          status="success"
+          v-show="encryProgress == 100"
+        ></el-progress>
+        <div class="upload_text">解密中...</div>
+      </div>
+    </div> -->
   </div>
 </template>
 <script>
@@ -76,6 +104,12 @@ export default {
   data() {
     return {
       smKey: "", //输入密钥
+      uploadListFlag: true,
+      uploadRuleFlag: true, //是否满足条件上传
+      uploadProcess: 0, //上传进度条
+      decryProcess: 0, //加密进度条
+      encryStatus: "", //加密状态
+      uploadFlag: false, //上传标记
     };
   },
   methods: {
@@ -83,7 +117,13 @@ export default {
     ...mapState({
       fileInfo: "fileInfo",
     }),
-
+  progressformat(percentage){
+    if(!percentage){
+      return ' '
+    }else{
+      return percentage === 100 ? '解压完成' : `解压中${percentage}%`
+    }
+  },
     // connectWebSockets() {
     //   var ws = new WebSocket("ws://localhost:3001","echo-protocol");
     //   ws.onopen = function (evt) {
@@ -138,7 +178,7 @@ export default {
           worker.onmessage = function (event) {
             if (event.data.progress <= 100 && !event.data.encryData) {
               // console.log("加密的数据进度:", event.data.progress);
-              _self.encryProgress = Math.floor(event.data.progress * 100);
+              _self.decryProcess = Math.floor(event.data.progress * 100);
             }
             if (event.data.decryptData) {
               // debugger
@@ -146,23 +186,14 @@ export default {
               //上传标记
               _self.uploadFlag = true;
               _self.file = event.data.decryptData;
-              _self.downloadFileByBase64(event.data.decryptData,_self.fileInfo().name)
+              // debugger;
+              _self.downloadFileByBase64(
+                event.data.decryptData,
+                _self.fileInfo().name
+              );
               // _self.formSubmit(event.data.decryptData, fileInfo);
             }
           };
-
-          // let name = this.fileInfo().name;
-          // var x = new XMLHttpRequest();
-          // x.open("GET", downloadUrl, true);
-          // x.responseType = "base64";
-          // x.onload = function () {
-          //   var url = window.URL.createObjectURL(x.response);
-          //   var a = document.createElement("a");
-          //   a.href = url;
-          //   a.download = name;
-          //   a.click();
-          // };
-          // x.send();
         }
       } else {
         this.$message.error("请输入密钥");
@@ -227,6 +258,7 @@ export default {
       // debugger;
       this.changeFilePanel(false);
       this.smKey = "";
+      this.decryProcess = 0
     },
   },
   computed: {
@@ -370,4 +402,10 @@ export default {
     visibility: hidden;
   }
 }
+.progress_wrap{
+  // border: 1px solid red;
+  margin: 10px;
+  // width: 100%;
+}
+
 </style>

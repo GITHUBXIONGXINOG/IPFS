@@ -60,9 +60,12 @@ onmessage = function (event) {
 
 
             postMessage({ progress: i / len })
-            postMessage({ decryptData })
 
         }
+        postMessage({ progress: 1 })
+
+        postMessage({ decryptData })
+
     }
 
 

@@ -9,15 +9,11 @@ module.exports = {
         return new Promise(async (resolve) => {
             try {
                 var ipfs = IpfsApi('localhost', '5001', { protocol: 'http' })
-                debugger
-                debugger
                 const { path } = fileInfo
                 fs.readFile(path, 'utf8', async function (err, data) {
                     if (err) {
                         console.log(err)
                     } else {
-                        debugger
-                        console.log(data);
                         try {
                             // 添加到ipfs
                             let resFile = await ipfs.add({
