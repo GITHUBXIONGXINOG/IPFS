@@ -151,7 +151,7 @@ export default {
         debugger
         worker.postMessage({file:fileString,key:_self.smKey});
         worker.onmessage = function (event) {
-          console.log("加密后的数据:", event.data);
+          console.log("加密的数据进度:", event.data);
         };
       };
 

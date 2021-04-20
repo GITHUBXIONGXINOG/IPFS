@@ -606,7 +606,7 @@ function encryptData_ECB(data,secretKey) {
 
 // 解密
 function decryptData_ECB(data,secretKey) {
-    debugger
+    // debugger
     s4.secretKey=secretKey
     return s4.decryptData_ECB(data)
 }
