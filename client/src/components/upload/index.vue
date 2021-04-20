@@ -1,6 +1,22 @@
 <template>
   <div class="upload-panel">
     <!-- <work :fileData="smKey" /> -->
+    <!-- <div class="encry_progress_wrap">
+      <el-progress
+        type="circle"
+        :percentage="encryProgress"
+        class="encry_progress"
+        v-show="encryProgress != 100"
+      ></el-progress>
+      <el-progress
+        type="circle"
+        :percentage="100"
+        class="encry_progress"
+        status="success"
+        v-show="encryProgress == 100"
+      ></el-progress>
+      <div class="upload_text">加密中...</div>
+    </div> -->
     <div class="upload-file-wrap">
       <el-upload
         class="upload-file"
@@ -18,16 +34,8 @@
         <i class="el-icon-upload"></i>
         <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
       </el-upload>
-      <div class="upload_wrap" v-show="uploadProcess != 0">
-        <div class="upload_progress_wrap" v-show="!encryProgress">
-          <el-progress
-            type="circle"
-            :percentage="uploadProcess"
-            class="upload_progress"
-          ></el-progress>
-          <div class="upload_text">上传中...</div>
-        </div>
-        <div class="encry_progress_wrap" v-show="encryProgress">
+      <div class="upload_wrap" v-show="encryProgress != 0">
+        <div class="encry_progress_wrap" v-show="encryProgress && !uploadFlag">
           <el-progress
             type="circle"
             :percentage="encryProgress"
@@ -42,6 +50,15 @@
             v-show="encryProgress == 100"
           ></el-progress>
           <div class="upload_text">加密中...</div>
+        </div>
+
+        <div class="upload_progress_wrap" v-show="uploadFlag">
+          <el-progress
+            type="circle"
+            :percentage="uploadProcess"
+            class="upload_progress"
+          ></el-progress>
+          <div class="upload_text">上传中...</div>
         </div>
       </div>
     </div>
@@ -95,26 +112,10 @@ export default {
       uploadProcess: 0, //上传进度条
       encryProgress: 0, //加密进度条
       encryStatus: "", //加密状态
+      uploadFlag: false, //上传标记
     };
   },
   methods: {
-    //获取加密进度
-    GetEncryProgress() {
-      let timer = null;
-      let _self = this;
-      return function () {
-        timer = setInterval(async () => {
-          let res = await ajax("/api/progress");
-          // console.log(res);
-          _self.encryProgress = res.progress;
-          if (res.progress === 100) {
-            // debugger;
-            clearInterval(timer);
-            _self.encryStatus = "success";
-          }
-        }, 1000);
-      };
-    },
     cleanData(type = 0) {
       this.smKey = "";
       this.fileInfo = { hash: "", key: "" };
@@ -125,58 +126,56 @@ export default {
     //自定义上传实现,点击提交按钮后触发
     async UploadFile(param) {
       // debugger;
-      // var blob = param;
-      // const CHUNK_SIZE = 20;
-      // const SIZE = blob.size;
-      // var start = 0;
-      // var end = CHUNK_SIZE;
-      // while (start < SIZE) {
-      //   console.log(start);
-      //   console.log(blob.file.slice(start, end));
-      //   start = end;
-      //   end = start + CHUNK_SIZE;
-      // }
-
-      // let blob = param.file.slice(0, 20);
-      // console.log(blob.toString());
       let _self = this;
       var reader = new FileReader();
       reader.readAsDataURL(param.file);
+      // debugger;
+      const {type, name, size, lastModifiedDate } = param.file;
+      const fileInfo = {type, name, size, lastModifiedDate}
       reader.onload = (e) => {
         // debugger
         const fileString = e.target.result;
         // console.log(fileString);
         //创建子线程
         let worker = new Worker("/utils/encryWork.js");
-        debugger
-        worker.postMessage({file:fileString,key:_self.smKey});
+        // debugger
+        worker.postMessage({ file: fileString, key: _self.smKey });
         worker.onmessage = function (event) {
-          console.log("加密的数据进度:", event.data);
+          if (event.data.progress <= 100 && !event.data.encryData) {
+            // console.log("加密的数据进度:", event.data.progress);
+            _self.encryProgress = Math.floor(event.data.progress * 100);
+          }
+          if (event.data.encryData) {
+            // debugger
+            // console.log("加密数据:", event.data.encryData);
+            //上传标记
+            _self.uploadFlag = true;
+            _self.formSubmit(event.data.encryData,fileInfo);
+          }
         };
       };
-
-      // console.log(
-    //   "解密：" + decryptData_ECB("4ncw+RSEdPY/gnet0Usv0LEtCGYrxBzm6zSzXrLScUA=")
-    // );
-    // console.log("加密：" + encryptData_ECB("2477.39713035076"));
-
-
-      // let worker = new Worker("/utils/encryWork.js");
-      // worker.postMessage({fileInfo:param.file});
-      // worker.onmessage = function (event) {
-      //   console.log("加密后的数据:", event.data);
-      // };
-
-      // let res =  encryWork(param.file)
-      // console.log(res);
+    },
+    formSubmit(data,info) {
       var url = "/api/upload";
       var formData = new FormData();
-      formData.append("file", param.file);
+      // debugger
+      const file = new File(
+        [data],
+        info.name,
+        {
+          type: info.type
+        }
+      )
+      // console.log(file);
+      formData.append("file", file);
+      // formData.append("info", JSON.stringify(info));
       formData.append("smKey", this.smKey);
       var xhr = new XMLHttpRequest();
+      let _self = this;
       xhr.open("POST", url, true);
       // 添加 上传成功后的回调函数
       xhr.onload = function (e) {
+        debugger;
         console.log("上传成功");
         _self.upload_success(e);
       };
@@ -187,12 +186,6 @@ export default {
       };
       // 添加 进度监听函数
       xhr.upload.onprogress = function (event) {
-        // console.log(event.loaded);
-        // console.log(event.total);
-        if (event.loaded === event.total) {
-          let encryProgress = _self.GetEncryProgress();
-          encryProgress();
-        }
         if (event.lengthComputable) {
           _self.uploadProcess = Math.floor((event.loaded / event.total) * 100);
         }
@@ -201,6 +194,7 @@ export default {
     },
     //成功上传返回值
     upload_success(e) {
+      debugger;
       let hash = JSON.parse(e.target.response).hash;
       const h = this.$createElement;
       this.$msgbox({

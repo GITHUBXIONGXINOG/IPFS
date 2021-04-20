@@ -14,7 +14,7 @@ onmessage = function (event) {
     // var reader = new FileReader();
     // let rs = reader.readAsArrayBuffer(data)
     // console.log(rs);
-    debugger
+    // debugger
     const { file, key } = event.data
     // let encryData = encryptData_ECB(file,key)
     const CHUNK_SIZE = 1024
@@ -27,7 +27,7 @@ onmessage = function (event) {
         // console.log(file.slice(i, i+CHUNK_SIZE));
         let chunkData = encryptData_ECB(file.slice(i, i + CHUNK_SIZE), key)
         // console.log(`加密数据片${i}:`, chunkData)
-        postMessage(i / len)
+        postMessage({progress: i / len})
         encryData = encryData.concat(chunkData)
         if (chunkData.length < 1388) {
             chunkInfo.uncompleteChunkLen = chunkData.length
@@ -38,7 +38,7 @@ onmessage = function (event) {
     // console.log(encryData);
     // encryData = encryData.concat('chunkInfo:',JSON.stringify(chunkInfo))
 
-    debugger
+    // debugger
     // console.log(chunkInfo);
     let decryptData = ''
     // let index = 0
@@ -54,22 +54,23 @@ onmessage = function (event) {
     // }
     
     //循环解密
-    for (var i = 0, len = encryData.length; i < len; i+=SIZE) {
-        let chunkData
-        //为一整个分片
-        if (i+SIZE<encryData.length) {
-           chunkData = decryptData_ECB(encryData.slice(i, i + SIZE), key)
-        } else{//为开头或结尾处不是一整个的分片
-            chunkData = decryptData_ECB(encryData.slice(i), key)
-        }
-        decryptData = decryptData.concat(chunkData)
+    // for (var i = 0, len = encryData.length; i < len; i+=SIZE) {
+    //     let chunkData
+    //     //为一整个分片
+    //     if (i+SIZE<encryData.length) {
+    //        chunkData = decryptData_ECB(encryData.slice(i, i + SIZE), key)
+    //     } else{//为开头或结尾处不是一整个的分片
+    //         chunkData = decryptData_ECB(encryData.slice(i), key)
+    //     }
+    //     decryptData = decryptData.concat(chunkData)
 
-        console.log(`解密数据片:`, chunkData)
+    //     // console.log(`解密数据片:`, chunkData)
       
  
-        postMessage(i / len)
-    }
-    postMessage(100)
+    //     postMessage({progress: i / len})
+    // }
+    postMessage({progress: 1})
+
 
     // while(comTime<comChNm){
     //     let chunkData = decryptData_ECB(encryData.slice(comStart, comStart+SIZE), key)
@@ -145,6 +146,6 @@ onmessage = function (event) {
     // console.log('解密数据:',decryptData);
     // console.log(decryptData_ECB('4ncw+RSEdPY/gnet0Usv0LEtCGYrxBzm6zSzXrLScUA='));
     // console.log();
-    postMessage(encryData)
+    postMessage({encryData})
     //  postMessage(decryptData_ECB(event.data))
 }

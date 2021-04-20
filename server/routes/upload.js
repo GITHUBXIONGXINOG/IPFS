@@ -18,7 +18,10 @@ router.post('/', function(req, res, next) {
         // console.log(fields);
         // console.log(files);
         try{
-            let resFile = await addfile(files.file,fields.smKey)
+            debugger
+            const { path, type, name, size, lastModifiedDate } = files.file
+            const upload_file_info = { path, type, name, size, lastModifiedDate }
+            let resFile = await addfile(upload_file_info)
             res.json(200,{hash:resFile})
         }catch(err){
             console.error(err);

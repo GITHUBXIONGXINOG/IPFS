@@ -104,7 +104,7 @@ export default {
     //点击下载文件
     async clickGET() {
       if (this.smKey) {
-        // debugger
+        debugger
         // console.log(this.fileInfo);
         // console.log(this.fileInfo());
         // debugger
@@ -121,7 +121,6 @@ export default {
           "/api/download",
           {
             hash: this.fileInfo().filehash,
-            key: this.smKey,
           },
           "POST"
         );
