@@ -24,23 +24,24 @@ module.exports = {
                 await ipfs.ls(hash)
                 let file = await ipfs.cat(hash)
 
-                //5.接收到buffer数据,转为字符串
-                // let tempString = file.toString()
-                let time = new Date().getTime()
-                let fileName = hash + time
-                let filePath = _path.join(__dirname, '../', '../', 'public/', 'downloads', fileName)
-                // console.log(filePath);
-                debugger
+                // //5.接收到buffer数据,转为字符串
+                // // let tempString = file.toString()
+                // let time = new Date().getTime()
+                // let fileName = hash + time
+                // let filePath = _path.join(__dirname, '../', '../', 'public/', 'downloads', fileName)
+                // // console.log(filePath);
+                // debugger
                 // console.log(createWebSocket);
                 // createWebSocket()
-                fs.writeFile(filePath, file, (err) => {
-                    if (err) {
-                        // console.log(err)
-                        reject(err)
-                    } else {
-                        resolve(`/api/downloads/${fileName}`)
-                    }
-                })
+                // fs.writeFile(filePath, file, (err) => {
+                //     if (err) {
+                //         // console.log(err)
+                //         reject(err)
+                //     } else {
+                //         resolve(`/api/downloads/${fileName}`)
+                //     }
+                // })
+                resolve(file)
                 tempString = ''
                 resBuf = []
 

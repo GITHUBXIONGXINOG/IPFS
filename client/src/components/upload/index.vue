@@ -139,7 +139,7 @@ export default {
         //创建子线程
         let worker = new Worker("/utils/encryWork.js");
         // debugger
-        worker.postMessage({ file: fileString, key: _self.smKey });
+        worker.postMessage({ file: fileString, key: _self.smKey, flag: 0 });
         worker.onmessage = function (event) {
           if (event.data.progress <= 100 && !event.data.encryData) {
             // console.log("加密的数据进度:", event.data.progress);

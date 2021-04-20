@@ -24,10 +24,10 @@ module.exports = {
                                 path: path,
                                 content: Buffer.from(data)
                             })
-                            console.log(resFile);
+                            // console.log(resFile);
                             filehash = await resFile[0].hash
-                            let file = await ipfs.cat(filehash)
-                            console.log(file);
+                            // let file = await ipfs.cat(filehash)
+                            // console.log(file);
                             if (filehash) {
                                 fs.unlink(path, (err) => { if (err) console.error(err); })
                             }

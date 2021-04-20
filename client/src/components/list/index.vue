@@ -83,7 +83,7 @@ export default {
     ...mapState({
       fileInfo: "fileInfo",
     }),
- 
+
     // connectWebSockets() {
     //   var ws = new WebSocket("ws://localhost:3001","echo-protocol");
     //   ws.onopen = function (evt) {
@@ -104,48 +104,95 @@ export default {
     //点击下载文件
     async clickGET() {
       if (this.smKey) {
-        debugger
+        // debugger
         // console.log(this.fileInfo);
         // console.log(this.fileInfo());
         // debugger
-        let _self  = this
+        let _self = this;
         // setInterval(()=>{
         //   _self.connectWebSockets()
         // },2000)
         // for (var i = 0; i < 10; i++) {
-          
-        // }
-          // _self.connectWebSockets()
 
-        let downloadUrl = await ajax(
+        // }
+        // _self.connectWebSockets()
+        let file = "";
+        let downloadFile = await ajax(
           "/api/download",
           {
             hash: this.fileInfo().filehash,
           },
           "POST"
         );
-        if (downloadUrl.Error) {
+        // debugger;
+        if (downloadFile.Error) {
           if (downloadUrl.Code === "401") {
             this.$message.error("服务端解压失败,密钥错误!");
           }
         } else {
-          this.smKey = "";
-          let name = this.fileInfo().name;
-          var x = new XMLHttpRequest();
-          x.open("GET", downloadUrl, true);
-          x.responseType = "blob";
-          x.onload = function () {
-            var url = window.URL.createObjectURL(x.response);
-            var a = document.createElement("a");
-            a.href = url;
-            a.download = name;
-            a.click();
+          // this.smKey = "";
+          //创建子线程
+          let worker = new Worker("/utils/encryWork.js");
+          // debugger
+          worker.postMessage({ file: downloadFile, key: _self.smKey, flag: 1 });
+          worker.onmessage = function (event) {
+            if (event.data.progress <= 100 && !event.data.encryData) {
+              // console.log("加密的数据进度:", event.data.progress);
+              _self.encryProgress = Math.floor(event.data.progress * 100);
+            }
+            if (event.data.decryptData) {
+              // debugger
+              // console.log("加密数据:", event.data.encryData);
+              //上传标记
+              _self.uploadFlag = true;
+              _self.file = event.data.decryptData;
+              _self.downloadFileByBase64(event.data.decryptData,_self.fileInfo().name)
+              // _self.formSubmit(event.data.decryptData, fileInfo);
+            }
           };
-          x.send();
+
+          // let name = this.fileInfo().name;
+          // var x = new XMLHttpRequest();
+          // x.open("GET", downloadUrl, true);
+          // x.responseType = "base64";
+          // x.onload = function () {
+          //   var url = window.URL.createObjectURL(x.response);
+          //   var a = document.createElement("a");
+          //   a.href = url;
+          //   a.download = name;
+          //   a.click();
+          // };
+          // x.send();
         }
       } else {
         this.$message.error("请输入密钥");
       }
+    },
+
+    dataURLtoBlob(dataurl) {
+      var arr = dataurl.split(","),
+        mime = arr[0].match(/:(.*?);/)[1],
+        bstr = atob(arr[1]),
+        n = bstr.length,
+        u8arr = new Uint8Array(n);
+      while (n--) {
+        u8arr[n] = bstr.charCodeAt(n);
+      }
+      return new Blob([u8arr], { type: mime });
+    },
+    downloadFile(url, name = "What's the fuvk") {
+      var a = document.createElement("a");
+      a.setAttribute("href", url);
+      a.setAttribute("download", name);
+      a.setAttribute("target", "_blank");
+      let clickEvent = document.createEvent("MouseEvents");
+      clickEvent.initEvent("click", true, true);
+      a.dispatchEvent(clickEvent);
+    },
+    downloadFileByBase64(base64, name) {
+      var myBlob = this.dataURLtoBlob(base64);
+      var myUrl = URL.createObjectURL(myBlob);
+      this.downloadFile(myUrl, name);
     },
     //删除ipfs固定
     async deleteIPFS() {
@@ -222,12 +269,10 @@ export default {
     //   console.log("Connection open ...");
     //   ws.send("Hello WebSockets!");
     // };
-
     // ws.onmessage = function (evt) {
     //   console.log("Received Message: " + evt.data);
     //   // ws.close();
     // };
-
     // ws.onclose = function (evt) {
     //   console.log("Connection closed.");
     // };

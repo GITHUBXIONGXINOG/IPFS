@@ -15,36 +15,65 @@ onmessage = function (event) {
     // let rs = reader.readAsArrayBuffer(data)
     // console.log(rs);
     // debugger
-    const { file, key } = event.data
+    //flag 0 加密 1 解密
+    const { file, key, flag } = event.data
     // let encryData = encryptData_ECB(file,key)
-    const CHUNK_SIZE = 1024
+    const CHUNK_SIZE = 1024 //加密分片大小
+    const ENCRY_SIZE = 1388 //解密分片大小
     let encryData = ''
     let chunkInfo = {
         completeChunkNum: 0, //完整的chunk数量,大小为1388
         uncompleteChunkLen: 0 //不完整的chunk长度,如果完整的chunk数量为0,就是开头,否则就是结尾
     }
-    for (var i = 0, len = file.length; i < len; i += CHUNK_SIZE) {
-        // console.log(file.slice(i, i+CHUNK_SIZE));
-        let chunkData = encryptData_ECB(file.slice(i, i + CHUNK_SIZE), key)
-        // console.log(`加密数据片${i}:`, chunkData)
-        postMessage({progress: i / len})
-        encryData = encryData.concat(chunkData)
-        if (chunkData.length < 1388) {
-            chunkInfo.uncompleteChunkLen = chunkData.length
-        } else {
-            chunkInfo.completeChunkNum++
+    if (!flag) {
+        for (var i = 0, len = file.length; i < len; i += CHUNK_SIZE) {
+            // console.log(file.slice(i, i+CHUNK_SIZE));
+            let chunkData = encryptData_ECB(file.slice(i, i + CHUNK_SIZE), key)
+            // console.log(`加密数据片${i}:`, chunkData)
+            postMessage({ progress: i / len })
+            encryData = encryData.concat(chunkData)
+            if (chunkData.length < 1388) {
+                chunkInfo.uncompleteChunkLen = chunkData.length
+            } else {
+                chunkInfo.completeChunkNum++
+            }
+        }
+        postMessage({ progress: 1 })
+
+        postMessage({ encryData })
+
+    } else {
+        //循环解密
+    let decryptData = ''
+// debugger
+        for (var i = 0, len = file.length; i < len; i += ENCRY_SIZE) {
+            let chunkData
+            //为一整个分片
+            if (i + ENCRY_SIZE < len) {
+                chunkData = decryptData_ECB(file.slice(i, i + ENCRY_SIZE), key)
+            } else {//为开头或结尾处不是一整个的分片
+                chunkData = decryptData_ECB(file.slice(i), key)
+            }
+            decryptData = decryptData.concat(chunkData)
+
+            // console.log(`解密数据片:`, chunkData)
+
+
+            postMessage({ progress: i / len })
+            postMessage({ decryptData })
+
         }
     }
+
+
     // console.log(encryData);
     // encryData = encryData.concat('chunkInfo:',JSON.stringify(chunkInfo))
 
     // debugger
     // console.log(chunkInfo);
-    let decryptData = ''
     // let index = 0
     // let comChNm= chunkInfo.completeChunkNum
     // let unChLen= chunkInfo.uncompleteChunkLen
-    const SIZE = 1388
     // if (comChNm) {
     //    for (var i = 0,end=comChNm*1388; i < end; i+=SIZE) {
     //     let chunkData = decryptData_ECB(encryData.slice(i, i+SIZE), key)
@@ -52,7 +81,7 @@ onmessage = function (event) {
     //     decryptData = decryptData.concat(chunkData)
     //    }
     // }
-    
+
     //循环解密
     // for (var i = 0, len = encryData.length; i < len; i+=SIZE) {
     //     let chunkData
@@ -65,11 +94,10 @@ onmessage = function (event) {
     //     decryptData = decryptData.concat(chunkData)
 
     //     // console.log(`解密数据片:`, chunkData)
-      
- 
+
+
     //     postMessage({progress: i / len})
     // }
-    postMessage({progress: 1})
 
 
     // while(comTime<comChNm){
@@ -146,6 +174,5 @@ onmessage = function (event) {
     // console.log('解密数据:',decryptData);
     // console.log(decryptData_ECB('4ncw+RSEdPY/gnet0Usv0LEtCGYrxBzm6zSzXrLScUA='));
     // console.log();
-    postMessage({encryData})
     //  postMessage(decryptData_ECB(event.data))
 }

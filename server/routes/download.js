@@ -8,10 +8,10 @@ router.post('/', async function (req, res, next) {
     const {hash} = req.body
     try{
         debugger
-        let fileUrl = await download(hash)
+        let fileBuffer = await download(hash)
         // console.log('file',fileUrl);
         // debugger
-        res.send(fileUrl)
+        res.send(fileBuffer)
     }catch(err){
         // console.log('密码错误');
         // console.error(err);
