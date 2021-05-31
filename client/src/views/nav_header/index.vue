@@ -4,24 +4,24 @@
       <img src="@/assets/logo/ipfs.png" alt="ipfs" />
       <div>IPFS</div>
     </router-link>
-    <router-link to="/status">
+    <!-- <router-link to="/status">
       <svg class="icon" aria-hidden="true">
         <use xlink:href="#iconstatus"></use>
       </svg>
       状态
-    </router-link>
+    </router-link> -->
     <router-link to="/files">
       <svg class="icon" aria-hidden="true">
         <use xlink:href="#iconfiles"></use>
       </svg>
       文件
     </router-link>
-    <router-link to="/nodes">
+    <!-- <router-link to="/nodes">
       <svg class="icon" aria-hidden="true">
         <use xlink:href="#iconnodes"></use>
       </svg>
       节点</router-link
-    >
+    > -->
   </div>
 </template>
 
