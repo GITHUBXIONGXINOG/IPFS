@@ -67,31 +67,6 @@
 
       </div>
     </table>
-    <!-- {{fileInfo()}} -->
-    <!-- 
-    <div class="upload_wrap">
-           <el-progress
-          :text-inside="true"
-          :stroke-width="26"
-          :percentage="decryProcess"
-        ></el-progress>
-      <div class="encry_progress_wrap">
-    
-        <el-progress
-          :text-inside="true"
-          :stroke-width="26"
-          :percentage="decryProcess"
-        ></el-progress>
-
-        <el-progress
-          :percentage="100"
-          class="encry_progress"
-          status="success"
-          v-show="encryProgress == 100"
-        ></el-progress>
-        <div class="upload_text">解密中...</div>
-      </div>
-    </div> -->
   </div>
 </template>
 <script>
@@ -124,38 +99,13 @@ export default {
       return percentage === 100 ? '解压完成' : `解压中${percentage}%`
     }
   },
-    // connectWebSockets() {
-    //   var ws = new WebSocket("ws://localhost:3001","echo-protocol");
-    //   ws.onopen = function (evt) {
-    //     console.log("Connection open ...");
-    //     ws.send("Hello WebSockets!");
-    //   };
-
-    //   ws.onmessage = function (evt) {
-    //     console.log("Received Message: " + evt.data);
-    //     // ws.close();
-    //   };
-    //   let _self = this
-    //   ws.onclose = function (evt) {
-    //     console.log("Connection closed.");
-    //     _self.connectWebSockets()
-    //   };
-    // },
+ 
     //点击下载文件
     async clickGET() {
       if (this.smKey) {
-        // debugger
-        // console.log(this.fileInfo);
-        // console.log(this.fileInfo());
-        // debugger
+     
         let _self = this;
-        // setInterval(()=>{
-        //   _self.connectWebSockets()
-        // },2000)
-        // for (var i = 0; i < 10; i++) {
-
-        // }
-        // _self.connectWebSockets()
+ 
         let file = "";
         let downloadFile = await ajax(
           "/api/download",

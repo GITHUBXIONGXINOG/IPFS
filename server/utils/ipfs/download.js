@@ -20,7 +20,7 @@ module.exports = {
                 // console.log(hash, key);
                 var ipfs = IpfsApi('localhost', '5001', { protocol: 'http' })
                 // initWebSocket()
-                // debugger
+                debugger
                 await ipfs.ls(hash)
                 let file = await ipfs.cat(hash)
 
