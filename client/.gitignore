@@ -23,3 +23,5 @@ pnpm-debug.log*
 *.sw?
 IPFS/server/public
 server/public
+#Electron-builder output
+/dist_electron
