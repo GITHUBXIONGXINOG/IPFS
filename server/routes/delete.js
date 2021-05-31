@@ -6,6 +6,7 @@ const _path = require('path')
 
 /* GET users listing. */
 router.get('/', async function (req, res, next) {
+   debugger
    var ipfs = await IpfsApi('localhost', '5001', { protocol: 'http' })
    // console.log(req.query.hash);
    let hash = req.query.hash

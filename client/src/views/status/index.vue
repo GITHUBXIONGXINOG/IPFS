@@ -133,12 +133,7 @@ export default {
         return `0 b/s`;
       };
     },
-    // percentageSet(rate){
-    //   console.log(rate);
-    //     return 0
-    //     // return Math.floor(rate)
 
-    // }
   },
   mounted() {
     setInterval(async () => {
@@ -149,7 +144,7 @@ export default {
         console.error(err);
         this.connectFlag = false;
       }
-    }, 200000);
+    }, 1000);
 
     setInterval(async () => {
       // const response = await ajax("/api/status");

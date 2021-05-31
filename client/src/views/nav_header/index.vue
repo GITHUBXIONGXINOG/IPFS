@@ -16,12 +16,6 @@
       </svg>
       文件
     </router-link>
-    <router-link to="/nodes">
-      <svg class="icon" aria-hidden="true">
-        <use xlink:href="#iconnodes"></use>
-      </svg>
-      节点</router-link
-    >
   </div>
 </template>
 
