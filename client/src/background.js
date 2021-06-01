@@ -2,7 +2,7 @@
 
 import { app, protocol, BrowserWindow, Menu } from "electron";
 import { createProtocol } from "vue-cli-plugin-electron-builder/lib";
-import webApp from "@/backend/webserver/be_nodeSrv.js"
+import webApp from "@/backend/bin/www"
 const isDevelopment = process.env.NODE_ENV !== "production";
 
 let win;
