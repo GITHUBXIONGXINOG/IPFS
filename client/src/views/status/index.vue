@@ -98,7 +98,8 @@
 <script>
 import ajax from "../../utils/ajax";
 import Search from "../../components/search";
-
+const {ipcRenderer} = window.require('electron');
+// import  ipcRenderer from 'electron'
 export default {
   data() {
     return {
@@ -136,9 +137,19 @@ export default {
 
   },
   mounted() {
+// const {ipcRenderer} = window.require('electron');
+// window.require()
+    
     setInterval(async () => {
       try {
-        this.nodeID = await ajax("/api/status");
+        // this.nodeID = await ajax("/api/status");
+        // this.nodeID = await ajax("/api/status");
+        this.nodeID = '1'
+        ipcRenderer.invoke('status').then((res)=>{
+          console.log(res);
+          this.nodeID = res
+        })
+
         this.connectFlag = true;
       } catch (err) {
         console.error(err);
