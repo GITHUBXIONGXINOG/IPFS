@@ -16,8 +16,8 @@ function createWindow() {
     height: 800,
     icon: "./src/assets/logo.png",
     webPreferences: {
-      webSecurity: false,
-      nodeIntegration: true
+      nodeIntegration: true,
+      contextIsolation: false
     }
   });
   // 取消菜单

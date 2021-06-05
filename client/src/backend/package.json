@@ -1,16 +1,23 @@
 {
-  "name": "backend",
+  "name": "server",
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "node ./bin/www"
+    "start": "node ./bin/www",
+    "start nodemon": "nodemon ./bin/www"
   },
   "dependencies": {
+    "axios": "^0.21.1",
     "cookie-parser": "~1.4.4",
     "debug": "~2.6.9",
     "express": "~4.16.1",
+    "formidable": "^1.2.2",
+    "gm-crypto": "^0.1.7",
     "http-errors": "~1.6.3",
+    "ipfs-api": "^26.1.2",
+    "ipfs-core": "^0.5.4",
     "jade": "~1.11.0",
-    "morgan": "~1.9.1"
+    "morgan": "~1.9.1",
+    "websocket": "^1.0.34"
   }
 }
