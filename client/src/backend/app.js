@@ -7,6 +7,8 @@ var logger = require('morgan');
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 const { ipcMain } = require('electron');
+const { create } = require('ipfs-http-client')
+const ipfs = create()
 
 var app = express();
 
@@ -23,7 +25,14 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 ipcMain.handle('status',async event =>{
-    return 111
+  try{
+    const id = await ipfs.id()
+    return id
+  }catch(err){
+    console.error(err);
+    return err
+  }
+ 
 })
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

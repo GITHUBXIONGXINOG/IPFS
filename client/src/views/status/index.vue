@@ -144,7 +144,7 @@ export default {
       try {
         // this.nodeID = await ajax("/api/status");
         // this.nodeID = await ajax("/api/status");
-        this.nodeID = '1'
+        // this.nodeID = '1'
         ipcRenderer.invoke('status').then((res)=>{
           console.log(res);
           this.nodeID = res
@@ -155,7 +155,7 @@ export default {
         console.error(err);
         this.connectFlag = false;
       }
-    }, 1000);
+    }, 10000);
 
     setInterval(async () => {
       // const response = await ajax("/api/status");
