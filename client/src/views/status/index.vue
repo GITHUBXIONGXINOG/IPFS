@@ -24,17 +24,17 @@
               <div>{{ nodeID.protocolVersion || "查找中" }}</div>
             </div>
           </li>
-          <li>
+          <!-- <li>
             <div class="name">地址</div>
             <div class="show" v-show="nodeID.addresses">
               <div v-for="(item, index) in nodeID.addresses" :key="index">
-                {{ item }}
+                {{ UintToString(item.bytes) }}
               </div>
             </div>
-          </li>
+          </li> -->
           <li>
             <div class="name">公钥</div>
-            <div class="show">{{ nodeID.publicKey || "查找中" }}</div>
+            <div class="show">{{nodeID.publicKey || "查找中" }}</div>
           </li>
         </ul>
       </div>
@@ -134,7 +134,14 @@ export default {
         return `0 b/s`;
       };
     },
-
+    // UintToString(unit){
+    //     var dataString = "";
+    //    for (var i = 0; i < unit.length; i++) {
+    //    dataString += String.fromCharCode(unit[i]);
+    //    }
+ 
+    //   return dataString
+    // }
   },
   mounted() {
 // const {ipcRenderer} = window.require('electron');
@@ -146,7 +153,7 @@ export default {
         // this.nodeID = await ajax("/api/status");
         // this.nodeID = '1'
         ipcRenderer.invoke('status').then((res)=>{
-          console.log(res);
+          // console.log(res);
           this.nodeID = res
         })
 
@@ -261,7 +268,7 @@ export default {
       li {
         display: flex;
 
-        margin: 20px 0;
+        margin: 0px 0;
         &:first-child {
           font-weight: bold;
         }
