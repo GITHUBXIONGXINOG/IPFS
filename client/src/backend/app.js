@@ -7,8 +7,7 @@ var logger = require('morgan');
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 const { ipcMain } = require('electron');
-const { create } = require('ipfs-http-client')
-const ipfs = create()
+const ipfs = require('ipfs-api')
 
 var app = express();
 
@@ -32,7 +31,19 @@ ipcMain.handle('status',async event =>{
     console.error(err);
     return err
   }
- 
+})
+ipcMain.handle('pininfo',async event =>{
+  try{
+    let pinList = await ipfs.pin.ls({type:'recursive' })
+    let stats = await ipfs.stats.repo()
+    let RepoSize = stats.repoSize
+    let NumObjects = stats.numObjects
+    let pinInfo = {pinList,RepoSize,NumObjects}
+    return pinInfo
+  }catch(err){
+    console.error(err);
+    return err
+  }
 })
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

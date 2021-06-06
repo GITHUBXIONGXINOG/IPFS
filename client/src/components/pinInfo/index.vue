@@ -18,6 +18,7 @@
 </template>
  <script>
 import ajax from "../../utils/ajax";
+const {ipcRenderer} = window.require('electron');
 export default {
   data() {
     return {
@@ -68,12 +69,21 @@ export default {
   },
   mounted() {
     (async () => {
-      let { pinList, NumObjects, RepoSize } = await ajax("/api/pininfo");
-      this.pininfo = {
-        pinList,
-        NumObjects: this.sizeFormat(NumObjects, 1),
-        RepoSize: this.sizeFormat(RepoSize),
-      };
+      ipcRenderer.invoke('pininfo').then((res)=>{
+          console.log(res);
+        //   this.pininfo = {
+        //   pinList: res.pinList,
+        //   NumObjects: this.sizeFormat(res.NumObjects, 1),
+        //   RepoSize: this.sizeFormat(res.RepoSize),
+        // };
+        })
+      // let { pinList, NumObjects, RepoSize } = await ajax("/api/pininfo");
+      // this.pininfo = {
+      //   pinList,
+      //   NumObjects: this.sizeFormat(NumObjects, 1),
+      //   RepoSize: this.sizeFormat(RepoSize),
+      // };
+ 
     })();
   },
 };
