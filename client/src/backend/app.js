@@ -6,10 +6,16 @@ var logger = require('morgan');
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
-const { ipcMain } = require('electron');
+var statusRouter = require('./routes/status');
+var speedRouter = require('./routes/speed')
+var uploadRouter = require('./routes/upload')
+var searchRouter = require('./routes/search')
+var downRouter = require('./routes/download')
+var deleteRouter = require('./routes/delete')
+var pinRouter = require('./routes/pininfo')
+var progressRouter = require('./routes/progress')
 
 var app = express();
-
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
@@ -19,12 +25,17 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
-
+app.use(express.static('public'))
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
-ipcMain.handle('status',async event =>{
-    return 111
-})
+app.use('/status', statusRouter);
+app.use('/speed',speedRouter)
+app.use('/upload',uploadRouter)
+app.use('/search',searchRouter)
+app.use('/download',downRouter)
+app.use('/delete',deleteRouter)
+app.use('/pininfo',pinRouter)
+app.use('/progress',progressRouter)
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   next(createError(404));

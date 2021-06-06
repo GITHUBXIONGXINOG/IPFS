@@ -142,13 +142,13 @@ export default {
     
     setInterval(async () => {
       try {
+        this.nodeID = await ajax("/api/status");
         // this.nodeID = await ajax("/api/status");
-        // this.nodeID = await ajax("/api/status");
-        this.nodeID = '1'
-        ipcRenderer.invoke('status').then((res)=>{
-          console.log(res);
-          this.nodeID = res
-        })
+        // this.nodeID = '1'
+        // ipcRenderer.invoke('status').then((res)=>{
+        //   console.log(res);
+        //   this.nodeID = res
+        // })
 
         this.connectFlag = true;
       } catch (err) {
