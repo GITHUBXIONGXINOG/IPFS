@@ -4,8 +4,11 @@ import { app, protocol, BrowserWindow, Menu } from "electron";
 import { createProtocol } from "vue-cli-plugin-electron-builder/lib";
 import webApp from "@/backend/bin/www"
 const isDevelopment = process.env.NODE_ENV !== "production";
-
+ 
+ 
 let win;
+var child;
+
 protocol.registerSchemesAsPrivileged([
   { scheme: "app", privileges: { secure: true, standard: true } }
 ]);
@@ -22,6 +25,7 @@ function createWindow() {
       contextIsolation: false
     }
   });
+
   // 取消菜单
   Menu.setApplicationMenu( null );
 
@@ -43,8 +47,8 @@ app.on("activate", () => {
     createWindow();
   }
 });
-
 app.on("ready", async () => {
+  require('child_process').exec('start ./src/backend/go-ipfs/ipfs.exe')
   createWindow();
 });
 
