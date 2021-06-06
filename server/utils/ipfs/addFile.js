@@ -25,7 +25,6 @@ module.exports = {
                 //将文件信息写入
                 // fdInfoBuf.write(JSON.stringify(upload_file))
 
-
                 // 将字符串密钥转为16进制保存
                 function stringToHex(str) {
                     var val = "";
